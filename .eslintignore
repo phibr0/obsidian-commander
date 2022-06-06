@@ -1,2 +1,4 @@
 npm node_modules
 build
+scripts/
+main.js

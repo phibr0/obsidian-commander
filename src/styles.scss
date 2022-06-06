@@ -1,0 +1,193 @@
+.cmdr {
+	transition: transform 400ms 0s;
+}
+
+.cmdr-removing {
+	transform: translateX(100%);
+	z-index: 0;
+}
+
+.cmdr-ribbon-removing {
+	transform: scale(0%);
+}
+
+.cmdr-setting-header {
+	display: flex;
+	align-items: flex-end;
+	border-bottom: 2px solid var(--background-modifier-border);
+	margin-bottom: 24px;
+}
+
+.cmdr-setting-title {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+}
+
+.cmdr-tab {
+	padding: 6px 12px;
+	font-weight: 600;
+	cursor: pointer;
+	white-space: nowrap;
+	border-left: 2px solid transparent;
+	border-right: 2px solid transparent;
+
+	&:first-child {
+		margin-left: 6px;
+	}
+}
+
+.cmdr-tab-active {
+	border-bottom: 2px solid var(--background-secondary);
+	transform: translateY(2px);
+	border-radius: 2px;
+	border-left: 2px solid var(--background-modifier-border);
+	border-top: 2px solid var(--background-modifier-border);
+	border-right: 2px solid var(--background-modifier-border);
+}
+
+.cmdr-fill {
+	border: 2px solid transparent;
+	width: 100%;
+}
+
+.cmdr-icon {
+	background-color: var(--background-primary);
+	padding: 4px;
+	border-radius: 4px;
+	height: 28px;
+}
+
+.cmdr-setting-modal > .modal {
+	height: 60vh;
+	width: 80vw;
+}
+
+.cmdr-setting-content {
+	overflow-y: auto;
+	height: calc(100% - 10rem);
+}
+
+.cmdr-commands-empty {
+	display: flex;
+	place-items: center;
+	flex-flow: column;
+	height: 80%;
+	place-content: center;
+
+	svg {
+		width: 100%;
+	}
+
+	> .cmdr-icon-wrapper {
+		width: 196px;
+	}
+}
+
+.cmdr-add-new-wrapper {
+	width: 100%;
+	margin-top: 12px;
+	display: flex;
+	justify-content: center;
+}
+
+.cmdr-macro-builder {
+	.modal {
+		height: 80vh;
+		width: 95vw;
+		padding: 0px;
+	}
+
+	.react-flow__attribution {
+		padding: 0px 6px;
+		background-color: transparent;
+
+		> a::before {
+			content: "Made with ";
+		}
+	}
+
+	.modal-close-button {
+		z-index: 99;
+	}
+
+	.modal-content {
+		margin-top: 0px;
+	}
+
+	.cmdr-macro-control {
+		position: absolute;
+		z-index: 5;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		width: 3em;
+		top: 0;
+
+		.cmdr-macro-button {
+			background-color: var(--background-secondary-alt);
+			aspect-ratio: 1;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			border-radius: 2px;
+			outline: 1px solid var(--background-modifier-border);
+			padding: 2px;
+		}
+	}
+
+	.react-flow__node {
+		padding: 0px !important;
+
+		.grid {
+			.cmdr-macro-icon {
+				padding-top: 6px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+
+			.cmdr-macro-description {
+				padding-bottom: 6px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				border-top: 1px solid rgba(0, 0, 0, 0.5);
+			}
+		}
+	}
+}
+
+@media only screen and (max-width: 1500px) {
+	.cmdr-setting-header {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		border: none;
+		background-color: var(--background-secondary-alt);
+		padding: 6px 12px;
+		border-radius: 12px;
+	}
+
+	.cmdr-tab {
+		border: none;
+		transform: none;
+		padding: 6px 0px;
+		transition: color 200ms ease;
+
+		&:hover {
+			color: var(--interactive-accent);
+		}
+
+		&:first-child {
+			margin-left: 0px;
+		}
+	}
+
+	.cmdr-tab-active {
+		font-weight: bold;
+	}
+}

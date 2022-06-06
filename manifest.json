@@ -1,10 +1,10 @@
 {
-	"id": "obsidian-commander",
-	"name": "Commander",
+	"id": "cmdr",
+	"name": "Commander 🎛️",
 	"version": "0.0.1",
 	"minAppVersion": "0.12.0",
-	"description": "This is a sample plugin for Obsidian. This plugin demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
+	"description": "Customize your workspace by adding commands /everywhere/.",
+	"author": "jsmorabito & phibr0",
+	"authorUrl": "https://github.com/phibr0",
 	"isDesktopOnly": false
 }
