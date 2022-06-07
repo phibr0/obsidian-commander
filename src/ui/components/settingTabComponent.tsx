@@ -6,9 +6,10 @@ import CommandViewer from "./commandViewerComponent";
 import { ToggleComponent } from "./settingComponent";
 import confetti from "canvas-confetti";
 
-export default function settingTabComponent({ plugin }: { plugin: CommanderPlugin; }): h.JSX.Element {
+export default function settingTabComponent({ plugin, mobileMode }: { plugin: CommanderPlugin; mobileMode: boolean; }): h.JSX.Element {
 	const [activeTab, setActiveTab] = useState(0);
 	const coffeeIcon = useRef<HTMLDivElement>(null);
+
 
 	const tabToNextTab = ({ key, shiftKey }: KeyboardEvent): void => {
 		if (shiftKey && key === "Tab") {
@@ -95,7 +96,7 @@ export default function settingTabComponent({ plugin }: { plugin: CommanderPlugi
 	return (
 		<Fragment>
 			<div className="cmdr-setting-title">
-				<h1>Commander 🎛️</h1>
+				<h1>{plugin.manifest.name}</h1>
 				<div
 					className="clickable-icon"
 					ref={coffeeIcon}
@@ -139,7 +140,7 @@ export default function settingTabComponent({ plugin }: { plugin: CommanderPlugi
 					}}
 				/>
 			</div>
-			<nav class="cmdr-setting-header">
+			<nav class={`cmdr-setting-header${mobileMode ? " cmdr-mobile" : ""}`}>
 				{tabs.map((tab, idx) => <div
 					className={activeTab === idx ? "cmdr-tab cmdr-tab-active" : "cmdr-tab"}
 					onClick={(): void => setActiveTab(idx)}>

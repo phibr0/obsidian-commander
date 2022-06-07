@@ -12,7 +12,8 @@ export default class CommanderSettingTab extends PluginSettingTab {
 	}
 
 	public display(): void {
-		render(h(settingTabComponent, { plugin: this.plugin }), this.containerEl);
+		const mobileMode = this.containerEl.getBoundingClientRect().width <= 1000;
+		render(h(settingTabComponent, { plugin: this.plugin, mobileMode }), this.containerEl);
 	}
 
 	public hide(): void {
