@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, } from "preact/hooks";
 import ReactFlow, { useEdgesState, useNodesState, Background, Edge, ReactFlowProvider, addEdge } from 'react-flow-renderer/nocss';
 import chroma from "chroma-js";
 import { ReactFlowInstance } from "react-flow-renderer";
+import { ObsidianIcon } from "src/util";
 
 interface BaseComponentProps {
 	color: string;
@@ -111,15 +112,4 @@ export default function MacroBuilder(): h.JSX.Element {
 			</ReactFlowProvider>
 		</Fragment>
 	);
-}
-
-function ObsidianIcon({ icon, size }: { icon: string, size?: number }): h.JSX.Element {
-	const iconEl = useRef<HTMLDivElement>(null);
-
-	useEffect(() => {
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		setIcon(iconEl.current!, icon, size);
-	}, [icon, size]);
-
-	return <div style={{ display: "grid" }} ref={iconEl} />;
 }

@@ -43,7 +43,7 @@
 	display: flex;
 	place-items: center;
 	flex-flow: column;
-	height: 80%;
+	margin: 3rem 0px;
 	place-content: center;
 
 	svg {
@@ -143,7 +143,7 @@
 		flex-direction: column;
 		align-items: flex-start;
 		border: none;
-		background-color: var(--background-secondary-alt);
+		background-color: var(--background-modifier-border);
 		padding: 6px 12px;
 		border-radius: 12px;
 

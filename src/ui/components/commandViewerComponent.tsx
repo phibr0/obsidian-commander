@@ -52,9 +52,9 @@ export default function CommandViewer({ manager, plugin }: CommandViewerProps): 
 							await manager.addCommand(pair);
 							this.forceUpdate();
 						}}
+						aria-label="Add new"
 					>
 						<div ref={addIcon} />
-						Add new
 					</button>
 				</div>
 			</ManagerContext.Provider>
