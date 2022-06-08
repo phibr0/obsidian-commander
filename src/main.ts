@@ -6,7 +6,6 @@ import { EditorMenuCommandManager, FileMenuCommandManager } from './manager/menu
 import SettingTabModal from './ui/settingTabModal';
 import RibbonManager from './manager/ribbonManager';
 import TitleBarManager from './manager/titleBarManager';
-import MacroModal from './ui/macroModal';
 import StatusBarManager from './manager/statusBarManager';
 import PageHeaderManager from './manager/pageHeaderManager';
 
@@ -37,11 +36,11 @@ export default class CommanderPlugin extends Plugin {
 			callback: () => new SettingTabModal(this).open(),
 		});
 
-		this.addCommand({
-			name: "Open Macro Builder",
-			id: "open-macro-builder",
-			callback: () => new MacroModal(this).open(),
-		});
+		// this.addCommand({
+		// 	name: "Open Macro Builder",
+		// 	id: "open-macro-builder",
+		// 	callback: () => new MacroModal(this).open(),
+		// });
 
 		this.manager = {
 			editorMenu: new EditorMenuCommandManager(this, this.settings.editorMenu),
@@ -63,7 +62,7 @@ export default class CommanderPlugin extends Plugin {
 	}
 
 	// Macros become quite large objects, because we are saving the whole flowchart state (including position, etc.)
-	// This is why they are encoded into a single line base64 string
+	// This is why they are encoded into a single line base64 string to save space
 	private async loadSettings(): Promise<void> {
 		const data = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
 		data.macros = data.macros.map((str: string) => JSON.parse(window.atob(str)));

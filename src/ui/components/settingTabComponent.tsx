@@ -120,6 +120,7 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 							resize: true,
 							useWorker: true
 						});
+						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 						const pos = coffeeIcon.current!.getBoundingClientRect();
 
 						// eslint-disable-next-line @typescript-eslint/no-var-requires

@@ -15,10 +15,6 @@ export default class ChooseCustomNameModal extends SuggestModal<string> {
 				purpose: "Choose a custom Name for your new Command"
 			},
 			{
-				command: "↑↓",
-				purpose: "to navigate"
-			},
-			{
 				command: "↵",
 				purpose: "to save"
 			},

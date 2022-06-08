@@ -60,7 +60,8 @@ export default class RibbonManager extends CommandManager {
 
 	// eslint-disable-next-line no-unused-vars
 	private addAction(name: string, icon: string, pair: CommandIconPair, callback: (event: MouseEvent) => void): void {
-		const newAction = this.ribbonEl.makeRibbonActionButton(icon, name, callback);
+		// eslint-disable-next-line @typescript-eslint/no-empty-function
+		const newAction = this.ribbonEl.makeRibbonActionButton(icon, name, () => { });
 		newAction.addClass("cmdr");
 		newAction.setAttribute("aria-label-position", this.side === "left" ? "right" : "left");
 		this.actions[name + icon] = newAction;
@@ -94,6 +95,8 @@ export default class RibbonManager extends CommandManager {
 				isRemovable = true;
 			}
 		});
+
+		setNormal();
 
 		this.ribbonEl.ribbonActionsEl?.append(newAction);
 	}
