@@ -8,6 +8,7 @@ import { arrayMoveMutable } from "array-move";
 import { useEffect, useRef } from "preact/hooks";
 import { setIcon } from "obsidian";
 import ChooseIconModal from "../chooseIconModal";
+import ConfirmDeleteModal from "../confirmDeleteModal";
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 export const ManagerContext = createContext<CommandManager>(null!);
@@ -32,7 +33,11 @@ export default function CommandViewer({ manager, plugin }: CommandViewerProps): 
 					return <CommandComponent
 						key={cmd.id}
 						pair={cmd}
-						handleRemove={async (): Promise<void> => { await manager.removeCommand(cmd); this.forceUpdate(); }}
+						handleRemove={async (): Promise<void> => {
+							if (!plugin.settings.confirmDeletion || await new ConfirmDeleteModal(plugin).didChooseRemove()) {
+								await manager.removeCommand(cmd); this.forceUpdate();
+							}
+						}}
 						handleUp={(): void => { arrayMoveMutable(manager.pairs, idx, idx - 1); manager.reorder(); this.forceUpdate(); }}
 						handleDown={(): void => { arrayMoveMutable(manager.pairs, idx, idx + 1); manager.reorder(); this.forceUpdate(); }}
 						handleRename={async (name): Promise<void> => { cmd.name = name; await plugin.saveSettings(); manager.reorder(); this.forceUpdate(); }}
