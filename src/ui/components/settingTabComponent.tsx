@@ -48,7 +48,7 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 				<ToggleComponent
 					value={plugin.settings.showAddCommand}
 					name='Show "Add Command" Button'
-					description='Show the "Add Command" Button in every Menu.'
+					description='Show the "Add Command" Button in every Menu. Requires restart.'
 					changeHandler={async (value): Promise<void> => {
 						plugin.settings.showAddCommand = !value;
 						await plugin.saveSettings();

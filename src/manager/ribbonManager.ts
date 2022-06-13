@@ -1,15 +1,18 @@
-import { setIcon, WorkspaceRibbon } from "obsidian";
+import { Menu, setIcon, WorkspaceRibbon } from "obsidian";
 import CommandManager from "./_commandManager";
 import CommanderPlugin from "../main";
 import { CommandIconPair } from "../types";
 import ConfirmDeleteModal from "../ui/confirmDeleteModal";
-import { getCommandFromId } from "../util";
+import { chooseNewCommand, getCommandFromId } from "../util";
+import ChooseCustomNameModal from "src/ui/chooseCustomNameModal";
+import ChooseIconModal from "src/ui/chooseIconModal";
 
 export default class RibbonManager extends CommandManager {
 	private actions: {
 		[id: string]: HTMLElement;
 	};
 	private ribbonEl: WorkspaceRibbon;
+	private addBtn: HTMLDivElement;
 
 	public constructor(
 		private side: "left" | "right",
@@ -23,6 +26,7 @@ export default class RibbonManager extends CommandManager {
 			if (this.side === "right") {
 				this.addActionContainer();
 			}
+			this.addBtn = createDiv({ cls: "cmdr side-dock-ribbon-action cmdr-adder", attr: { "aria-label-position": side === "left" ? "right" : "left", "aria-label": "Add new" } });
 			this.init();
 		});
 
@@ -50,12 +54,22 @@ export default class RibbonManager extends CommandManager {
 	}
 
 	public reorder(): void | Promise<void> {
+		this.addBtn.remove();
 		Object.values(this.actions).forEach(el => el.remove());
 		this.init();
 	}
 
 	private init(): void {
 		for (const c of this.pairs) this.addAction(c.name, c.icon, c, () => app.commands.executeCommandById(c.id));
+
+		this.plugin.register(() => this.addBtn.remove());
+		setIcon(this.addBtn, "plus");
+		this.addBtn.onclick = async (): Promise<void> => {
+			const pair = await chooseNewCommand(this.plugin);
+			this.addCommand(pair);
+			this.reorder();
+		};
+		if (this.plugin.settings.showAddCommand) this.ribbonEl.ribbonActionsEl?.append(this.addBtn);
 	}
 
 	// eslint-disable-next-line no-unused-vars
@@ -94,6 +108,54 @@ export default class RibbonManager extends CommandManager {
 				if (!isRemovable) setRemovable();
 				isRemovable = true;
 			}
+		});
+		newAction.addEventListener("contextmenu", (event) => {
+			event.stopImmediatePropagation();
+			new Menu(app)
+				.addItem(item => {
+					item
+						.setTitle("Add Command")
+						.setIcon("command")
+						.onClick(async () => {
+							const pair = await chooseNewCommand(this.plugin);
+							this.addCommand(pair);
+						});
+				})
+				.addSeparator()
+				.addItem(item => {
+					item
+						.setTitle("Change Icon")
+						.setIcon("box")
+						.onClick(async () => {
+							const newIcon = await (new ChooseIconModal(this.plugin)).awaitSelection();
+							if (newIcon && newIcon !== pair.icon) {
+								pair.icon = newIcon;
+								await this.plugin.saveSettings();
+								this.reorder();
+							}
+						});
+				})
+				.addItem(item => {
+					item
+						.setTitle("Rename")
+						.setIcon("text-cursor-input")
+						.onClick(async () => {
+							const newName = await (new ChooseCustomNameModal(pair.name)).awaitSelection();
+							if (newName && newName !== pair.name) {
+								pair.name = newName;
+								await this.plugin.saveSettings();
+								this.reorder();
+							}
+						});
+				})
+				.addItem(item => {
+					item.dom.addClass("is-warning");
+					item
+						.setTitle("Delete")
+						.setIcon("lucide-trash")
+						.onClick(() => this.removeCommand(pair));
+				})
+				.showAtMouseEvent(event);
 		});
 
 		setNormal();

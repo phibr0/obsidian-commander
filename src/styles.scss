@@ -23,10 +23,8 @@
 }
 
 .cmdr-icon {
-	background-color: var(--background-primary);
-	padding: 4px;
-	border-radius: 4px;
-	height: 28px;
+	height: 20px;
+	align-self: center;
 }
 
 .cmdr-setting-modal > .modal {
@@ -60,6 +58,15 @@
 	margin-top: 12px;
 	display: flex;
 	justify-content: center;
+}
+
+.cmdr-adder {
+	opacity: 0;
+	transition: opacity 200ms ease;
+
+	&:hover {
+		opacity: 1;
+	}
 }
 
 .cmdr-macro-builder {

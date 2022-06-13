@@ -1,9 +1,11 @@
-import { Command, Editor, MarkdownView, Menu, MenuItem, TAbstractFile, WorkspaceLeaf } from "obsidian";
+import { Command, Editor, MarkdownView, Menu, MenuItem, setIcon, TAbstractFile, WorkspaceLeaf } from "obsidian";
 import CommandManager from "./_commandManager";
 import CommanderPlugin from "../main";
 import { CommandIconPair } from "../types";
 import ConfirmDeleteModal from "../ui/confirmDeleteModal";
 import { chooseNewCommand, getCommandFromId } from "../util";
+import ChooseCustomNameModal from "src/ui/chooseCustomNameModal";
+import ChooseIconModal from "src/ui/chooseIconModal";
 
 abstract class Base extends CommandManager {
 	public async addCommand(pair: CommandIconPair): Promise<void> {
@@ -25,14 +27,64 @@ abstract class Base extends CommandManager {
 		return (item: MenuItem) => {
 			item.dom.addClass("cmdr");
 
+			item.dom.style.display = "flex";
+			const optionEl = createDiv({
+				cls: "clickable-icon", attr: { "style": `position: absolute; right: 10px; padding-top: 2px;` }
+			});
+			optionEl.addEventListener("click", (event) => {
+				event.preventDefault();
+				event.stopImmediatePropagation();
+
+				new Menu(app)
+					.addItem(item => {
+						item
+							.setTitle("Change Icon")
+							.setIcon("box")
+							.onClick(async () => {
+								const newIcon = await (new ChooseIconModal(plugin)).awaitSelection();
+								if (newIcon && newIcon !== cmdPair.icon) {
+									cmdPair.icon = newIcon;
+									await plugin.saveSettings();
+								}
+							});
+					})
+					.addItem(item => {
+						item
+							.setTitle("Rename")
+							.setIcon("text-cursor-input")
+							.onClick(async () => {
+								const newName = await (new ChooseCustomNameModal(cmdPair.name)).awaitSelection();
+								if (newName && newName !== cmdPair.name) {
+									cmdPair.name = newName;
+									await plugin.saveSettings();
+								}
+							});
+					})
+					.addItem(item => {
+						item.dom.addClass("is-warning");
+						item
+							.setTitle("Delete")
+							.setIcon("lucide-trash")
+							.onClick(async () => {
+								commandList.remove(cmdPair);
+								await plugin.saveSettings();
+							});
+					})
+					.showAtMouseEvent(event);
+			});
+			setIcon(optionEl, "more-vertical", 16);
+			item.dom.append(optionEl);
+
 			let isRemovable = false;
 			const setNormal = (): void => {
+				optionEl.style.display = "none";
 				item
 					.setTitle(cmdPair.name ?? command.name)
 					.setIcon(cmdPair.icon)
 					.onClick(() => app.commands.executeCommandById(cmdPair.id));
 			};
 			const setRemovable = (): void => {
+				optionEl.style.display = "block";
 				item.setTitle("Delete").setIcon("trash").onClick(async (event) => {
 					event.preventDefault();
 					event.stopImmediatePropagation();

@@ -1,9 +1,14 @@
-import { setIcon } from "obsidian";
+import { Menu, setIcon } from "obsidian";
 import CommanderPlugin from "src/main";
 import { CommandIconPair } from "src/types";
+import ChooseCustomNameModal from "src/ui/chooseCustomNameModal";
+import ChooseIconModal from "src/ui/chooseIconModal";
+import { chooseNewCommand } from "src/util";
 import CommandManager from "./_commandManager";
 
 export default class PageHeaderManager extends CommandManager {
+	private addBtn = createDiv({ cls: "cmdr view-action cmdr-adder", attr: { "aria-label": "Add new" } });
+
 	public constructor(plugin: CommanderPlugin, pairArray: CommandIconPair[]) {
 		super(plugin, pairArray);
 		this.init();
@@ -30,13 +35,12 @@ export default class PageHeaderManager extends CommandManager {
 
 	private addPageHeaderButton(
 		viewActions: Element,
-		button: CommandIconPair
+		pair: CommandIconPair
 	): void {
-		const { id, icon, name } = button;
-		const ICON_SIZE = 16;
+		const { id, icon, name } = pair;
 		const classes = ['view-action', "cmdr-page-header"];
 
-		const buttonIcon = this.getButtonIcon(name, id, icon, ICON_SIZE, classes);
+		const buttonIcon = this.getButtonIcon(name, id, icon, 16, classes);
 		viewActions.prepend(buttonIcon);
 
 		this.plugin.registerDomEvent(buttonIcon, 'click', () => {
@@ -46,6 +50,54 @@ export default class PageHeaderManager extends CommandManager {
 				may need to be made its own setting in the future
 				 */
 			setTimeout(() => app.commands.executeCommandById(id), 5);
+		});
+		buttonIcon.addEventListener("contextmenu", (event) => {
+			event.stopImmediatePropagation();
+			new Menu(app)
+				.addItem(item => {
+					item
+						.setTitle("Add Command")
+						.setIcon("command")
+						.onClick(async () => {
+							const pair = await chooseNewCommand(this.plugin);
+							this.addCommand(pair);
+						});
+				})
+				.addSeparator()
+				.addItem(item => {
+					item
+						.setTitle("Change Icon")
+						.setIcon("box")
+						.onClick(async () => {
+							const newIcon = await (new ChooseIconModal(this.plugin)).awaitSelection();
+							if (newIcon && newIcon !== pair.icon) {
+								pair.icon = newIcon;
+								await this.plugin.saveSettings();
+								this.reorder();
+							}
+						});
+				})
+				.addItem(item => {
+					item
+						.setTitle("Rename")
+						.setIcon("text-cursor-input")
+						.onClick(async () => {
+							const newName = await (new ChooseCustomNameModal(pair.name)).awaitSelection();
+							if (newName && newName !== pair.name) {
+								pair.name = newName;
+								await this.plugin.saveSettings();
+								this.reorder();
+							}
+						});
+				})
+				.addItem(item => {
+					item.dom.addClass("is-warning");
+					item
+						.setTitle("Delete")
+						.setIcon("lucide-trash")
+						.onClick(() => this.removeCommand(pair));
+				})
+				.showAtMouseEvent(event);
 		});
 	}
 
@@ -69,6 +121,15 @@ export default class PageHeaderManager extends CommandManager {
 					);
 				}
 			}
+
+			this.plugin.register(() => this.addBtn.remove());
+			setIcon(this.addBtn, "plus");
+			this.addBtn.onclick = async (): Promise<void> => {
+				const pair = await chooseNewCommand(this.plugin);
+				this.addCommand(pair);
+				this.reorder();
+			};
+			if (this.plugin.settings.showAddCommand) viewActions.prepend(this.addBtn);
 		}));
 	}
 
