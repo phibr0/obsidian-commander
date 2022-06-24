@@ -1,5 +1,3 @@
-import type { Node, Edge } from "react-flow-renderer";
-
 export interface CommanderSettings {
 	confirmDeletion: boolean;
 	showAddCommand: boolean;
@@ -15,8 +13,8 @@ export interface CommanderSettings {
 }
 
 export interface Macro {
-	nodes: Node[];
-	edges: Edge[]
+	nodes: any[];
+	edges: any[]
 }
 
 export interface CommandIconPair {

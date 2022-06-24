@@ -66,8 +66,9 @@ abstract class Base extends CommandManager {
 							.setTitle("Delete")
 							.setIcon("lucide-trash")
 							.onClick(async () => {
-								commandList.remove(cmdPair);
-								await plugin.saveSettings();
+								if (!plugin.settings.confirmDeletion || (await new ConfirmDeleteModal(plugin).didChooseRemove())) {
+									removeMenu();
+								}
 							});
 					})
 					.showAtMouseEvent(event);

@@ -8,10 +8,10 @@ import RibbonManager from './manager/ribbonManager';
 import TitleBarManager from './manager/titleBarManager';
 import StatusBarManager from './manager/statusBarManager';
 import PageHeaderManager from './manager/pageHeaderManager';
+import MacroModal from './ui/macroModal';
 
 import "./styles.scss";
-import 'react-flow-renderer/dist/style.css';
-import 'react-flow-renderer/dist/theme-default.css';
+import 'beautiful-react-diagrams/styles.css';
 
 export default class CommanderPlugin extends Plugin {
 	public settings: CommanderSettings;
@@ -36,11 +36,11 @@ export default class CommanderPlugin extends Plugin {
 			callback: () => new SettingTabModal(this).open(),
 		});
 
-		// this.addCommand({
-		// 	name: "Open Macro Builder",
-		// 	id: "open-macro-builder",
-		// 	callback: () => new MacroModal(this).open(),
-		// });
+		this.addCommand({
+			name: "Open Macro Builder",
+			id: "open-macro-builder",
+			callback: () => new MacroModal(this).open(),
+		});
 
 		this.manager = {
 			editorMenu: new EditorMenuCommandManager(this, this.settings.editorMenu),

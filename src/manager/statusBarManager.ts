@@ -154,7 +154,11 @@ export default class StatusBarManager extends CommandManager {
 					item
 						.setTitle("Delete")
 						.setIcon("lucide-trash")
-						.onClick(() => this.removeCommand(pair));
+						.onClick(async () => {
+							if (!this.plugin.settings.confirmDeletion || (await new ConfirmDeleteModal(this.plugin).didChooseRemove())) {
+								this.removeCommand(pair);
+							}
+						});
 				})
 				.showAtMouseEvent(event);
 		});

@@ -72,21 +72,17 @@
 		padding: 0px;
 	}
 
-	.react-flow__attribution {
-		padding: 0px 6px;
-		background-color: transparent;
-
-		> a::before {
-			content: "Made with ";
-		}
-	}
-
 	.modal-close-button {
 		z-index: 99;
 	}
 
 	.modal-content {
 		margin-top: 0px;
+	}
+
+	.cmdr-macro-icon {
+		display: flex;
+		justify-content: center;
 	}
 
 	.cmdr-macro-control {
@@ -110,27 +106,6 @@
 			border-radius: 2px;
 			outline: 1px solid var(--background-modifier-border);
 			padding: 2px;
-		}
-	}
-
-	.react-flow__node {
-		padding: 0px !important;
-
-		.grid {
-			.cmdr-macro-icon {
-				padding-top: 6px;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-			}
-
-			.cmdr-macro-description {
-				padding-bottom: 6px;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				border-top: 1px solid rgba(0, 0, 0, 0.5);
-			}
 		}
 	}
 }

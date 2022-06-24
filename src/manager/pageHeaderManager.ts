@@ -3,6 +3,7 @@ import CommanderPlugin from "src/main";
 import { CommandIconPair } from "src/types";
 import ChooseCustomNameModal from "src/ui/chooseCustomNameModal";
 import ChooseIconModal from "src/ui/chooseIconModal";
+import ConfirmDeleteModal from "src/ui/confirmDeleteModal";
 import { chooseNewCommand } from "src/util";
 import CommandManager from "./_commandManager";
 
@@ -95,7 +96,11 @@ export default class PageHeaderManager extends CommandManager {
 					item
 						.setTitle("Delete")
 						.setIcon("lucide-trash")
-						.onClick(() => this.removeCommand(pair));
+						.onClick(async () => {
+							if (!this.plugin.settings.confirmDeletion || (await new ConfirmDeleteModal(this.plugin).didChooseRemove())) {
+								this.removeCommand(pair);
+							}
+						});
 				})
 				.showAtMouseEvent(event);
 		});
