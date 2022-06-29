@@ -111,7 +111,7 @@ export default class RibbonManager extends CommandManager {
 		});
 		newAction.addEventListener("contextmenu", (event) => {
 			event.stopImmediatePropagation();
-			new Menu(app)
+			new Menu()
 				.addItem(item => {
 					item
 						.setTitle("Add Command")

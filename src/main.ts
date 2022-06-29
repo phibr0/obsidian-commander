@@ -71,6 +71,7 @@ export default class CommanderPlugin extends Plugin {
 
 	public async saveSettings(): Promise<void> {
 		const data = Object.assign({}, this.settings);
+		// @ts-expect-error: We are assigning the base64 Version of the stringified macro object to the macros attribute
 		data.macros = data.macros.map((obj: Macro) => window.btoa(JSON.stringify(obj)));
 		await this.saveData(data);
 	}

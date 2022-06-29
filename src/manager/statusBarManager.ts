@@ -35,7 +35,7 @@ export default class StatusBarManager extends CommandManager {
 					return;
 				}
 
-				new Menu(app)
+				new Menu()
 					.addItem(item => {
 						item
 							.setTitle("Add Command")
@@ -112,7 +112,7 @@ export default class StatusBarManager extends CommandManager {
 		});
 		btn.addEventListener("contextmenu", (event) => {
 			event.stopImmediatePropagation();
-			new Menu(app)
+			new Menu()
 				.addItem(item => {
 					item
 						.setTitle("Add Command")

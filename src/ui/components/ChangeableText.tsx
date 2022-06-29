@@ -1,8 +1,9 @@
-import { h } from "preact";
+import { Fragment, h } from "preact";
 import { useState } from "preact/hooks";
 
 interface Props {
 	value: string;
+	// eslint-disable-next-line no-unused-vars
 	handleChange: (e: Event) => void;
 }
 
@@ -10,7 +11,7 @@ export default function ChangeableText({ value, handleChange }: Props): h.JSX.El
 	const [showInputEle, setShowInput] = useState(false);
 
 	return (
-		<span>
+		<Fragment>
 			{
 				showInputEle ? (
 					<input
@@ -29,6 +30,6 @@ export default function ChangeableText({ value, handleChange }: Props): h.JSX.El
 					</span>
 				)
 			}
-		</span>
+		</Fragment>
 	);
 }

@@ -26,6 +26,7 @@ abstract class Base extends CommandManager {
 	protected addRemovableCommand(this: (item: MenuItem) => void, command: Command, cmdPair: CommandIconPair, plugin: CommanderPlugin, menu: Menu, commandList: CommandIconPair[]): (item: MenuItem) => void {
 		return (item: MenuItem) => {
 			item.dom.addClass("cmdr");
+			item.setSection("cmdr");
 
 			item.dom.style.display = "flex";
 			const optionEl = createDiv({
@@ -35,7 +36,7 @@ abstract class Base extends CommandManager {
 				event.preventDefault();
 				event.stopImmediatePropagation();
 
-				new Menu(app)
+				new Menu()
 					.addItem(item => {
 						item
 							.setTitle("Change Icon")
@@ -126,6 +127,7 @@ abstract class Base extends CommandManager {
 				item
 					.setTitle("Add command")
 					.setIcon("plus-circle")
+					.setSection("cmdr")
 					.onClick(async () => {
 						try {
 							const pair = await chooseNewCommand(plugin);

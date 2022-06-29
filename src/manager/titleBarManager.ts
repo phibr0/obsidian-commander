@@ -89,7 +89,7 @@ export default class TitleBarManager extends CommandManager {
 		});
 		btn.addEventListener("contextmenu", (event) => {
 			event.stopImmediatePropagation();
-			new Menu(app)
+			new Menu()
 				.addItem(item => {
 					item
 						.setTitle("Add Command")

@@ -54,7 +54,7 @@ export default class PageHeaderManager extends CommandManager {
 		});
 		buttonIcon.addEventListener("contextmenu", (event) => {
 			event.stopImmediatePropagation();
-			new Menu(app)
+			new Menu()
 				.addItem(item => {
 					item
 						.setTitle("Add Command")

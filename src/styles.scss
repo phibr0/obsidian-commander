@@ -41,11 +41,17 @@
 	display: flex;
 	place-items: center;
 	flex-flow: column;
-	margin: 3rem 0px;
+	margin: 2.5rem 0 1.25rem 0;
+
 	place-content: center;
 
 	svg {
 		width: 100%;
+	}
+
+	h3 {
+		margin: 8px 0px;
+		font-weight: 900;
 	}
 }
 
@@ -54,6 +60,10 @@
 	margin-top: 12px;
 	display: flex;
 	justify-content: center;
+
+	button {
+		margin: 0;
+	}
 }
 
 .cmdr-adder {
@@ -140,7 +150,7 @@
 			}
 
 			&.cmdr-tab-active {
-				font-weight: bold;
+				font-weight: 900;
 				transform: none;
 			}
 		}

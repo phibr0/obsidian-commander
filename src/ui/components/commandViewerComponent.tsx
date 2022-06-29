@@ -5,8 +5,6 @@ import logo from "src/assets/commander-logo.svg";
 import CommandManager from "src/manager/_commandManager";
 import { chooseNewCommand } from "src/util";
 import { arrayMoveMutable } from "array-move";
-import { useEffect, useRef } from "preact/hooks";
-import { setIcon } from "obsidian";
 import ChooseIconModal from "../chooseIconModal";
 import ConfirmDeleteModal from "../confirmDeleteModal";
 
@@ -18,14 +16,6 @@ interface CommandViewerProps {
 	plugin: CommanderPlugin
 }
 export default function CommandViewer({ manager, plugin }: CommandViewerProps): h.JSX.Element {
-
-	const addIcon = useRef<HTMLDivElement>(null);
-
-	useEffect(() => {
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		setIcon(addIcon.current!, "plus-circle");
-	});
-
 	return (
 		<Fragment>
 			<ManagerContext.Provider value={manager}>
@@ -57,7 +47,8 @@ export default function CommandViewer({ manager, plugin }: CommandViewerProps): 
 					{/* This isn't really dangerous,
 					as the svg is inserted at build time and no other data can be passed to it */}
 					<div class="cmdr-icon-wrapper" dangerouslySetInnerHTML={{ __html: logo }} />
-					<p>No Commands added yet!</p>
+					<h3>No commands here!</h3>
+					<span>Would you like to add one now?</span>
 				</div>}
 
 				<div className="cmdr-add-new-wrapper">
@@ -68,9 +59,8 @@ export default function CommandViewer({ manager, plugin }: CommandViewerProps): 
 							await manager.addCommand(pair);
 							this.forceUpdate();
 						}}
-						aria-label="Add new"
 					>
-						<div ref={addIcon} />
+						Add command
 					</button>
 				</div>
 			</ManagerContext.Provider>
