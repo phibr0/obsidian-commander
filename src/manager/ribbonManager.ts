@@ -1,3 +1,4 @@
+import { isModeActive } from 'src/util';
 import { Menu, setIcon, WorkspaceRibbon } from "obsidian";
 import CommandManager from "./_commandManager";
 import CommanderPlugin from "../main";
@@ -60,7 +61,11 @@ export default class RibbonManager extends CommandManager {
 	}
 
 	private init(): void {
-		for (const c of this.pairs) this.addAction(c.name, c.icon, c, () => app.commands.executeCommandById(c.id));
+		for (const c of this.pairs) {
+			if (isModeActive(c.mode)) {
+				this.addAction(c.name, c.icon, c, () => app.commands.executeCommandById(c.id));
+			}
+		}
 
 		this.plugin.register(() => this.addBtn.remove());
 		setIcon(this.addBtn, "plus");

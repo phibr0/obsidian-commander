@@ -4,7 +4,7 @@ import { CommandIconPair } from "src/types";
 import ChooseCustomNameModal from "src/ui/chooseCustomNameModal";
 import ChooseIconModal from "src/ui/chooseIconModal";
 import ConfirmDeleteModal from "src/ui/confirmDeleteModal";
-import { chooseNewCommand, getCommandFromId } from "src/util";
+import { chooseNewCommand, getCommandFromId, isModeActive } from "src/util";
 import CommandManager from "./_commandManager";
 
 export default class TitleBarManager extends CommandManager {
@@ -27,7 +27,10 @@ export default class TitleBarManager extends CommandManager {
 				if (!getCommandFromId(cmd.id)) {
 					this.pairs.remove(cmd);
 				}
-				this.addTitleBarAction(cmd);
+
+				if (isModeActive(cmd.mode)) {
+					this.addTitleBarAction(cmd);
+				}
 			}
 			this.plugin.saveSettings();
 

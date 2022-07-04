@@ -1,9 +1,8 @@
-import { setIcon } from "obsidian";
 import { Fragment, h } from "preact";
-import { useEffect, useRef } from "preact/hooks";
 import { CommandIconPair } from "src/types";
 import { getCommandFromId } from "src/util";
 import ChangeableText from "./ChangeableText";
+import { ObsidianIcon } from "src/util";
 
 interface CommandViewerProps {
 	pair: CommandIconPair;
@@ -13,9 +12,10 @@ interface CommandViewerProps {
 	handleNewIcon: () => void;
 	// eslint-disable-next-line no-unused-vars
 	handleRename: (name: string) => void;
+	handleModeChange: () => void;
 }
 
-export default function CommandComponent({ pair, handleRemove, handleDown, handleUp, handleNewIcon, handleRename }: CommandViewerProps): h.JSX.Element {
+export default function CommandComponent({ pair, handleRemove, handleDown, handleUp, handleNewIcon, handleRename, handleModeChange }: CommandViewerProps): h.JSX.Element {
 	const cmd = getCommandFromId(pair.id);
 	if (!cmd) {
 		// !TODO
@@ -27,21 +27,13 @@ export default function CommandComponent({ pair, handleRemove, handleDown, handl
 	const isInternal = !owningPlugin;
 	const isChecked = cmd.hasOwnProperty("checkCallback") || cmd.hasOwnProperty("editorCheckCallback");
 
-	const cmdIcon = useRef<HTMLDivElement>(null);
-	const upIcon = useRef<HTMLDivElement>(null);
-	const downIcon = useRef<HTMLDivElement>(null);
-	const deleteIcon = useRef<HTMLButtonElement>(null);
-	useEffect(() => {
-		setIcon(cmdIcon.current!, pair.icon, 20); // eslint-disable-line @typescript-eslint/no-non-null-assertion
-		setIcon(upIcon.current!, "arrow-up"); // eslint-disable-line @typescript-eslint/no-non-null-assertion
-		setIcon(downIcon.current!, "arrow-down"); // eslint-disable-line @typescript-eslint/no-non-null-assertion
-		setIcon(deleteIcon.current!, "lucide-trash"); // eslint-disable-line @typescript-eslint/no-non-null-assertion
-	}, [pair.icon]);
+	const modeIcon = getModeIcon(pair.mode);
+	const modeName = pair.mode.match(/desktop|mobile|any/) ? pair.mode[0].toUpperCase() + pair.mode.substring(1) : `Device ${pair.mode}`;
 
 	return (
 		<Fragment>
 			<div className="setting-item">
-				<div ref={cmdIcon} className="cmdr-icon clickable-icon" aria-label="Choose new" onClick={handleNewIcon} />
+				<ObsidianIcon icon={pair.icon} size={20} aria-label="Choose new" onClick={handleNewIcon} className="cmdr-icon clickable-icon" />
 				<div className="setting-item-info">
 					<div className="setting-item-name">
 						{/* @ts-ignore */}
@@ -51,11 +43,21 @@ export default function CommandComponent({ pair, handleRemove, handleDown, handl
 					<div className="setting-item-description">Added by {isInternal ? "Obsidian" : owningPlugin.name}. {isChecked ? "Warning: This is a checked Command, meaning it might not run under every circumstance." : ""}</div>
 				</div>
 				<div className="setting-item-control">
-					<div className="setting-editor-extra-setting-button clickable-icon" ref={downIcon} onClick={handleDown} aria-label="Move down" />
-					<div className="setting-editor-extra-setting-button clickable-icon" ref={upIcon} onClick={handleUp} aria-label="Move up" aria-label-position="top" />
-					<button className="mod-warning" ref={deleteIcon} style="display: flex" onClick={handleRemove} aria-label="Delete" />
+					<ObsidianIcon icon="arrow-down" className="setting-editor-extra-setting-button clickable-icon" onClick={handleDown} aria-label="Move down" />
+					<ObsidianIcon icon="arrow-up" className="setting-editor-extra-setting-button clickable-icon" onClick={handleUp} aria-label="Move up" />
+					<ObsidianIcon icon={modeIcon} className="setting-editor-extra-setting-button clickable-icon" onClick={handleModeChange} aria-label={`Change Mode (Currently: ${modeName})`} />
+					<button className="mod-warning" style="display: flex" onClick={handleRemove} aria-label="Delete">
+						<ObsidianIcon icon="lucide-trash" />
+					</button>
 				</div>
 			</div>
 		</Fragment>
 	);
+}
+
+function getModeIcon(mode: string): string {
+	if (mode === "mobile") return "smartphone";
+	if (mode === "desktop") return "monitor";
+	if (mode === "any") return "paperclip";
+	return "airplay";
 }

@@ -40,6 +40,17 @@ export default function CommandViewer({ manager, plugin }: CommandViewerProps): 
 								this.forceUpdate();
 							}
 						}}
+						handleModeChange={async (): Promise<void> => {
+							// This is the rotation
+							const modes = ["any", "desktop", "mobile", app.appId];
+							let currentIdx = modes.indexOf(cmd.mode);
+							if (currentIdx === 3) currentIdx = -1;
+
+							cmd.mode = modes[currentIdx + 1];
+							await plugin.saveSettings();
+							manager.reorder();
+							this.forceUpdate();
+						}}
 					/>;
 				})}
 

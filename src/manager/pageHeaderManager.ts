@@ -4,7 +4,7 @@ import { CommandIconPair } from "src/types";
 import ChooseCustomNameModal from "src/ui/chooseCustomNameModal";
 import ChooseIconModal from "src/ui/chooseIconModal";
 import ConfirmDeleteModal from "src/ui/confirmDeleteModal";
-import { chooseNewCommand } from "src/util";
+import { chooseNewCommand, isModeActive } from "src/util";
 import CommandManager from "./_commandManager";
 
 export default class PageHeaderManager extends CommandManager {
@@ -120,10 +120,12 @@ export default class PageHeaderManager extends CommandManager {
 						`view-action cmdr-page-header ${pair.id}`
 					)[0]
 				) {
-					this.addPageHeaderButton(
-						viewActions,
-						pair
-					);
+					if (isModeActive(pair.mode)) {
+						this.addPageHeaderButton(
+							viewActions,
+							pair
+						);
+					}
 				}
 			}
 

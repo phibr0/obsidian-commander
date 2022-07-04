@@ -4,7 +4,7 @@ import { CommandIconPair } from "src/types";
 import ChooseCustomNameModal from "src/ui/chooseCustomNameModal";
 import ChooseIconModal from "src/ui/chooseIconModal";
 import ConfirmDeleteModal from "src/ui/confirmDeleteModal";
-import { getCommandFromId, chooseNewCommand } from "src/util";
+import { getCommandFromId, chooseNewCommand, isModeActive } from "src/util";
 import CommandManager from "./_commandManager";
 
 export default class StatusBarManager extends CommandManager {
@@ -26,7 +26,10 @@ export default class StatusBarManager extends CommandManager {
 				if (!getCommandFromId(cmd.id)) {
 					this.pairs.remove(cmd);
 				}
-				this.addAction(cmd);
+
+				if (isModeActive(cmd.mode)) {
+					this.addAction(cmd);
+				}
 			}
 			this.plugin.saveSettings();
 

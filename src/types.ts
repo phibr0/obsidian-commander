@@ -17,10 +17,13 @@ export interface Macro {
 	edges: any[]
 }
 
+export type Mode = "desktop" | "any" | "mobile" | string;
+
 export interface CommandIconPair {
 	id: string;
 	icon: string;
 	name: string;
+	mode: Mode;
 }
 
 /* eslint-disable no-unused-vars */
@@ -44,6 +47,8 @@ declare module "obsidian" {
 		statusBar: {
 			containerEl: HTMLElement;
 		}
+		appId: string;
+		isMobile: boolean;
 	}
 
 	interface WorkspaceRibbon {

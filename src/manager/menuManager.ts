@@ -3,7 +3,7 @@ import CommandManager from "./_commandManager";
 import CommanderPlugin from "../main";
 import { CommandIconPair } from "../types";
 import ConfirmDeleteModal from "../ui/confirmDeleteModal";
-import { chooseNewCommand, getCommandFromId } from "../util";
+import { chooseNewCommand, getCommandFromId, isModeActive } from "../util";
 import ChooseCustomNameModal from "src/ui/chooseCustomNameModal";
 import ChooseIconModal from "src/ui/chooseIconModal";
 
@@ -163,6 +163,8 @@ export class EditorMenuCommandManager extends Base {
 				if ((command.checkCallback && !command.checkCallback(true))
 					|| (command.editorCheckCallback && !command.editorCheckCallback(true, editor, view))
 				) continue;
+
+				if (!isModeActive(cmdPair.mode)) continue;
 
 				menu.addItem(this.addRemovableCommand.call(this, command, cmdPair, plugin, menu, plugin.settings.editorMenu));
 			}
