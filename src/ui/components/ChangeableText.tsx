@@ -1,5 +1,5 @@
-import { Fragment, h } from "preact";
-import { useState } from "preact/hooks";
+import { h } from "preact";
+import { useState, useRef, useEffect, Ref } from "preact/hooks";
 
 interface Props {
 	value: string;
@@ -9,20 +9,29 @@ interface Props {
 
 export default function ChangeableText({ value, handleChange }: Props): h.JSX.Element {
 	const [showInputEle, setShowInput] = useState(false);
+	const el: Ref<HTMLInputElement> | undefined = useRef(null);
+
+	useEffect(() => {
+		el?.current?.select();
+		el?.current?.focus();
+	});
 
 	return (
-		<Fragment>
+		<div class="cmdr-editable">
 			{
 				showInputEle ? (
 					<input
 						type="text"
 						value={value}
-						onChange={(e): void => {
-							setShowInput(false);
-							handleChange(e);
+						onKeyDown={(e): void => {
+							/* If Enter was pressed, handle the name change and set to display mode */
+							if (e.key === "Enter" && (e.target as HTMLInputElement).value.length > 0) {
+								setShowInput(false);
+								handleChange(e);
+							}
 						}}
 						onBlur={(): void => setShowInput(false)}
-						autoFocus
+						ref={el}
 					/>
 				) : (
 					<span onDblClick={(): void => setShowInput(true)} aria-label="Double click to rename">
@@ -30,6 +39,6 @@ export default function ChangeableText({ value, handleChange }: Props): h.JSX.El
 					</span>
 				)
 			}
-		</Fragment>
+		</div>
 	);
 }

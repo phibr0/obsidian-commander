@@ -15,6 +15,10 @@
 	display: flex;
 	align-items: baseline;
 	justify-content: space-between;
+
+	h1 {
+		font-weight: 900;
+	}
 }
 
 .cmdr-fill {
@@ -32,6 +36,18 @@
 	width: 80vw;
 }
 
+.cmdr-editable {
+	display: inline-block;
+
+	input {
+		padding: 0;
+		border: none;
+		height: unset;
+		background-color: transparent !important;
+		border-bottom: 1px solid var(--interactive-accent);
+		border-radius: 0;
+	}
+}
 .cmdr-setting-content {
 	overflow-y: auto;
 	height: calc(100% - 10rem);
