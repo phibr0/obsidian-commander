@@ -1,33 +1,34 @@
 import { Command, setIcon, FuzzySuggestModal, FuzzyMatch } from "obsidian";
+import t from "src/l10n";
 import CommanderPlugin from "src/main";
 
 export default class AddCommandModal extends FuzzySuggestModal<Command> {
-	plugin: CommanderPlugin;
-	commands: Command[];
+	private plugin: CommanderPlugin;
+	private commands: Command[];
 
-	constructor(plugin: CommanderPlugin) {
+	public constructor(plugin: CommanderPlugin) {
 		super(app);
 		this.plugin = plugin;
 		this.commands = Object.values(app.commands.commands);
-		this.setPlaceholder("Choose a Command to add");
+		this.setPlaceholder(t("Choose a Command to add"));
 
 		this.setInstructions([
 			{
 				command: "↑↓",
-				purpose: "to navigate"
+				purpose: t("to navigate")
 			},
 			{
 				command: "↵",
-				purpose: "to choose an icon"
+				purpose: t("to choose an icon")
 			},
 			{
 				command: "esc",
-				purpose: "to cancel"
+				purpose: t("to cancel")
 			},
 		]);
 	}
 
-	async awaitSelection(): Promise<Command> {
+	public async awaitSelection(): Promise<Command> {
 		this.open();
 		return new Promise((resolve, reject) => {
 			this.onChooseItem = (item): void => resolve(item);
@@ -36,7 +37,7 @@ export default class AddCommandModal extends FuzzySuggestModal<Command> {
 		});
 	}
 
-	renderSuggestion(item: FuzzyMatch<Command>, el: HTMLElement): void {
+	public renderSuggestion(item: FuzzyMatch<Command>, el: HTMLElement): void {
 		super.renderSuggestion(item, el);
 
 		//Append the icon if available
@@ -45,15 +46,15 @@ export default class AddCommandModal extends FuzzySuggestModal<Command> {
 		}
 	}
 
-	getItems(): Command[] {
+	public getItems(): Command[] {
 		return this.commands;
 	}
 
-	getItemText(item: Command): string {
+	public getItemText(item: Command): string {
 		return item.name;
 	}
 
 	// This will be overriden anyway, but typescript complains if it's not declared
 	// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-empty-function
-	onChooseItem(item: Command, evt: MouseEvent | KeyboardEvent): void { }
+	public onChooseItem(item: Command, evt: MouseEvent | KeyboardEvent): void { }
 }

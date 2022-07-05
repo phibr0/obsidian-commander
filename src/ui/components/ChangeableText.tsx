@@ -1,5 +1,6 @@
 import { h } from "preact";
 import { useState, useRef, useEffect, Ref } from "preact/hooks";
+import t from "src/l10n";
 
 interface Props {
 	value: string;
@@ -34,7 +35,7 @@ export default function ChangeableText({ value, handleChange }: Props): h.JSX.El
 						ref={el}
 					/>
 				) : (
-					<span onDblClick={(): void => setShowInput(true)} aria-label="Double click to rename">
+					<span onDblClick={(): void => setShowInput(true)} aria-label={t("Double click to rename")}>
 						{value}
 					</span>
 				)

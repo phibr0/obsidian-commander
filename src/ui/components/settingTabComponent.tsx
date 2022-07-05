@@ -1,15 +1,15 @@
-import { setIcon } from "obsidian";
+import confetti from "canvas-confetti";
+import { Notice } from "obsidian";
 import { Fragment, h } from "preact";
-import { useEffect, useRef, useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
+import t from "src/l10n";
+import { ObsidianIcon } from "src/util";
 import CommanderPlugin from "../../main";
 import CommandViewer from "./commandViewerComponent";
 import { ToggleComponent } from "./settingComponent";
-import confetti from "canvas-confetti";
 
 export default function settingTabComponent({ plugin, mobileMode }: { plugin: CommanderPlugin; mobileMode: boolean; }): h.JSX.Element {
 	const [activeTab, setActiveTab] = useState(0);
-	const coffeeIcon = useRef<HTMLDivElement>(null);
-
 
 	const tabToNextTab = ({ key, shiftKey }: KeyboardEvent): void => {
 		if (shiftKey && key === "Tab") {
@@ -28,18 +28,13 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 		return () => removeEventListener("keydown", tabToNextTab);
 	});
 
-	useEffect(() => {
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		setIcon(coffeeIcon.current!, "coffee", 24);
-	}, []);
-
 	const tabs = [
 		{
-			name: "General",
+			name: t("General"),
 			tab: <Fragment>
 				<ToggleComponent
-					name="Always ask before removing?"
-					description="Always show a Popup to confirm deletion of a Command."
+					name={t("Always ask before removing?")}
+					description={t("Always show a Popup to confirm deletion of a Command.")}
 					value={plugin.settings.confirmDeletion}
 					changeHandler={async (value): Promise<void> => {
 						plugin.settings.confirmDeletion = !value;
@@ -47,16 +42,29 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 					}} />
 				<ToggleComponent
 					value={plugin.settings.showAddCommand}
-					name='Show "Add Command" Button'
-					description='Show the "Add Command" Button in every Menu. Requires restart.'
+					name={t("Show \"Add Command\" Button")}
+					description={t("Show the \"Add Command\" Button in every Menu. Requires restart.")}
 					changeHandler={async (value): Promise<void> => {
 						plugin.settings.showAddCommand = !value;
+
+						if (!plugin.settings.showAddCommand) {
+							const elements = document.getElementsByClassName("cmdr-adder");
+							const x: Element[] = [];
+							for (let i = 0; i < elements.length; i++) {
+								// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+								x.push(elements.item(i)!);
+							}
+							x.forEach((pre) => pre.remove());
+						} else {
+							new Notice(t("Please restart Obsidian for these changes to take effect."));
+						}
+
 						await plugin.saveSettings();
 					}} />
 				<ToggleComponent
 					value={plugin.settings.debug}
-					name='Enable debugging'
-					description='Enable console output.'
+					name={t("Enable debugging")}
+					description={t("Enable console output.")}
 					changeHandler={async (value): Promise<void> => {
 						plugin.settings.debug = !value;
 						await plugin.saveSettings();
@@ -64,31 +72,31 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 			</Fragment>
 		},
 		{
-			name: "Editor Menu",
+			name: t("Editor Menu"),
 			tab: <CommandViewer manager={plugin.manager.editorMenu} plugin={plugin} />
 		},
 		{
-			name: "File Menu",
+			name: t("File Menu"),
 			tab: <CommandViewer manager={plugin.manager.fileMenu} plugin={plugin} />
 		},
 		{
-			name: "Left Ribbon",
+			name: t("Left Ribbon"),
 			tab: <CommandViewer manager={plugin.manager.leftRibbon} plugin={plugin} />
 		},
 		{
-			name: "Right Ribbon",
+			name: t("Right Ribbon"),
 			tab: <CommandViewer manager={plugin.manager.rightRibbon} plugin={plugin} />
 		},
 		{
-			name: "Titlebar",
+			name: t("Titlebar"),
 			tab: <CommandViewer manager={plugin.manager.titleBar} plugin={plugin} />
 		},
 		{
-			name: "Statusbar",
+			name: t("Statusbar"),
 			tab: <CommandViewer manager={plugin.manager.statusBar} plugin={plugin} />
 		},
 		{
-			name: "Page Header",
+			name: t("Page Header"),
 			tab: <CommandViewer manager={plugin.manager.pageHeader} plugin={plugin} />
 		}
 	];
@@ -97,13 +105,14 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 		<Fragment>
 			<div className="cmdr-setting-title">
 				<h1>{plugin.manifest.name}</h1>
-				<div
+				<ObsidianIcon
+					icon="coffee"
+					size={24}
 					className="clickable-icon"
-					ref={coffeeIcon}
-					aria-label="Support development"
+					aria-label={t("Support development")}
 					aria-label-position="left"
 					id="cmdr-coffee-btn"
-					onClick={async (): Promise<void> => {
+					onClick={async ({ target }): Promise<void> => {
 						const myCanvas = document.createElement('canvas');
 						document.body.appendChild(myCanvas);
 						myCanvas.style.position = "fixed";
@@ -120,10 +129,9 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 							resize: true,
 							useWorker: true
 						});
-						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-						const pos = coffeeIcon.current!.getBoundingClientRect();
+						const pos = (target as HTMLDivElement).getBoundingClientRect();
 
-						setTimeout(() => location.replace("https://buymeacoffee.com/phibr0"), 800);
+						setTimeout(() => location.replace("https://buymeacoffee.com/phibr0"), Math.random() * 800 + 500);
 
 						await myConfetti({
 							particleCount: 150,

@@ -1,17 +1,18 @@
 import { Plugin } from 'obsidian';
 import { DEFAULT_SETTINGS } from './constants';
-import CommanderSettingTab from './ui/settingTab';
-import { CommanderSettings, Macro } from './types';
+import t from './l10n';
 import { EditorMenuCommandManager, FileMenuCommandManager } from './manager/menuManager';
-import SettingTabModal from './ui/settingTabModal';
-import RibbonManager from './manager/ribbonManager';
-import TitleBarManager from './manager/titleBarManager';
-import StatusBarManager from './manager/statusBarManager';
 import PageHeaderManager from './manager/pageHeaderManager';
+import RibbonManager from './manager/ribbonManager';
+import StatusBarManager from './manager/statusBarManager';
+import TitleBarManager from './manager/titleBarManager';
+import { CommanderSettings, Macro } from './types';
 import MacroModal from './ui/macroModal';
+import CommanderSettingTab from './ui/settingTab';
+import SettingTabModal from './ui/settingTabModal';
 
-import "./styles.scss";
 import 'beautiful-react-diagrams/styles.css';
+import "./styles.scss";
 
 export default class CommanderPlugin extends Plugin {
 	public settings: CommanderSettings;
@@ -28,20 +29,6 @@ export default class CommanderPlugin extends Plugin {
 	public async onload(): Promise<void> {
 		await this.loadSettings();
 
-		this.addSettingTab(new CommanderSettingTab(this));
-
-		this.addCommand({
-			name: "Open Commander Settings",
-			id: "open-commander-settings",
-			callback: () => new SettingTabModal(this).open(),
-		});
-
-		this.addCommand({
-			name: "Open Macro Builder",
-			id: "open-macro-builder",
-			callback: () => new MacroModal(this).open(),
-		});
-
 		this.manager = {
 			editorMenu: new EditorMenuCommandManager(this, this.settings.editorMenu),
 			fileMenu: new FileMenuCommandManager(this, this.settings.fileMenu),
@@ -51,6 +38,20 @@ export default class CommanderPlugin extends Plugin {
 			statusBar: new StatusBarManager(this, this.settings.statusBar),
 			pageHeader: new PageHeaderManager(this, this.settings.pageHeader),
 		};
+
+		this.addSettingTab(new CommanderSettingTab(this));
+
+		this.addCommand({
+			name: t("Open Commander Settings"),
+			id: "open-commander-settings",
+			callback: () => new SettingTabModal(this).open(),
+		});
+
+		this.addCommand({
+			name: t("Open Macro Builder"),
+			id: "open-macro-builder",
+			callback: () => new MacroModal(this).open(),
+		});
 
 		this.registerEvent(
 			app.workspace.on('editor-menu', this.manager.editorMenu.applyEditorMenuCommands(this)),

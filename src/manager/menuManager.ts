@@ -6,6 +6,7 @@ import ConfirmDeleteModal from "../ui/confirmDeleteModal";
 import { chooseNewCommand, getCommandFromId, isModeActive } from "../util";
 import ChooseCustomNameModal from "src/ui/chooseCustomNameModal";
 import ChooseIconModal from "src/ui/chooseIconModal";
+import t from "src/l10n";
 
 abstract class Base extends CommandManager {
 	public async addCommand(pair: CommandIconPair): Promise<void> {
@@ -39,7 +40,7 @@ abstract class Base extends CommandManager {
 				new Menu()
 					.addItem(item => {
 						item
-							.setTitle("Change Icon")
+							.setTitle(t("Change Icon"))
 							.setIcon("box")
 							.onClick(async () => {
 								const newIcon = await (new ChooseIconModal(plugin)).awaitSelection();
@@ -51,7 +52,7 @@ abstract class Base extends CommandManager {
 					})
 					.addItem(item => {
 						item
-							.setTitle("Rename")
+							.setTitle(t("Rename"))
 							.setIcon("text-cursor-input")
 							.onClick(async () => {
 								const newName = await (new ChooseCustomNameModal(cmdPair.name)).awaitSelection();
@@ -64,7 +65,7 @@ abstract class Base extends CommandManager {
 					.addItem(item => {
 						item.dom.addClass("is-warning");
 						item
-							.setTitle("Delete")
+							.setTitle(t("Delete"))
 							.setIcon("lucide-trash")
 							.onClick(async () => {
 								if (!plugin.settings.confirmDeletion || (await new ConfirmDeleteModal(plugin).didChooseRemove())) {
@@ -87,7 +88,7 @@ abstract class Base extends CommandManager {
 			};
 			const setRemovable = (): void => {
 				optionEl.style.display = "block";
-				item.setTitle("Delete").setIcon("trash").onClick(async (event) => {
+				item.setTitle(t("Delete")).setIcon("trash").onClick(async (event) => {
 					event.preventDefault();
 					event.stopImmediatePropagation();
 					if (!plugin.settings.confirmDeletion || (await new ConfirmDeleteModal(plugin).didChooseRemove())) {
@@ -125,7 +126,7 @@ abstract class Base extends CommandManager {
 		if (plugin.settings.showAddCommand) {
 			menu.addItem((item: MenuItem) => {
 				item
-					.setTitle("Add command")
+					.setTitle(t("Add command"))
 					.setIcon("plus-circle")
 					.setSection("cmdr")
 					.onClick(async () => {

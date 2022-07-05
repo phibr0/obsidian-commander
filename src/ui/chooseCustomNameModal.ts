@@ -1,4 +1,5 @@
 import { SuggestModal } from "obsidian";
+import t from "src/l10n";
 
 export default class ChooseCustomNameModal extends SuggestModal<string> {
 
@@ -6,21 +7,21 @@ export default class ChooseCustomNameModal extends SuggestModal<string> {
 	// eslint-disable-next-line no-unused-vars
 	public constructor(private defaultName: string) {
 		super(app);
-		this.setPlaceholder("Use a custom name");
+		this.setPlaceholder(t("Use a custom name"));
 		this.resultContainerEl.style.display = "none";
 
 		this.setInstructions([
 			{
 				command: "",
-				purpose: "Choose a custom Name for your new Command"
+				purpose: t("Choose a custom Name for your new Command")
 			},
 			{
 				command: "↵",
-				purpose: "to save"
+				purpose: t("to save")
 			},
 			{
 				command: "esc",
-				purpose: "to cancel"
+				purpose: t("to cancel")
 			},
 		]);
 	}

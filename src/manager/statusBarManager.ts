@@ -1,4 +1,5 @@
 import { Menu, setIcon } from "obsidian";
+import t from "src/l10n";
 import CommanderPlugin from "src/main";
 import { CommandIconPair } from "src/types";
 import ChooseCustomNameModal from "src/ui/chooseCustomNameModal";
@@ -10,7 +11,7 @@ import CommandManager from "./_commandManager";
 export default class StatusBarManager extends CommandManager {
 	private container: HTMLElement;
 	private readonly actions = new Map<CommandIconPair, HTMLElement>();
-	private addBtn = createDiv({ cls: "cmdr status-bar-item cmdr-adder", attr: { "aria-label-position": "top", "aria-label": "Add new" } });
+	private addBtn = createDiv({ cls: "cmdr status-bar-item cmdr-adder", attr: { "aria-label-position": "top", "aria-label": t("Add new") } });
 
 	public constructor(plugin: CommanderPlugin, pairs: CommandIconPair[]) {
 		super(plugin, pairs);
@@ -41,7 +42,7 @@ export default class StatusBarManager extends CommandManager {
 				new Menu()
 					.addItem(item => {
 						item
-							.setTitle("Add Command")
+							.setTitle(t("Add Command"))
 							.setIcon("command")
 							.onClick(async () => {
 								const pair = await chooseNewCommand(this.plugin);
@@ -81,7 +82,7 @@ export default class StatusBarManager extends CommandManager {
 	}
 
 	private addAction(pair: CommandIconPair): void {
-		const btn = createDiv({ cls: "cmdr status-bar-item", attr: { "aria-label-position": "top", "aria-label": pair.name } });
+		const btn = createDiv({ cls: "cmdr status-bar-item clickable-icon", attr: { "aria-label-position": "top", "aria-label": pair.name, "style": "margin: 0" } });
 		this.actions.set(pair, btn);
 
 		let isRemovable = false;
@@ -118,7 +119,7 @@ export default class StatusBarManager extends CommandManager {
 			new Menu()
 				.addItem(item => {
 					item
-						.setTitle("Add Command")
+						.setTitle(t("Add Command"))
 						.setIcon("command")
 						.onClick(async () => {
 							const pair = await chooseNewCommand(this.plugin);
@@ -128,7 +129,7 @@ export default class StatusBarManager extends CommandManager {
 				.addSeparator()
 				.addItem(item => {
 					item
-						.setTitle("Change Icon")
+						.setTitle(t("Change Icon"))
 						.setIcon("box")
 						.onClick(async () => {
 							const newIcon = await (new ChooseIconModal(this.plugin)).awaitSelection();
@@ -141,7 +142,7 @@ export default class StatusBarManager extends CommandManager {
 				})
 				.addItem(item => {
 					item
-						.setTitle("Rename")
+						.setTitle(t("Rename"))
 						.setIcon("text-cursor-input")
 						.onClick(async () => {
 							const newName = await (new ChooseCustomNameModal(pair.name)).awaitSelection();
@@ -155,7 +156,7 @@ export default class StatusBarManager extends CommandManager {
 				.addItem(item => {
 					item.dom.addClass("is-warning");
 					item
-						.setTitle("Delete")
+						.setTitle(t("Delete"))
 						.setIcon("lucide-trash")
 						.onClick(async () => {
 							if (!this.plugin.settings.confirmDeletion || (await new ConfirmDeleteModal(this.plugin).didChooseRemove())) {

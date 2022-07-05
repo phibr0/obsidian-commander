@@ -7,6 +7,7 @@ import ConfirmDeleteModal from "../ui/confirmDeleteModal";
 import { chooseNewCommand, getCommandFromId } from "../util";
 import ChooseCustomNameModal from "src/ui/chooseCustomNameModal";
 import ChooseIconModal from "src/ui/chooseIconModal";
+import t from 'src/l10n';
 
 export default class RibbonManager extends CommandManager {
 	private actions: {
@@ -27,7 +28,7 @@ export default class RibbonManager extends CommandManager {
 			if (this.side === "right") {
 				this.addActionContainer();
 			}
-			this.addBtn = createDiv({ cls: "cmdr side-dock-ribbon-action cmdr-adder", attr: { "aria-label-position": side === "left" ? "right" : "left", "aria-label": "Add new" } });
+			this.addBtn = createDiv({ cls: "cmdr side-dock-ribbon-action cmdr-adder", attr: { "aria-label-position": side === "left" ? "right" : "left", "aria-label": t("Add new") } });
 			this.init();
 		});
 
@@ -39,7 +40,7 @@ export default class RibbonManager extends CommandManager {
 		if (cmd) {
 			this.addAction(pair.name ?? cmd.name, pair.icon, pair, () => app.commands.executeCommandById(pair.id));
 		} else {
-			this.addAction(`This Command seems to have been removed. ${pair.name ? "(" + pair.name + ")" : ""}`, "trash", pair, (event: MouseEvent) => {
+			this.addAction(t("This Command seems to have been removed. {{command_name}}").replace("{{command_name}}", pair.name || ""), "trash", pair, (event: MouseEvent) => {
 				this.removeAction((event.target as HTMLElement).getAttribute("aria-label") + "trash");
 			});
 		}
@@ -119,7 +120,7 @@ export default class RibbonManager extends CommandManager {
 			new Menu()
 				.addItem(item => {
 					item
-						.setTitle("Add Command")
+						.setTitle(t("Add Command"))
 						.setIcon("command")
 						.onClick(async () => {
 							const pair = await chooseNewCommand(this.plugin);
@@ -129,7 +130,7 @@ export default class RibbonManager extends CommandManager {
 				.addSeparator()
 				.addItem(item => {
 					item
-						.setTitle("Change Icon")
+						.setTitle(t("Change Icon"))
 						.setIcon("box")
 						.onClick(async () => {
 							const newIcon = await (new ChooseIconModal(this.plugin)).awaitSelection();
@@ -142,7 +143,7 @@ export default class RibbonManager extends CommandManager {
 				})
 				.addItem(item => {
 					item
-						.setTitle("Rename")
+						.setTitle(t("Rename"))
 						.setIcon("text-cursor-input")
 						.onClick(async () => {
 							const newName = await (new ChooseCustomNameModal(pair.name)).awaitSelection();
@@ -156,7 +157,7 @@ export default class RibbonManager extends CommandManager {
 				.addItem(item => {
 					item.dom.addClass("is-warning");
 					item
-						.setTitle("Delete")
+						.setTitle(t("Delete"))
 						.setIcon("lucide-trash")
 						.onClick(async () => {
 							if (!this.plugin.settings.confirmDeletion || (await new ConfirmDeleteModal(this.plugin).didChooseRemove())) {

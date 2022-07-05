@@ -5,7 +5,7 @@ import ChooseIconModal from './ui/chooseIconModal';
 import { Command, setIcon } from 'obsidian';
 import ChooseCustomNameModal from './ui/chooseCustomNameModal';
 import { ComponentProps, h } from 'preact';
-import { useRef, useEffect } from 'preact/hooks';
+import { useRef, useLayoutEffect } from 'preact/hooks';
 
 /**
  * It creates a modal, waits for the user to select a command, and then creates another modal to wait
@@ -45,7 +45,7 @@ interface ObsidianIconProps extends ComponentProps<"div"> {
 export function ObsidianIcon({ icon, size, ...props }: ObsidianIconProps): h.JSX.Element {
 	const iconEl = useRef<HTMLDivElement>(null);
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		setIcon(iconEl.current!, icon, size);
 	}, [icon, size]);

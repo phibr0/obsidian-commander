@@ -16,6 +16,5 @@ export default abstract class CommandManager {
 	// eslint-disable-next-line no-unused-vars
 	public abstract removeCommand(pair: CommandIconPair): Promise<void> | void;
 
-	// eslint-disable-nextline no-unused-vars
 	public abstract reorder(): Promise<void> | void;
 }

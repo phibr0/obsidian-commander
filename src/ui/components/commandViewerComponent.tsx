@@ -7,7 +7,7 @@ import { chooseNewCommand, isModeActive } from "src/util";
 import { arrayMoveMutable } from "array-move";
 import ChooseIconModal from "../chooseIconModal";
 import ConfirmDeleteModal from "../confirmDeleteModal";
-import { CommandIconPair } from "src/types";
+import t from "src/l10n";
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 export const ManagerContext = createContext<CommandManager>(null!);
@@ -56,12 +56,12 @@ export default function CommandViewer({ manager, plugin }: CommandViewerProps): 
 						/>;
 					}
 				})}
-				{!manager.pairs.some((pre) => isModeActive(pre.mode)) && <div class="cmdr-commands-empty">
+				{!manager.pairs.some((pre) => isModeActive(pre.mode) || pre.mode.match(/mobile|desktop/)) && <div class="cmdr-commands-empty">
 					{/* This isn't really dangerous,
 					as the svg is inserted at build time and no other data can be passed to it */}
 					<div class="cmdr-icon-wrapper" dangerouslySetInnerHTML={{ __html: logo }} />
-					<h3>No commands here!</h3>
-					<span>Would you like to add one now?</span>
+					<h3>{t("No commands here!")}</h3>
+					<span>{t("Would you like to add one now?")}</span>
 				</div>}
 
 				<div className="cmdr-add-new-wrapper">
@@ -70,10 +70,11 @@ export default function CommandViewer({ manager, plugin }: CommandViewerProps): 
 						onClick={async (): Promise<void> => {
 							const pair = await chooseNewCommand(plugin);
 							await manager.addCommand(pair);
+							manager.reorder();
 							this.forceUpdate();
 						}}
 					>
-						Add command
+						{t("Add command")}
 					</button>
 				</div>
 			</ManagerContext.Provider>
