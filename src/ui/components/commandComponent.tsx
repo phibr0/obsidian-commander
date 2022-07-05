@@ -28,7 +28,7 @@ export default function CommandComponent({ pair, handleRemove, handleDown, handl
 	const isChecked = cmd.hasOwnProperty("checkCallback") || cmd.hasOwnProperty("editorCheckCallback");
 
 	const modeIcon = getModeIcon(pair.mode);
-	const modeName = pair.mode.match(/desktop|mobile|any/) ? pair.mode[0].toUpperCase() + pair.mode.substring(1) : `Device ${pair.mode}`;
+	const modeName = pair.mode.match(/desktop|mobile|any/) ? pair.mode[0].toUpperCase() + pair.mode.substring(1) : `This device`;
 
 	return (
 		<Fragment>

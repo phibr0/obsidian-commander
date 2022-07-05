@@ -123,8 +123,7 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 						const pos = coffeeIcon.current!.getBoundingClientRect();
 
-						// eslint-disable-next-line @typescript-eslint/no-var-requires
-						setTimeout(() => require('electron').shell.openExternal("https://buymeacoffee.com/phibr0"), 800);
+						setTimeout(() => location.replace("https://buymeacoffee.com/phibr0"), 800);
 
 						await myConfetti({
 							particleCount: 150,

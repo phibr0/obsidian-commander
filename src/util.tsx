@@ -6,7 +6,6 @@ import { Command, setIcon } from 'obsidian';
 import ChooseCustomNameModal from './ui/chooseCustomNameModal';
 import { ComponentProps, h } from 'preact';
 import { useRef, useEffect } from 'preact/hooks';
-import { HTMLAttributes } from 'react';
 
 /**
  * It creates a modal, waits for the user to select a command, and then creates another modal to wait
