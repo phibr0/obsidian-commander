@@ -25,7 +25,7 @@ If you want to help and translate this Plugin to new languages, see [locale/](ht
 
 
 ## Credits
-- This plugin is being designed by [Johnny ✨](https://github.com/jsmorabito) and developed by phibr0
+- This plugin is being designed by [Johnny ✨](https://github.com/jsmorabito) and developed by [phibr0](https://github.com/phibr0)
 - Thank you to [Kometenstaub](https://github.com/kometenstaub) and [kzhovn](https://github.com/kzhovn/) for giving us permission to use the code from their plugins [Customizable Page Header and Titlebar](https://github.com/kometenstaub/customizable-page-header-buttons) and [Customizable Menu](https://github.com/kzhovn/obsidian-customizable-menu) 
 - All designs for Commander were created using [Penpot](https://penpot.app)
 
