@@ -1,7 +1,7 @@
 ![commander cover (2)](https://user-images.githubusercontent.com/46250921/177593526-5ac7c990-adf0-4be0-990f-401cf44368b0.svg)
 [![GitHub tag (Latest by date)](https://img.shields.io/github/v/tag/phibr0/obsidian-commander)](https://github.com/phibr0/obsidian-commander/releases) ![GitHub all releases](https://img.shields.io/github/downloads/phibr0/obsidian-commander/total)
 
-Commander is a plugin for Obsidian which allows you to add commands to different parts of the user interface.
+Commander is a plugin for [Obsidian](https://obsidian.md) which allows you to add commands to different parts of the user interface.
 
 ![commander overview](https://user-images.githubusercontent.com/46250921/177593938-2c3aae81-1bf6-45df-b06a-e51a8b4e4a0e.svg)
 
