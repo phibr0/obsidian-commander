@@ -1,10 +1,35 @@
-<img align="right" src="https://cdn.discordapp.com/attachments/963246102008700958/982483670201929768/obsidian_commander_logo_svg.svg">
+![commander cover (2)](https://user-images.githubusercontent.com/46250921/177593526-5ac7c990-adf0-4be0-990f-401cf44368b0.svg)
+[![GitHub tag (Latest by date)](https://img.shields.io/github/v/tag/phibr0/obsidian-commander)](https://github.com/phibr0/obsidian-commander/releases) ![GitHub all releases](https://img.shields.io/github/downloads/phibr0/obsidian-commander/total)
 
+Commander is a plugin for Obsidian which allows you to add commands to different parts of the user interface.
 
-# Commander [![GitHub tag (Latest by date)](https://img.shields.io/github/v/tag/phibr0/obsidian-commander)](https://github.com/phibr0/obsidian-commander/releases) ![GitHub all releases](https://img.shields.io/github/downloads/phibr0/obsidian-commander/total)
+![commander overview](https://user-images.githubusercontent.com/46250921/177593938-2c3aae81-1bf6-45df-b06a-e51a8b4e4a0e.svg)
+
+## Features
+- add commands
+- remove commands
+- re order commands
+- edit commands
+- hide commands added by Obsidian or other plugins	
+- choose which devices commands appear on (for sync users)
+
 
 ## How you can improve this Plugin
+
+### Feedback
+Share feedback, issues, and ideas on [github]([url](https://github.com/phibr0/obsidian-commander)), with our [Commander feedback form]([url](https://forms.gle/hPjn61G9bqqFb3256)), or tag the authors on Discord!
 
 ### Adding translations
 
 If you want to help and translate this Plugin to new languages, see [locale/](https://github.com/phibr0/obsidian-commander/tree/main/locale). Copy the English (`en.json`) File to your language file and start changing the sentences on the right.
+
+
+## Credits
+- This plugin is being designed by [Johnny ✨]([url](https://github.com/jsmorabito)) and developed by phibr0
+- Thank you to [Kometenstaub]([url](https://github.com/kometenstaub)) and [kzhovn]([url](https://github.com/kzhovn/)) for giving us permission to use the code from their plugins ([Customizable Page Header and Titlebar]([url](https://github.com/kometenstaub/customizable-page-header-buttons)) and [Customizable Menu]([url](https://github.com/kzhovn/obsidian-customizable-menu))) 
+- All designs for Commander were created using [Penpot]([url](https://penpot.app))
+
+
+<p align="center">
+<img src="https://cdn.discordapp.com/attachments/963246102008700958/982483670201929768/obsidian_commander_logo_svg.svg">
+</p>
