@@ -45,5 +45,8 @@
 	"Page Header": "Kopfzeile",
 	"Support development": "Entwicklung unterstützen",
 	"No commands here!": "Keine Befehle da!",
-	"Would you like to add one now?": "Möchtest du jetzt einen hinzufügen?"
+	"Would you like to add one now?": "Möchtest du jetzt einen hinzufügen?",
+	"Hide Commands": "Befehle verstecken",
+	"Choose new": "Wähle neu",
+	"Hide Commands of other Plugins": "Hide Commands of other Plugins"
 }

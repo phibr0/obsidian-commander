@@ -45,5 +45,8 @@
 	"Page Header": "Page Header",
 	"Support development": "Support development",
 	"No commands here!": "No commands here!",
-	"Would you like to add one now?": "Would you like to add one now?"
+	"Would you like to add one now?": "Would you like to add one now?",
+	"Hide Commands": "Hide Commands",
+	"Choose new": "Choose new",
+	"Hide Commands of other Plugins": "Hide Commands of other Plugins"
 }

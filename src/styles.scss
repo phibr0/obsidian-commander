@@ -18,6 +18,8 @@
 
 	h1 {
 		font-weight: 900;
+		margin-top: 6px;
+		margin-bottom: 12px;
 	}
 }
 
@@ -71,12 +73,49 @@
 	}
 }
 
+.cmdr-accordion {
+	.cmdr-accordion-chevron > svg {
+		transition: all 0.25s ease;
+	}
+
+	.cmdr-accordion-content {
+		max-height: 1000px;
+		transition: all 0.3s ease-in-out;
+		overflow: hidden;
+	}
+
+	&[aria-expanded="false"] {
+		.cmdr-accordion-chevron > svg {
+			transform: rotate(-90deg);
+		}
+
+		.cmdr-accordion-content {
+			max-height: 0;
+			transition: max-height 0.3s cubic-bezier(0, 1, 0, 1);
+		}
+	}
+
+	.cmdr-accordion-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		cursor: var(--cursor);
+
+		span {
+			font-weight: 600;
+			margin-bottom: 8px;
+			margin-top: 0;
+		}
+	}
+}
+
 .cmdr-add-new-wrapper {
 	width: 100%;
 	margin-top: 12px;
 	margin-bottom: 2rem;
 	display: flex;
 	justify-content: center;
+	align-items: center;
 
 	button {
 		margin: 0;

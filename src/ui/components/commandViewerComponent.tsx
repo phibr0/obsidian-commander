@@ -3,7 +3,7 @@ import CommanderPlugin from "src/main";
 import CommandComponent from "./commandComponent";
 import logo from "src/assets/commander-logo.svg";
 import CommandManager from "src/manager/_commandManager";
-import { chooseNewCommand, isModeActive } from "src/util";
+import { chooseNewCommand, isModeActive, ObsidianIcon } from "src/util";
 import { arrayMoveMutable } from "array-move";
 import ChooseIconModal from "../chooseIconModal";
 import ConfirmDeleteModal from "../confirmDeleteModal";
@@ -15,8 +15,9 @@ export const ManagerContext = createContext<CommandManager>(null!);
 interface CommandViewerProps {
 	manager: CommandManager;
 	plugin: CommanderPlugin
+	onOpenHider?: () => void
 }
-export default function CommandViewer({ manager, plugin }: CommandViewerProps): h.JSX.Element {
+export default function CommandViewer({ manager, plugin, onOpenHider }: CommandViewerProps): h.JSX.Element {
 	return (
 		<Fragment>
 			<ManagerContext.Provider value={manager}>
@@ -76,6 +77,14 @@ export default function CommandViewer({ manager, plugin }: CommandViewerProps): 
 					>
 						{t("Add command")}
 					</button>
+
+					{onOpenHider && <ObsidianIcon
+						icon="eye-off"
+						size={18}
+						class="clickable-icon"
+						aria-label={t("Hide Commands of other Plugins")}
+						onClick={onOpenHider}
+					/>}
 				</div>
 			</ManagerContext.Provider>
 		</Fragment >

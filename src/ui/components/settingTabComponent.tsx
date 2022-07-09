@@ -1,11 +1,12 @@
 import confetti from "canvas-confetti";
 import { Notice } from "obsidian";
 import { Fragment, h } from "preact";
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useMemo, useState } from "preact/hooks";
 import t from "src/l10n";
 import { ObsidianIcon } from "src/util";
 import CommanderPlugin from "../../main";
 import CommandViewer from "./commandViewerComponent";
+import HidingViewer from "./hidingViewer";
 import { ToggleComponent } from "./settingComponent";
 
 export default function settingTabComponent({ plugin, mobileMode }: { plugin: CommanderPlugin; mobileMode: boolean; }): h.JSX.Element {
@@ -28,7 +29,15 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 		return () => removeEventListener("keydown", tabToNextTab);
 	});
 
-	const tabs = [
+	const openHiderTab = (idx: number): void => {
+		setActiveTab(tabs.length - 1);
+		setTimeout(
+			() => dispatchEvent(new CustomEvent("cmdr-open-hider-tab", { detail: { index: idx } })),
+			50
+		);
+	};
+
+	const tabs = useMemo(() => [
 		{
 			name: t("General"),
 			tab: <Fragment>
@@ -73,15 +82,15 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 		},
 		{
 			name: t("Editor Menu"),
-			tab: <CommandViewer manager={plugin.manager.editorMenu} plugin={plugin} />
+			tab: <CommandViewer manager={plugin.manager.editorMenu} plugin={plugin} onOpenHider={(): void => openHiderTab(2)} />
 		},
 		{
 			name: t("File Menu"),
-			tab: <CommandViewer manager={plugin.manager.fileMenu} plugin={plugin} />
+			tab: <CommandViewer manager={plugin.manager.fileMenu} plugin={plugin} onOpenHider={(): void => openHiderTab(3)} />
 		},
 		{
 			name: t("Left Ribbon"),
-			tab: <CommandViewer manager={plugin.manager.leftRibbon} plugin={plugin} />
+			tab: <CommandViewer manager={plugin.manager.leftRibbon} plugin={plugin} onOpenHider={(): void => openHiderTab(0)} />
 		},
 		{
 			name: t("Right Ribbon"),
@@ -93,13 +102,17 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 		},
 		{
 			name: t("Statusbar"),
-			tab: <CommandViewer manager={plugin.manager.statusBar} plugin={plugin} />
+			tab: <CommandViewer manager={plugin.manager.statusBar} plugin={plugin} onOpenHider={(): void => openHiderTab(1)} />
 		},
 		{
 			name: t("Page Header"),
 			tab: <CommandViewer manager={plugin.manager.pageHeader} plugin={plugin} />
+		},
+		{
+			name: t("Hide Commands"),
+			tab: <HidingViewer plugin={plugin} />
 		}
-	];
+	], []);
 
 	return (
 		<Fragment>
