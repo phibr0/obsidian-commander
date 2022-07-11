@@ -9,7 +9,11 @@ export interface CommanderSettings {
 	titleBar: CommandIconPair[];
 	statusBar: CommandIconPair[];
 	pageHeader: CommandIconPair[];
-	macros: Macro[]
+	macros: Macro[];
+	hide: {
+		statusbar: string[];
+		leftRibbon: string[];
+	}
 }
 
 export interface Macro {

@@ -1,14 +1,14 @@
 import { Command, Editor, MarkdownView, Menu, MenuItem, setIcon, TAbstractFile, WorkspaceLeaf } from "obsidian";
-import CommandManager from "./_commandManager";
-import CommanderPlugin from "../main";
-import { CommandIconPair } from "../types";
-import ConfirmDeleteModal from "../ui/confirmDeleteModal";
-import { chooseNewCommand, getCommandFromId, isModeActive } from "../util";
+import CommandManagerBase from "./commandManager";
+import CommanderPlugin from "src/main";
+import { CommandIconPair } from "src/types";
+import ConfirmDeleteModal from "src/ui/confirmDeleteModal";
+import { chooseNewCommand, getCommandFromId, isModeActive } from "src/util";
 import ChooseCustomNameModal from "src/ui/chooseCustomNameModal";
 import ChooseIconModal from "src/ui/chooseIconModal";
 import t from "src/l10n";
 
-abstract class Base extends CommandManager {
+abstract class Base extends CommandManagerBase {
 	public async addCommand(pair: CommandIconPair): Promise<void> {
 		this.pairs.push(pair);
 		await this.plugin.saveSettings();

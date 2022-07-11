@@ -1,11 +1,14 @@
 import { Plugin } from 'obsidian';
 import { DEFAULT_SETTINGS } from './constants';
 import t from './l10n';
-import { EditorMenuCommandManager, FileMenuCommandManager } from './manager/menuManager';
-import PageHeaderManager from './manager/pageHeaderManager';
-import RibbonManager from './manager/ribbonManager';
-import StatusBarManager from './manager/statusBarManager';
-import TitleBarManager from './manager/titleBarManager';
+import {
+	EditorMenuCommandManager,
+	FileMenuCommandManager,
+	PageHeaderManager,
+	RibbonManager,
+	StatusBarManager,
+	TitleBarManager,
+} from "./manager/commands";
 import { CommanderSettings, Macro } from './types';
 import MacroModal from './ui/macroModal';
 import CommanderSettingTab from './ui/settingTab';
@@ -13,6 +16,7 @@ import SettingTabModal from './ui/settingTabModal';
 
 import 'beautiful-react-diagrams/styles.css';
 import "./styles.scss";
+import { updateHiderStylesheet } from './util';
 
 export default class CommanderPlugin extends Plugin {
 	public settings: CommanderSettings;
@@ -60,6 +64,12 @@ export default class CommanderPlugin extends Plugin {
 		this.registerEvent(
 			app.workspace.on('file-menu', this.manager.fileMenu.applyFileMenuCommands(this)),
 		);
+
+		updateHiderStylesheet(this.settings);
+	}
+
+	public onunload(): void {
+		document.head.querySelector("style#cmdr")?.remove();
 	}
 
 	// Macros become quite large objects, because we are saving the whole flowchart state (including position, etc.)

@@ -2,7 +2,7 @@ import { createContext, Fragment, h } from "preact";
 import CommanderPlugin from "src/main";
 import CommandComponent from "./commandComponent";
 import logo from "src/assets/commander-logo.svg";
-import CommandManager from "src/manager/_commandManager";
+import CommandManagerBase from "src/manager/commands/commandManager";
 import { chooseNewCommand, isModeActive, ObsidianIcon } from "src/util";
 import { arrayMoveMutable } from "array-move";
 import ChooseIconModal from "../chooseIconModal";
@@ -10,10 +10,10 @@ import ConfirmDeleteModal from "../confirmDeleteModal";
 import t from "src/l10n";
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-export const ManagerContext = createContext<CommandManager>(null!);
+export const ManagerContext = createContext<CommandManagerBase>(null!);
 
 interface CommandViewerProps {
-	manager: CommandManager;
+	manager: CommandManagerBase;
 	plugin: CommanderPlugin
 	onOpenHider?: () => void
 }

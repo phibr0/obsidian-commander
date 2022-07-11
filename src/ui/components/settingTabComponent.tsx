@@ -58,12 +58,9 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 
 						if (!plugin.settings.showAddCommand) {
 							const elements = document.getElementsByClassName("cmdr-adder");
-							const x: Element[] = [];
-							for (let i = 0; i < elements.length; i++) {
-								// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-								x.push(elements.item(i)!);
+							for (let i = elements.length - 1; i >= 0; i--) {
+								elements.item(i)?.remove();
 							}
-							x.forEach((pre) => pre.remove());
 						} else {
 							new Notice(t("Please restart Obsidian for these changes to take effect."));
 						}
@@ -82,11 +79,11 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 		},
 		{
 			name: t("Editor Menu"),
-			tab: <CommandViewer manager={plugin.manager.editorMenu} plugin={plugin} onOpenHider={(): void => openHiderTab(2)} />
+			tab: <CommandViewer manager={plugin.manager.editorMenu} plugin={plugin} />
 		},
 		{
 			name: t("File Menu"),
-			tab: <CommandViewer manager={plugin.manager.fileMenu} plugin={plugin} onOpenHider={(): void => openHiderTab(3)} />
+			tab: <CommandViewer manager={plugin.manager.fileMenu} plugin={plugin} />
 		},
 		{
 			name: t("Left Ribbon"),

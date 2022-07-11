@@ -6,9 +6,9 @@ import ChooseCustomNameModal from "src/ui/chooseCustomNameModal";
 import ChooseIconModal from "src/ui/chooseIconModal";
 import ConfirmDeleteModal from "src/ui/confirmDeleteModal";
 import { chooseNewCommand, isModeActive } from "src/util";
-import CommandManager from "./_commandManager";
+import CommandManagerBase from "./commandManager";
 
-export default class PageHeaderManager extends CommandManager {
+export default class PageHeaderManager extends CommandManagerBase {
 	private addBtn = createDiv({ cls: "cmdr view-action cmdr-adder", attr: { "aria-label": t("Add new") } });
 
 	public constructor(plugin: CommanderPlugin, pairArray: CommandIconPair[]) {
@@ -57,7 +57,7 @@ export default class PageHeaderManager extends CommandManager {
 			new Menu()
 				.addItem(item => {
 					item
-						.setTitle(t("Add Command"))
+						.setTitle(t("Add command"))
 						.setIcon("command")
 						.onClick(async () => {
 							const pair = await chooseNewCommand(this.plugin);
@@ -142,12 +142,9 @@ export default class PageHeaderManager extends CommandManager {
 
 	public reorder(): void | Promise<void> {
 		const x = document.getElementsByClassName("view-action cmdr-page-header");
-		const elements: Element[] = [];
-		for (let i = 0; i < x.length; i++) {
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			elements.push(x.item(i)!);
+		for (let i = x.length - 1; i >= 0; i--) {
+			x.item(i)?.remove();
 		}
-		elements.forEach((e) => e.remove());
 	}
 
 	public async addCommand(pair: CommandIconPair): Promise<void> {
@@ -157,13 +154,12 @@ export default class PageHeaderManager extends CommandManager {
 
 	public async removeCommand(pair: CommandIconPair): Promise<void> {
 		this.pairs.remove(pair);
+
 		const x = document.getElementsByClassName(`view-action cmdr-page-header ${pair.id}`);
-		const elements: Element[] = [];
-		for (let i = 0; i < x.length; i++) {
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			elements.push(x.item(i)!);
+		for (let i = x.length - 1; i >= 0; i--) {
+			x.item(i)?.remove();
 		}
-		elements.forEach((e) => e.remove());
+
 		await this.plugin.saveSettings();
 	}
 }

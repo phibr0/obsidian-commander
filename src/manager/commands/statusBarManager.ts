@@ -6,9 +6,9 @@ import ChooseCustomNameModal from "src/ui/chooseCustomNameModal";
 import ChooseIconModal from "src/ui/chooseIconModal";
 import ConfirmDeleteModal from "src/ui/confirmDeleteModal";
 import { getCommandFromId, chooseNewCommand, isModeActive } from "src/util";
-import CommandManager from "./_commandManager";
+import CommandManagerBase from "./commandManager";
 
-export default class StatusBarManager extends CommandManager {
+export default class StatusBarManager extends CommandManagerBase {
 	private container: HTMLElement;
 	private readonly actions = new Map<CommandIconPair, HTMLElement>();
 	private addBtn = createDiv({ cls: "cmdr status-bar-item cmdr-adder", attr: { "aria-label-position": "top", "aria-label": t("Add new") } });
@@ -42,7 +42,7 @@ export default class StatusBarManager extends CommandManager {
 				new Menu()
 					.addItem(item => {
 						item
-							.setTitle(t("Add Command"))
+							.setTitle(t("Add command"))
 							.setIcon("command")
 							.onClick(async () => {
 								const pair = await chooseNewCommand(this.plugin);
@@ -119,7 +119,7 @@ export default class StatusBarManager extends CommandManager {
 			new Menu()
 				.addItem(item => {
 					item
-						.setTitle(t("Add Command"))
+						.setTitle(t("Add command"))
 						.setIcon("command")
 						.onClick(async () => {
 							const pair = await chooseNewCommand(this.plugin);

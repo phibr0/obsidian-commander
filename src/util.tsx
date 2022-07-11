@@ -1,4 +1,4 @@
-import { CommandIconPair } from './types';
+import { CommanderSettings, CommandIconPair } from './types';
 import CommanderPlugin from "./main";
 import AddCommandModal from "./ui/addCommandModal";
 import ChooseIconModal from './ui/chooseIconModal';
@@ -56,4 +56,20 @@ export function ObsidianIcon({ icon, size, ...props }: ObsidianIconProps): h.JSX
 export function isModeActive(mode: string): boolean {
 	const { isMobile, appId } = app;
 	return mode === "any" || mode === appId || (mode === "mobile" && isMobile) || (mode === "desktop" && !isMobile);
+}
+
+export function updateHiderStylesheet(settings: CommanderSettings): void {
+	let style = "";
+	for (const id of settings.hide.statusbar) {
+		style += `div.status-bar-item.plugin-${id} {display: none; content-visibility: hidden;}`;
+	}
+	for (const name of settings.hide.leftRibbon) {
+		style += `div.side-dock-ribbon-action[aria-label="${name}"] {display: none; content-visibility: hidden;}`;
+	}
+
+	document.head.querySelector("style#cmdr")?.remove();
+
+	if (style) {
+		document.head.appendChild(createEl("style", { attr: { "id": "cmdr" }, text: style, type: "text/css" }));
+	}
 }

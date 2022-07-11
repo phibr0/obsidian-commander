@@ -1,7 +1,7 @@
 import CommanderPlugin from "src/main";
 import { CommandIconPair } from "src/types";
 
-export default abstract class CommandManager {
+export default abstract class CommandManagerBase {
 	public pairs: CommandIconPair[];
 	protected plugin: CommanderPlugin;
 

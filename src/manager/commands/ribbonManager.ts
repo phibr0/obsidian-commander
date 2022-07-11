@@ -1,15 +1,15 @@
 import { isModeActive } from 'src/util';
 import { Menu, setIcon, WorkspaceRibbon } from "obsidian";
-import CommandManager from "./_commandManager";
-import CommanderPlugin from "../main";
-import { CommandIconPair } from "../types";
-import ConfirmDeleteModal from "../ui/confirmDeleteModal";
-import { chooseNewCommand, getCommandFromId } from "../util";
+import CommandManagerBase from "./commandManager";
+import CommanderPlugin from "src/main";
+import { CommandIconPair } from "src/types";
+import ConfirmDeleteModal from "src/ui/confirmDeleteModal";
+import { chooseNewCommand, getCommandFromId } from "src/util";
 import ChooseCustomNameModal from "src/ui/chooseCustomNameModal";
 import ChooseIconModal from "src/ui/chooseIconModal";
 import t from 'src/l10n';
 
-export default class RibbonManager extends CommandManager {
+export default class RibbonManager extends CommandManagerBase {
 	private actions: {
 		[id: string]: HTMLElement;
 	};
@@ -120,7 +120,7 @@ export default class RibbonManager extends CommandManager {
 			new Menu()
 				.addItem(item => {
 					item
-						.setTitle(t("Add Command"))
+						.setTitle(t("Add command"))
 						.setIcon("command")
 						.onClick(async () => {
 							const pair = await chooseNewCommand(this.plugin);
