@@ -53,6 +53,9 @@ declare module "obsidian" {
 		}
 		appId: string;
 		isMobile: boolean;
+		setting: {
+			closeActiveTab: () => void;
+		}
 	}
 
 	interface WorkspaceRibbon {

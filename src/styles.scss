@@ -23,6 +23,19 @@
 	}
 }
 
+.cmdr-credits {
+	display: flex;
+
+	> span {
+		color: var(--text-muted);
+		font-size: 16px;
+	}
+}
+
+.cmdr-mobile .cmdr-credits {
+	place-content: center;
+}
+
 .cmdr-fill {
 	border: 2px solid transparent;
 	width: 100%;
@@ -73,14 +86,20 @@
 }
 
 .cmdr-accordion {
-	.cmdr-accordion-chevron > svg {
-		transition: all 0.25s ease;
+	.cmdr-accordion-chevron {
+		margin-left: 0;
+		margin-right: 4px;
+		> svg {
+			transition: all 0.25s ease;
+		}
 	}
 
 	.cmdr-accordion-content {
 		max-height: 1000px;
 		transition: all 0.3s ease-in-out;
 		overflow: hidden;
+		margin-left: 14px;
+		padding-left: 14px;
 	}
 
 	&[aria-expanded="false"] {
@@ -96,8 +115,6 @@
 
 	.cmdr-accordion-header {
 		display: flex;
-		justify-content: space-between;
-		align-items: center;
 		cursor: var(--cursor);
 
 		span {
@@ -117,7 +134,7 @@
 	align-items: center;
 
 	button {
-		margin: 0;
+		margin: 0 24px;
 	}
 }
 
@@ -186,26 +203,21 @@
 		flex-direction: column;
 		align-items: flex-start;
 		border: none;
-		background-color: var(--background-modifier-border);
-		padding: 6px 12px;
-		border-radius: 12px;
 
 		.cmdr-tab {
 			border: none !important;
 			transform: none;
 			padding: 6px 0px;
 			transition: color 200ms ease;
-
-			&:hover {
-				color: var(--interactive-accent);
-			}
+			width: 100%;
+			display: flex;
+			justify-content: space-between;
 
 			&:first-child {
 				margin-left: 0px;
 			}
 
 			&.cmdr-tab-active {
-				font-weight: 900;
 				transform: none;
 			}
 		}

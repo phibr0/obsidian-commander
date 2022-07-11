@@ -1,5 +1,5 @@
 import { h } from "preact";
-import { useState, useRef, useEffect, Ref } from "preact/hooks";
+import { Ref, useEffect, useRef, useState } from "preact/hooks";
 import t from "src/l10n";
 
 interface Props {
@@ -8,7 +8,10 @@ interface Props {
 	handleChange: (e: Event) => void;
 }
 
-export default function ChangeableText({ value, handleChange }: Props): h.JSX.Element {
+export default function ChangeableText({
+	value,
+	handleChange,
+}: Props): h.JSX.Element {
 	const [showInputEle, setShowInput] = useState(false);
 	const el: Ref<HTMLInputElement> | undefined = useRef(null);
 
@@ -19,27 +22,31 @@ export default function ChangeableText({ value, handleChange }: Props): h.JSX.El
 
 	return (
 		<div class="cmdr-editable">
-			{
-				showInputEle ? (
-					<input
-						type="text"
-						value={value}
-						onKeyDown={(e): void => {
-							/* If Enter was pressed, handle the name change and set to display mode */
-							if (e.key === "Enter" && (e.target as HTMLInputElement).value.length > 0) {
-								setShowInput(false);
-								handleChange(e);
-							}
-						}}
-						onBlur={(): void => setShowInput(false)}
-						ref={el}
-					/>
-				) : (
-					<span onDblClick={(): void => setShowInput(true)} aria-label={t("Double click to rename")}>
-						{value}
-					</span>
-				)
-			}
+			{showInputEle ? (
+				<input
+					type="text"
+					value={value}
+					onKeyDown={(e): void => {
+						/* If Enter was pressed, handle the name change and set to display mode */
+						if (
+							e.key === "Enter" &&
+							(e.target as HTMLInputElement).value.length > 0
+						) {
+							setShowInput(false);
+							handleChange(e);
+						}
+					}}
+					onBlur={(): void => setShowInput(false)}
+					ref={el}
+				/>
+			) : (
+				<span
+					onDblClick={(): void => setShowInput(true)}
+					aria-label={t("Double click to rename")}
+				>
+					{value}
+				</span>
+			)}
 		</div>
 	);
 }

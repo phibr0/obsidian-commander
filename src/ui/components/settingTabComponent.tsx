@@ -1,16 +1,17 @@
-import confetti from "canvas-confetti";
-import { Notice } from "obsidian";
+import { Notice, Platform } from "obsidian";
 import { Fragment, h } from "preact";
 import { useEffect, useMemo, useState } from "preact/hooks";
 import t from "src/l10n";
 import { ObsidianIcon } from "src/util";
 import CommanderPlugin from "../../main";
 import CommandViewer from "./commandViewerComponent";
+import Credits from "./Credits";
 import HidingViewer from "./hidingViewer";
 import { ToggleComponent } from "./settingComponent";
 
 export default function settingTabComponent({ plugin, mobileMode }: { plugin: CommanderPlugin; mobileMode: boolean; }): h.JSX.Element {
 	const [activeTab, setActiveTab] = useState(0);
+	const [open, setOpen] = useState(true);
 
 	const tabToNextTab = ({ key, shiftKey }: KeyboardEvent): void => {
 		if (shiftKey && key === "Tab") {
@@ -27,7 +28,34 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 	useEffect(() => {
 		addEventListener("keydown", tabToNextTab);
 		return () => removeEventListener("keydown", tabToNextTab);
-	});
+	}, [activeTab]);
+
+	//This is used to remove the initial onclick event listener.
+	if (Platform.isMobile) {
+		useEffect(() => {
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			const old_element = document.querySelector(".modal-setting-back-button")!;
+			const new_element = old_element.cloneNode(true);
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			old_element.parentNode!.replaceChild(new_element, old_element);
+			setOpen(true);
+		}, []);
+	}
+
+	useEffect(() => {
+		const el = document.querySelector<HTMLElement>(".modal-setting-back-button");
+		if (!el) return;
+
+		if (!open) {
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			el.lastChild!.textContent = tabs[activeTab].name;
+			el.onclick = (): void => setOpen(true);
+		} else {
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			el.lastChild!.textContent = "Commander";
+			el.onclick = (): void => app.setting.closeActiveTab();
+		}
+	}, [open]);
 
 	const openHiderTab = (idx: number): void => {
 		setActiveTab(tabs.length - 1);
@@ -113,61 +141,24 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 
 	return (
 		<Fragment>
-			<div className="cmdr-setting-title">
+			{Platform.isDesktop && <div className="cmdr-setting-title">
 				<h1>{plugin.manifest.name}</h1>
-				<ObsidianIcon
-					icon="coffee"
-					size={24}
-					className="clickable-icon"
-					aria-label={t("Support development")}
-					aria-label-position="left"
-					id="cmdr-coffee-btn"
-					onClick={async ({ target }): Promise<void> => {
-						const myCanvas = document.createElement('canvas');
-						document.body.appendChild(myCanvas);
-						myCanvas.style.position = "fixed";
-						myCanvas.style.width = "100vw";
-						myCanvas.style.height = "100vh";
-						myCanvas.style.top = "0px";
-						myCanvas.style.left = "0px";
-						//@ts-ignore
-						myCanvas.style["pointer-events"] = "none";
-						//@ts-ignore
-						myCanvas.style["z-index"] = "100";
+				<Credits />
+			</div>}
 
-						const myConfetti = confetti.create(myCanvas, {
-							resize: true,
-							useWorker: true
-						});
-						const pos = (target as HTMLDivElement).getBoundingClientRect();
-
-						setTimeout(() => location.replace("https://buymeacoffee.com/phibr0"), Math.random() * 800 + 500);
-
-						await myConfetti({
-							particleCount: 150,
-							spread: 120,
-							angle: 200,
-							drift: -1,
-							origin: {
-								x: pos.x / window.innerWidth,
-								y: pos.y / window.innerHeight,
-							},
-						});
-
-						myCanvas.remove();
-					}}
-				/>
-			</div>
-			<nav class={`cmdr-setting-header${mobileMode ? " cmdr-mobile" : ""}`}>
+			{(Platform.isDesktop || open) && <nav class={`cmdr-setting-header ${mobileMode ? "cmdr-mobile" : ""}`}>
 				{tabs.map((tab, idx) => <div
 					className={activeTab === idx ? "cmdr-tab cmdr-tab-active" : "cmdr-tab"}
-					onClick={(): void => setActiveTab(idx)}>
-					{tab.name}
+					onClick={(): void => { setActiveTab(idx); setOpen(false); }}>
+					<span>{tab.name}</span>
+					{Platform.isMobile && <ObsidianIcon icon="chevron-right" size={24} />}
 				</div>)}
-				<div className="cmdr-fill" />
-			</nav>
-			<div class="cmdr-setting-content">
-				{tabs[activeTab].tab}
+				{Platform.isDesktop && <div className="cmdr-fill" />}
+			</nav>}
+
+			<div class={`cmdr-setting-content ${mobileMode ? "cmdr-mobile" : ""}`}>
+				{(Platform.isDesktop || !open) && tabs[activeTab].tab}
+				{Platform.isMobile && open && <Credits />}
 			</div>
 		</Fragment>
 	);

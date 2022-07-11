@@ -8,6 +8,7 @@ import { arrayMoveMutable } from "array-move";
 import ChooseIconModal from "../chooseIconModal";
 import ConfirmDeleteModal from "../confirmDeleteModal";
 import t from "src/l10n";
+import { Platform } from "obsidian";
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 export const ManagerContext = createContext<CommandManagerBase>(null!);
@@ -64,6 +65,8 @@ export default function CommandViewer({ manager, plugin, onOpenHider }: CommandV
 					<h3>{t("No commands here!")}</h3>
 					<span>{t("Would you like to add one now?")}</span>
 				</div>}
+
+				{Platform.isMobile && <hr />}
 
 				<div className="cmdr-add-new-wrapper">
 					<button

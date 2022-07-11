@@ -1,4 +1,4 @@
-import { Modal } from "obsidian";
+import { Modal, Platform } from "obsidian";
 import { h, render } from "preact";
 import CommanderPlugin from "src/main";
 import settingTabComponent from "./components/settingTabComponent";
@@ -13,7 +13,7 @@ export default class SettingTabModal extends Modal {
 	}
 
 	public onOpen(): void {
-		const mobileMode = this.contentEl.getBoundingClientRect().width <= 1100;
+		const mobileMode = Platform.isMobile;//this.containerEl.getBoundingClientRect().width <= 1100;
 		render(h(settingTabComponent, { plugin: this.plugin, mobileMode }), this.contentEl);
 	}
 

@@ -4,11 +4,12 @@ import { useState } from "preact/hooks";
 interface BaseComponentProps {
 	children: h.JSX.Element;
 	name: string;
-	description: string
+	description: string;
+	className?: string;
 }
-function BaseComponent({ name, description, children }: BaseComponentProps): h.JSX.Element {
+function BaseComponent({ name, description, children, className }: BaseComponentProps): h.JSX.Element {
 	return (
-		<div className="setting-item">
+		<div className={`setting-item ${className}`}>
 			<div className="setting-item-info">
 				<div className="setting-item-name">{name}</div>
 				<div className="setting-item-description">{description}</div>
@@ -31,7 +32,7 @@ export function ToggleComponent(props: SettingProps<boolean>): h.JSX.Element {
 	const [state, setState] = useState(props.value);
 
 	return (
-		<BaseComponent name={props.name} description={props.description}>
+		<BaseComponent name={props.name} description={props.description} className="mod-toggle">
 			<div
 				className={`checkbox-container ${state ? "is-enabled" : ""}`}
 				onClick={(): void => { setState(!state); props.changeHandler(state); }}

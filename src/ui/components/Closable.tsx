@@ -28,8 +28,8 @@ export default function Closable({ title, children, index }: ClosableProps): h.J
 	return (
 		<div className="cmdr-accordion" aria-expanded={open}>
 			<div className="cmdr-accordion-header" onClick={toggleHandler}>
-				<span>{title}</span>
 				<ObsidianIcon className="cmdr-accordion-chevron clickable-icon" icon="chevron-down" size={24} />
+				<span>{title}</span>
 			</div>
 			<div className="cmdr-accordion-content">
 				{children}
