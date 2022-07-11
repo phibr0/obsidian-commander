@@ -38,11 +38,14 @@ export default class AddCommandModal extends FuzzySuggestModal<Command> {
 	}
 
 	public renderSuggestion(item: FuzzyMatch<Command>, el: HTMLElement): void {
-		super.renderSuggestion(item, el);
+		el.addClass("mod-complex");
+		const content = el.createDiv({ cls: "suggestion-content" });
+		content.createDiv({ cls: "suggestion-title" }).setText(item.item.name);
 
 		//Append the icon if available
 		if (item.item.icon) {
-			setIcon(el.createSpan({ cls: "suggestion-flair" }), item.item.icon);
+			const aux = el.createDiv({ cls: "suggestion-aux" });
+			setIcon(aux.createSpan({ cls: "suggestion-flair" }), item.item.icon);
 		}
 	}
 

@@ -10,11 +10,10 @@ import {
 	TitleBarManager,
 } from "./manager/commands";
 import { CommanderSettings, Macro } from './types';
-import MacroModal from './ui/macroModal';
 import CommanderSettingTab from './ui/settingTab';
 import SettingTabModal from './ui/settingTabModal';
 
-import 'beautiful-react-diagrams/styles.css';
+//import 'beautiful-react-diagrams/styles.css';
 import "./styles.scss";
 import { updateHiderStylesheet } from './util';
 
@@ -51,11 +50,11 @@ export default class CommanderPlugin extends Plugin {
 			callback: () => new SettingTabModal(this).open(),
 		});
 
-		this.addCommand({
-			name: t("Open Macro Builder"),
-			id: "open-macro-builder",
-			callback: () => new MacroModal(this).open(),
-		});
+		// this.addCommand({
+		// 	name: t("Open Macro Builder"),
+		// 	id: "open-macro-builder",
+		// 	callback: () => new MacroModal(this).open(),
+		// });
 
 		this.registerEvent(
 			app.workspace.on('editor-menu', this.manager.editorMenu.applyEditorMenuCommands(this)),
@@ -73,7 +72,7 @@ export default class CommanderPlugin extends Plugin {
 	}
 
 	// Macros become quite large objects, because we are saving the whole flowchart state (including position, etc.)
-	// This is why they are encoded into a single line base64 string to save space
+	// This is why they are encoded into a single line base64 string to save space (wip)
 	private async loadSettings(): Promise<void> {
 		const data = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
 		data.macros = data.macros.map((str: string) => JSON.parse(window.atob(str)));
