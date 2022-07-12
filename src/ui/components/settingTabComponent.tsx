@@ -4,8 +4,8 @@ import { useEffect, useMemo, useState } from "preact/hooks";
 import t from "src/l10n";
 import { ObsidianIcon } from "src/util";
 import CommanderPlugin from "../../main";
+import About from "./About";
 import CommandViewer from "./commandViewerComponent";
-import Credits from "./Credits";
 import HidingViewer from "./hidingViewer";
 import { ToggleComponent } from "./settingComponent";
 
@@ -143,7 +143,6 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 		<Fragment>
 			{Platform.isDesktop && <div className="cmdr-setting-title">
 				<h1>{plugin.manifest.name}</h1>
-				<Credits />
 			</div>}
 
 			{(Platform.isDesktop || open) && <nav class={`cmdr-setting-header ${mobileMode ? "cmdr-mobile" : ""}`}>
@@ -158,8 +157,9 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 
 			<div class={`cmdr-setting-content ${mobileMode ? "cmdr-mobile" : ""}`}>
 				{(Platform.isDesktop || !open) && tabs[activeTab].tab}
-				{Platform.isMobile && open && <Credits />}
+
+				{((Platform.isMobile && open) || (Platform.isDesktop && activeTab === 0)) && <About manifest={plugin.manifest} />}
 			</div>
-		</Fragment>
+		</Fragment >
 	);
 }

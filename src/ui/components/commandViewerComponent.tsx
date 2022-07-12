@@ -1,7 +1,6 @@
 import { createContext, Fragment, h } from "preact";
 import CommanderPlugin from "src/main";
 import CommandComponent from "./commandComponent";
-import logo from "src/assets/commander-logo.svg";
 import CommandManagerBase from "src/manager/commands/commandManager";
 import { chooseNewCommand, isModeActive, ObsidianIcon } from "src/util";
 import { arrayMoveMutable } from "array-move";
@@ -9,6 +8,7 @@ import ChooseIconModal from "../chooseIconModal";
 import ConfirmDeleteModal from "../confirmDeleteModal";
 import t from "src/l10n";
 import { Platform } from "obsidian";
+import Logo from "./Logo";
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 export const ManagerContext = createContext<CommandManagerBase>(null!);
@@ -62,7 +62,7 @@ export default function CommandViewer({ manager, plugin, onOpenHider }: CommandV
 				{!manager.pairs.some((pre) => isModeActive(pre.mode) || pre.mode.match(/mobile|desktop/)) && <div class="cmdr-commands-empty">
 					{/* This isn't really dangerous,
 					as the svg is inserted at build time and no other data can be passed to it */}
-					<div class="cmdr-icon-wrapper" dangerouslySetInnerHTML={{ __html: logo }} />
+					<Logo />
 					<h3>{t("No commands here!")}</h3>
 					<span>{t("Would you like to add one now?")}</span>
 				</div>}

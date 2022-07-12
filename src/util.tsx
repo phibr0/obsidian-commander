@@ -2,10 +2,11 @@ import { CommanderSettings, CommandIconPair } from './types';
 import CommanderPlugin from "./main";
 import AddCommandModal from "./ui/addCommandModal";
 import ChooseIconModal from './ui/chooseIconModal';
-import { Command, setIcon } from 'obsidian';
+import { Command, Platform, setIcon } from 'obsidian';
 import ChooseCustomNameModal from './ui/chooseCustomNameModal';
 import { ComponentProps, h } from 'preact';
 import { useRef, useLayoutEffect } from 'preact/hooks';
+import confetti from 'canvas-confetti';
 
 /**
  * It creates a modal, waits for the user to select a command, and then creates another modal to wait
@@ -73,3 +74,39 @@ export function updateHiderStylesheet(settings: CommanderSettings): void {
 		document.head.appendChild(createEl("style", { attr: { "id": "cmdr" }, text: style, type: "text/css" }));
 	}
 }
+
+export async function showConfetti({ target }: MouseEvent): Promise<void> {
+	const myCanvas = activeDocument.createElement('canvas');
+	activeDocument.body.appendChild(myCanvas);
+	myCanvas.style.position = "fixed";
+	myCanvas.style.width = "100vw";
+	myCanvas.style.height = "100vh";
+	myCanvas.style.top = "0px";
+	myCanvas.style.left = "0px";
+	//@ts-ignore
+	myCanvas.style["pointer-events"] = "none";
+	//@ts-ignore
+	myCanvas.style["z-index"] = "100";
+
+	const myConfetti = confetti.create(myCanvas, {
+		resize: true,
+		useWorker: true
+	});
+	const pos = (target as HTMLDivElement).getBoundingClientRect();
+
+	await myConfetti({
+		particleCount: Platform.isDesktop ? 160 : 80,
+		startVelocity: 55,
+		spread: 75,
+		angle: 90,
+		drift: -1,
+		ticks: 250,
+		origin: {
+			x: (pos.x + pos.width / 2) / activeWindow.innerWidth,
+			y: (pos.y + pos.height / 2) / activeWindow.innerHeight,
+		},
+	});
+
+	myCanvas.remove();
+}
+
