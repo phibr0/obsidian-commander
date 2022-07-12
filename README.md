@@ -30,6 +30,6 @@ If you want to help and translate this Plugin to new languages, see [locale/](ht
 - All designs for Commander were created using [Penpot](https://penpot.app)
 
 
-<p align="center">
-<img src="https://cdn.discordapp.com/attachments/963246102008700958/982483670201929768/obsidian_commander_logo_svg.svg">
-</p>
+![Footer](https://user-images.githubusercontent.com/46250921/178547234-7566819b-ea3f-4e8e-8f88-a0f01d1ff270.svg)
+
+
