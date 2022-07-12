@@ -16,6 +16,7 @@ import SettingTabModal from './ui/settingTabModal';
 //import 'beautiful-react-diagrams/styles.css';
 import "./styles.scss";
 import { updateHiderStylesheet } from './util';
+import registerCustomIcons from './ui/icons';
 
 export default class CommanderPlugin extends Plugin {
 	public settings: CommanderSettings;
@@ -31,6 +32,8 @@ export default class CommanderPlugin extends Plugin {
 
 	public async onload(): Promise<void> {
 		await this.loadSettings();
+
+		registerCustomIcons();
 
 		this.manager = {
 			editorMenu: new EditorMenuCommandManager(this, this.settings.editorMenu),

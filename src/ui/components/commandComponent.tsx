@@ -168,6 +168,6 @@ export default function CommandComponent({
 function getModeIcon(mode: string): string {
 	if (mode === "mobile") return "smartphone";
 	if (mode === "desktop") return "monitor";
-	if (mode === "any") return "paperclip";
+	if (mode === "any") return "cmdr-all-devices";
 	return "airplay";
 }
