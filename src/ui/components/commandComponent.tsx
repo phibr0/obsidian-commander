@@ -3,6 +3,7 @@ import { Fragment, h } from "preact";
 import t from "src/l10n";
 import { CommandIconPair } from "src/types";
 import { getCommandFromId, ObsidianIcon } from "src/util";
+import MobileModifyModal from "../mobileModifyModal";
 import ChangeableText from "./ChangeableText";
 
 interface CommandViewerProps {
@@ -13,7 +14,8 @@ interface CommandViewerProps {
 	handleNewIcon: () => void;
 	// eslint-disable-next-line no-unused-vars
 	handleRename: (name: string) => void;
-	handleModeChange: () => void;
+	// eslint-disable-next-line no-unused-vars
+	handleModeChange: (mode?: string) => void;
 }
 
 export default function CommandComponent({
@@ -100,7 +102,7 @@ export default function CommandComponent({
 						<ObsidianIcon
 							icon={modeIcon}
 							className="setting-editor-extra-setting-button clickable-icon"
-							onClick={handleModeChange}
+							onClick={(): void => handleModeChange()}
 							aria-label={t(
 								"Change Mode (Currently: {{current_mode}})"
 							).replace("{{current_mode}}", modeName)}
@@ -143,17 +145,18 @@ export default function CommandComponent({
 							icon="arrow-down"
 							className="clickable-icon"
 							onClick={handleDown}
-							aria-label={t("Move down")}
 						/>
 						<ObsidianIcon
 							icon="arrow-up"
 							className="clickable-icon"
 							onClick={handleUp}
-							aria-label={t("Move up")}
 						/>
 						<ObsidianIcon
 							icon="three-horizontal-bars"
 							className="clickable-icon"
+							onClick={(): void => {
+								new MobileModifyModal(pair, handleRename, handleNewIcon, handleModeChange).open();
+							}}
 						/>
 					</span>
 				</div>

@@ -246,6 +246,26 @@
 	}
 }
 
+.cmdr-mobile-modify-grid {
+	padding: 22px;
+
+	.cmdr-mobile-modify-option {
+		display: flex;
+		width: 100%;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 16px;
+
+		> input {
+			max-width: 70%;
+		}
+
+		.dropdown {
+			margin: auto;
+		}
+	}
+}
+
 // @media only screen and (max-width: 1500px) {
 // 	.cmdr-setting-header {
 // 		display: flex;

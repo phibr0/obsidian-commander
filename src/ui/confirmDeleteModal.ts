@@ -26,6 +26,10 @@ export default class ConfirmDeleteModal extends Modal {
 			this.onClose = (): void => resolve(this.remove ?? false);
 		});
 	}
+
+	public onClose(): void {
+		render(null, this.contentEl);
+	}
 }
 
 

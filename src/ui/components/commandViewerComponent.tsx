@@ -43,14 +43,15 @@ export default function CommandViewer({ manager, plugin, onOpenHider }: CommandV
 									manager.reorder();
 									this.forceUpdate();
 								}
+								dispatchEvent(new Event("cmdr-icon-changed"));
 							}}
-							handleModeChange={async (): Promise<void> => {
+							handleModeChange={async (mode?: string): Promise<void> => {
 								// This is the rotation
 								const modes = ["any", "desktop", "mobile", app.appId];
 								let currentIdx = modes.indexOf(cmd.mode);
 								if (currentIdx === 3) currentIdx = -1;
 
-								cmd.mode = modes[currentIdx + 1];
+								cmd.mode = mode || modes[currentIdx + 1];
 								await plugin.saveSettings();
 								manager.reorder();
 								this.forceUpdate();

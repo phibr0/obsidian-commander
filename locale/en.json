@@ -48,5 +48,13 @@
 	"Would you like to add one now?": "Would you like to add one now?",
 	"Hide Commands": "Hide Commands",
 	"Choose new": "Choose new",
-	"Hide Commands of other Plugins": "Hide Commands of other Plugins"
+	"Hide Commands of other Plugins": "Hide Commands of other Plugins",
+	"Icon": "Icon",
+	"Name": "Name",
+	"Custom Name": "Custom Name",
+	"Add command to all devices": "Add command to all devices",
+	"Add command only to mobile devices": "Add command only to mobile devices",
+	"Add command only to desktop devices": "Add command only to desktop devices",
+	"Add command only to this device": "Add command only to this device",
+	"Done": "Done"
 }

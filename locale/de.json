@@ -48,5 +48,13 @@
 	"Would you like to add one now?": "Möchtest du jetzt einen hinzufügen?",
 	"Hide Commands": "Befehle verstecken",
 	"Choose new": "Wähle neu",
-	"Hide Commands of other Plugins": "Hide Commands of other Plugins"
+	"Hide Commands of other Plugins": "Hide Commands of other Plugins",
+	"Icon": "Symbol",
+	"Name": "Name",
+	"Custom Name": "Benutzerdefinierter Name",
+	"Add command to all devices": "Füge Befehl allen Geräten hinzu",
+	"Add command only to mobile devices": "Füge Befehl nur Mobilen Geräten hinzu",
+	"Add command only to desktop devices": "Füge Befehl nur Desktop Geräten hinzu",
+	"Add command only to this device": "Füge Befehl nur diesem Gerät hinzu",
+	"Done": "Fertig"
 }
