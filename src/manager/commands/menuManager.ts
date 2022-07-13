@@ -33,47 +33,53 @@ abstract class Base extends CommandManagerBase {
 			const optionEl = createDiv({
 				cls: "clickable-icon", attr: { "style": `position: absolute; right: 10px; padding-top: 2px;` }
 			});
+			let optionMenu: Menu | null = null;
 			optionEl.addEventListener("click", (event) => {
 				event.preventDefault();
 				event.stopImmediatePropagation();
+				if (!optionMenu) {
+					optionMenu = new Menu()
+						.addItem(item => {
+							item
+								.setTitle(t("Change Icon"))
+								.setIcon("box")
+								.onClick(async () => {
+									const newIcon = await (new ChooseIconModal(plugin)).awaitSelection();
+									if (newIcon && newIcon !== cmdPair.icon) {
+										cmdPair.icon = newIcon;
+										await plugin.saveSettings();
+									}
+								});
+						})
+						.addItem(item => {
+							item
+								.setTitle(t("Rename"))
+								.setIcon("text-cursor-input")
+								.onClick(async () => {
+									const newName = await (new ChooseCustomNameModal(cmdPair.name)).awaitSelection();
+									if (newName && newName !== cmdPair.name) {
+										cmdPair.name = newName;
+										await plugin.saveSettings();
+									}
+								});
+						})
+						.addItem(item => {
+							item.dom.addClass("is-warning");
+							item
+								.setTitle(t("Delete"))
+								.setIcon("lucide-trash")
+								.onClick(async () => {
+									if (!plugin.settings.confirmDeletion || (await new ConfirmDeleteModal(plugin).didChooseRemove())) {
+										removeMenu();
+									}
+								});
+						})
+						.showAtMouseEvent(event);
+				} else {
+					optionMenu.hide();
+					optionMenu = null;
+				}
 
-				new Menu()
-					.addItem(item => {
-						item
-							.setTitle(t("Change Icon"))
-							.setIcon("box")
-							.onClick(async () => {
-								const newIcon = await (new ChooseIconModal(plugin)).awaitSelection();
-								if (newIcon && newIcon !== cmdPair.icon) {
-									cmdPair.icon = newIcon;
-									await plugin.saveSettings();
-								}
-							});
-					})
-					.addItem(item => {
-						item
-							.setTitle(t("Rename"))
-							.setIcon("text-cursor-input")
-							.onClick(async () => {
-								const newName = await (new ChooseCustomNameModal(cmdPair.name)).awaitSelection();
-								if (newName && newName !== cmdPair.name) {
-									cmdPair.name = newName;
-									await plugin.saveSettings();
-								}
-							});
-					})
-					.addItem(item => {
-						item.dom.addClass("is-warning");
-						item
-							.setTitle(t("Delete"))
-							.setIcon("lucide-trash")
-							.onClick(async () => {
-								if (!plugin.settings.confirmDeletion || (await new ConfirmDeleteModal(plugin).didChooseRemove())) {
-									removeMenu();
-								}
-							});
-					})
-					.showAtMouseEvent(event);
 			});
 			setIcon(optionEl, "more-vertical", 16);
 			item.dom.append(optionEl);

@@ -146,12 +146,14 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 			</div>}
 
 			{(Platform.isDesktop || open) && <nav class={`cmdr-setting-header ${mobileMode ? "cmdr-mobile" : ""}`}>
-				{tabs.map((tab, idx) => <div
-					className={activeTab === idx ? "cmdr-tab cmdr-tab-active" : "cmdr-tab"}
-					onClick={(): void => { setActiveTab(idx); setOpen(false); }}>
-					<span>{tab.name}</span>
-					{Platform.isMobile && <ObsidianIcon icon="chevron-right" size={24} />}
-				</div>)}
+				<div className="cmdr-setting-tab-group">
+					{tabs.map((tab, idx) => <div
+						className={activeTab === idx ? "cmdr-tab cmdr-tab-active" : "cmdr-tab"}
+						onClick={(): void => { setActiveTab(idx); setOpen(false); }}>
+						<span>{tab.name}</span>
+						{Platform.isMobile && <ObsidianIcon icon="chevron-right" size={24} />}
+					</div>)}
+				</div>
 				{Platform.isDesktop && <div className="cmdr-fill" />}
 			</nav>}
 

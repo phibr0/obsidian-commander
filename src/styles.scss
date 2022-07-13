@@ -184,12 +184,17 @@
 }
 
 .cmdr-setting-header {
-	display: flex;
-	align-items: flex-end;
-	border-bottom: 2px solid var(--background-modifier-border);
 	margin-bottom: 24px;
+	overflow-y: hidden;
+	overflow-x: overlay;
 
-	&.cmdr-mobile {
+	.cmdr-setting-tab-group {
+		display: flex;
+		align-items: flex-end;
+		border-bottom: 2px solid var(--background-modifier-border);
+	}
+
+	&.cmdr-mobile .cmdr-setting-tab-group {
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
