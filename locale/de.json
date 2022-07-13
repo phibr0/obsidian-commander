@@ -5,7 +5,7 @@
 	"Rename": "Umbenennen",
 	"Delete": "Löschen",
 	"Add command": "Befehl hinzufügen",
-	"Add new": "Neu hinzufügen",
+	"Add new": "Neuen Befehl hinzufügen",
 	"This Command seems to have been removed. {{command_name}}": "Dieser Befehl wurde entfernt. {{command_name}}",
 	"Choose a Command to add": "Wähle einen Befehl zum hinzufügen",
 	"to navigate": "zum navigieren",
@@ -56,5 +56,11 @@
 	"Add command only to mobile devices": "Füge Befehl nur Mobilen Geräten hinzu",
 	"Add command only to desktop devices": "Füge Befehl nur Desktop Geräten hinzu",
 	"Add command only to this device": "Füge Befehl nur diesem Gerät hinzu",
-	"Done": "Fertig"
+	"Done": "Fertig",
+	"By Johnny✨ and phibr0": "Von Johnny✨ und phibr0",
+	"Leave feedback": "Feedback geben",
+	"Donate": "Spenden",
+	"Share feedback, issues, and ideas with our feedback form.": "Teile Feedback, Probleme und Ideen mit unserem Feedback Formular!",
+	"Consider donating to support development.": "Spende um die Entwicklung zu unterstützen.",
+	"Save": "Speichern"
 }

@@ -78,23 +78,17 @@ abstract class Base extends CommandManagerBase {
 			setIcon(optionEl, "more-vertical", 16);
 			item.dom.append(optionEl);
 
+			item
+				.setTitle(cmdPair.name ?? command.name)
+				.setIcon(cmdPair.icon)
+				.onClick(() => app.commands.executeCommandById(cmdPair.id));
+
 			let isRemovable = false;
 			const setNormal = (): void => {
 				optionEl.style.display = "none";
-				item
-					.setTitle(cmdPair.name ?? command.name)
-					.setIcon(cmdPair.icon)
-					.onClick(() => app.commands.executeCommandById(cmdPair.id));
 			};
 			const setRemovable = (): void => {
 				optionEl.style.display = "block";
-				item.setTitle(t("Delete")).setIcon("trash").onClick(async (event) => {
-					event.preventDefault();
-					event.stopImmediatePropagation();
-					if (!plugin.settings.confirmDeletion || (await new ConfirmDeleteModal(plugin).didChooseRemove())) {
-						removeMenu();
-					}
-				});
 			};
 			const removeMenu = async (): Promise<void> => {
 				item.dom.addClass("cmdr-removing");
@@ -108,10 +102,8 @@ abstract class Base extends CommandManagerBase {
 			menu.registerDomEvent(item.dom, "mousemove", (event) => {
 				event.preventDefault();
 				event.stopImmediatePropagation();
-				if (event.shiftKey) {
-					if (!isRemovable) setRemovable();
-					isRemovable = true;
-				}
+				if (!isRemovable) setRemovable();
+				isRemovable = true;
 			});
 			menu.registerDomEvent(item.dom, "mouseleave", () => {
 				setNormal();

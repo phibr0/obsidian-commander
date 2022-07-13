@@ -281,9 +281,6 @@
 	button {
 		display: flex;
 		align-items: center;
-		background-color: transparent !important;
-		border: 2px solid var(--interactive-accent);
-		color: var(--interactive-accent);
 		height: 2.6em;
 		font-weight: 700;
 		gap: 16px;
@@ -316,33 +313,11 @@
 	}
 }
 
-// @media only screen and (max-width: 1500px) {
-// 	.cmdr-setting-header {
-// 		display: flex;
-// 		flex-direction: column;
-// 		align-items: flex-start;
-// 		border: none;
-// 		background-color: var(--background-secondary-alt);
-// 		padding: 6px 12px;
-// 		border-radius: 12px;
-// 	}
+.cmdr-name-input-wrapper {
+	display: flex;
+	gap: 8px;
 
-// 	.cmdr-tab {
-// 		border: none;
-// 		transform: none;
-// 		padding: 6px 0px;
-// 		transition: color 200ms ease;
-
-// 		&:hover {
-// 			color: var(--interactive-accent);
-// 		}
-
-// 		&:first-child {
-// 			margin-left: 0px;
-// 		}
-// 	}
-
-// 	.cmdr-tab-active {
-// 		font-weight: bold;
-// 	}
-// }
+	button {
+		margin: 0;
+	}
+}

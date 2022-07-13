@@ -5,7 +5,7 @@
 	"Rename": "Rename",
 	"Delete": "Delete",
 	"Add command": "Add command",
-	"Add new": "Add new",
+	"Add new": "Add new command",
 	"This Command seems to have been removed. {{command_name}}": "This Command seems to have been removed. {{command_name}}",
 	"Choose a Command to add": "Choose a Command to add",
 	"to navigate": "to navigate",
@@ -56,5 +56,11 @@
 	"Add command only to mobile devices": "Add command only to mobile devices",
 	"Add command only to desktop devices": "Add command only to desktop devices",
 	"Add command only to this device": "Add command only to this device",
-	"Done": "Done"
+	"Done": "Done",
+	"By Johnny✨ and phibr0": "By Johnny✨ and phibr0",
+	"Leave feedback": "Leave feedback",
+	"Donate": "Donate",
+	"Share feedback, issues, and ideas with our feedback form.": "Share feedback, issues, and ideas with our feedback form.",
+	"Consider donating to support development.": "Consider donating to support development.",
+	"Save": "Save"
 }

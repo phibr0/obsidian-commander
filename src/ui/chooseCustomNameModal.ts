@@ -28,7 +28,15 @@ export default class ChooseCustomNameModal extends SuggestModal<string> {
 
 	public onOpen(): void {
 		super.onOpen();
+
 		this.inputEl.value = this.defaultName;
+		const wrapper = createDiv({ cls: "cmdr-name-input-wrapper" });
+		this.inputEl.parentNode?.insertBefore(wrapper, this.inputEl);
+		wrapper.appendChild(this.inputEl);
+
+		const btn = createEl("button", { text: t("Save"), cls: "mod-cta" });
+		btn.onclick = (e): void => this.selectSuggestion(this.inputEl.value, e);
+		wrapper.appendChild(btn);
 	}
 
 	public async awaitSelection(): Promise<string> {

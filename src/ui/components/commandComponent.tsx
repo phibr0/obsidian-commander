@@ -132,9 +132,17 @@ export default function CommandComponent({
 						/>
 					</span>
 					<span className="mobile-option-setting-item-option-icon">
-						<ObsidianIcon icon={pair.icon} size={22} />
+						<ObsidianIcon
+							icon={pair.icon}
+							size={22}
+							onClick={(): void => {
+								new MobileModifyModal(pair, handleRename, handleNewIcon, handleModeChange).open();
+							}}
+						/>
 					</span>
-					<span className="mobile-option-setting-item-name">
+					<span className="mobile-option-setting-item-name" onClick={(): void => {
+						new MobileModifyModal(pair, handleRename, handleNewIcon, handleModeChange).open();
+					}}>
 						{pair.name}
 						{pair.name !== cmd.name && (
 							<span style="margin-left: .8ex">({cmd.name})</span>
