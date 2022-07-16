@@ -1,4 +1,4 @@
-import { Menu, setIcon } from "obsidian";
+import { Menu, setIcon, WorkspaceLeaf } from "obsidian";
 import t from "src/l10n";
 import CommanderPlugin from "src/main";
 import { CommandIconPair } from "src/types";
@@ -108,26 +108,12 @@ export default class PageHeaderManager extends CommandManagerBase {
 
 	private init(): void {
 		this.plugin.registerEvent(app.workspace.on("file-open", () => {
-			const activeLeaf = document.getElementsByClassName(
-				'workspace-leaf mod-active'
-			)[0];
-			const viewActions =
-				activeLeaf.getElementsByClassName('view-actions')[0];
-
-			for (const pair of this.pairs) {
-				if (
-					!viewActions.getElementsByClassName(
-						`view-action cmdr-page-header ${pair.id}`
-					)[0]
-				) {
-					if (isModeActive(pair.mode)) {
-						this.addPageHeaderButton(
-							viewActions,
-							pair
-						);
-					}
-				}
+			const activeLeaf = app.workspace.getMostRecentLeaf();
+			if (!activeLeaf) {
+				return;
 			}
+
+			this.addButtonsToLeaf(activeLeaf);
 
 			this.plugin.register(() => this.addBtn.remove());
 			setIcon(this.addBtn, "plus");
@@ -136,15 +122,41 @@ export default class PageHeaderManager extends CommandManagerBase {
 				this.addCommand(pair);
 				this.reorder();
 			};
-			if (this.plugin.settings.showAddCommand) viewActions.prepend(this.addBtn);
+			if (this.plugin.settings.showAddCommand) activeLeaf.containerEl.getElementsByClassName('view-actions')[0].prepend(this.addBtn);
 		}));
+
+		app.workspace.onLayoutReady(() => setTimeout(() => this.addButtonsToAllLeaves(), 100));
+	}
+
+	private addButtonsToAllLeaves(): void {
+		app.workspace.iterateAllLeaves(leaf => this.addButtonsToLeaf(leaf));
+		//@ts-ignore
+		app.workspace.onLayoutChange();
+	}
+
+	private addButtonsToLeaf(leaf: WorkspaceLeaf): void {
+		const viewActions =
+			leaf.containerEl.getElementsByClassName('view-actions')[0];
+		for (const pair of this.pairs) {
+			if (!viewActions.getElementsByClassName(
+				`view-action cmdr-page-header ${pair.id}`
+			)[0]) {
+				if (isModeActive(pair.mode)) {
+					this.addPageHeaderButton(
+						viewActions,
+						pair
+					);
+				}
+			}
+		}
 	}
 
 	public reorder(): void | Promise<void> {
-		const x = document.getElementsByClassName("view-action cmdr-page-header");
+		const x = activeDocument.getElementsByClassName("view-action cmdr-page-header");
 		for (let i = x.length - 1; i >= 0; i--) {
 			x.item(i)?.remove();
 		}
+		this.addButtonsToAllLeaves();
 	}
 
 	public async addCommand(pair: CommandIconPair): Promise<void> {
@@ -155,7 +167,7 @@ export default class PageHeaderManager extends CommandManagerBase {
 	public async removeCommand(pair: CommandIconPair): Promise<void> {
 		this.pairs.remove(pair);
 
-		const x = document.getElementsByClassName(`view-action cmdr-page-header ${pair.id}`);
+		const x = activeDocument.getElementsByClassName(`view-action cmdr-page-header ${pair.id}`);
 		for (let i = x.length - 1; i >= 0; i--) {
 			x.item(i)?.remove();
 		}

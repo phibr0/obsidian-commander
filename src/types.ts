@@ -64,4 +64,8 @@ declare module "obsidian" {
 		addRibbonActionButton: (icon: string, name: string, callback: (event: MouseEvent) => void) => void;
 		makeRibbonActionButton: (icon: string, name: string, callback: (event: MouseEvent) => void) => HTMLElement;
 	}
+
+	interface WorkspaceLeaf {
+		containerEl: HTMLElement;
+	}
 }
