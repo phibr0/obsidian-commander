@@ -82,7 +82,7 @@ export default class StatusBarManager extends CommandManagerBase {
 	}
 
 	private addAction(pair: CommandIconPair): void {
-		const btn = createDiv({ cls: "cmdr status-bar-item clickable-icon", attr: { "aria-label-position": "top", "aria-label": pair.name, "style": "margin: 0" } });
+		const btn = createDiv({ cls: "cmdr status-bar-item clickable-icon", attr: { "aria-label-position": "top", "aria-label": pair.name } });
 		this.actions.set(pair, btn);
 
 		let isRemovable = false;

@@ -1,5 +1,9 @@
 .cmdr {
 	transition: transform 400ms 0s;
+
+	&.status-bar-item {
+		margin: 0;
+	}
 }
 
 .cmdr-removing {
@@ -21,6 +25,21 @@
 		margin-top: 6px;
 		margin-bottom: 12px;
 	}
+}
+
+.cmdr-option-setting-name {
+	margin-left: 0.8ex;
+}
+
+.cmdr-base-component {
+	padding: 0px 20px;
+	margin-bottom: -18px;
+}
+
+.cmdr-menu-more-options {
+	position: absolute;
+	right: 10px;
+	padding-top: 2px;
 }
 
 .cmdr-mobile .cmdr-credits {

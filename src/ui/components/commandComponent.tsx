@@ -145,7 +145,7 @@ export default function CommandComponent({
 					}}>
 						{pair.name}
 						{pair.name !== cmd.name && (
-							<span style="margin-left: .8ex">({cmd.name})</span>
+							<span className="cmdr-option-setting-name">({cmd.name})</span>
 						)}
 					</span>
 					<span className="mobile-option-setting-item-option-icon">

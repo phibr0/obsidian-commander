@@ -9,7 +9,7 @@ interface BaseComponentProps {
 }
 function BaseComponent({ icon, description }: BaseComponentProps): h.JSX.Element {
 	return (
-		<div style="padding: 0px 20px; margin-bottom: -18px;">
+		<div className="cmdr-base-component">
 			<div className="cmdr-macro-icon">
 				<ObsidianIcon icon={icon} />
 			</div>
