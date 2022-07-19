@@ -137,6 +137,9 @@ export default class PageHeaderManager extends CommandManagerBase {
 	private addButtonsToLeaf(leaf: WorkspaceLeaf): void {
 		const viewActions =
 			leaf.containerEl.getElementsByClassName('view-actions')[0];
+
+		if (!viewActions) return;
+
 		for (const pair of this.pairs) {
 			if (!viewActions.getElementsByClassName(
 				`view-action cmdr-page-header ${pair.id}`

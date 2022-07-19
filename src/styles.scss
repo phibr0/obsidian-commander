@@ -38,7 +38,7 @@
 
 .cmdr-menu-more-options {
 	position: absolute;
-	right: 10px;
+	right: 0;
 	padding-top: 2px;
 }
 
@@ -205,7 +205,7 @@
 .cmdr-setting-header {
 	margin-bottom: 24px;
 	overflow-y: hidden;
-	overflow-x: overlay;
+	overflow-x: auto;
 
 	.cmdr-setting-tab-group {
 		display: flex;
@@ -344,4 +344,8 @@
 	button {
 		margin: 0;
 	}
+}
+
+.cmdr-icon.clickable-icon.mod-warning {
+	cursor: default;
 }

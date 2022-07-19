@@ -147,16 +147,14 @@ export class EditorMenuCommandManager extends Base {
 
 	public applyEditorMenuCommands(plugin: CommanderPlugin) {
 		return async (menu: Menu, editor: Editor, view: MarkdownView): Promise<void> => {
-			this.addCommandAddButton(plugin, menu, plugin.settings.editorMenu);
+			//this.addCommandAddButton(plugin, menu, plugin.settings.editorMenu);
 
 			for (const cmdPair of plugin.settings.editorMenu) {
 				const command = getCommandFromId(cmdPair.id);
 
 				//Command has been removed
-				if (command === null) {
-					plugin.settings.editorMenu.remove(cmdPair);
-					await plugin.saveSettings();
-					return;
+				if (!command) {
+					continue;
 				}
 				//Use the check callbacks accordingly
 				if ((command.checkCallback && !command.checkCallback(true))
@@ -182,9 +180,7 @@ export class FileMenuCommandManager extends Base {
 
 				//Command has been removed
 				if (!command) {
-					plugin.settings.editorMenu.remove(cmdPair);
-					await plugin.saveSettings();
-					return;
+					continue;
 				}
 
 				//Check for all checkedCallbacks

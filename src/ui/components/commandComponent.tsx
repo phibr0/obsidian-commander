@@ -1,4 +1,4 @@
-import { Platform } from "obsidian";
+import { Notice, Platform } from "obsidian";
 import { Fragment, h } from "preact";
 import t from "src/l10n";
 import { CommandIconPair } from "src/types";
@@ -30,7 +30,50 @@ export default function CommandComponent({
 	const cmd = getCommandFromId(pair.id);
 	if (!cmd) {
 		// !TODO
-		return <Fragment>Command removed (todo)</Fragment>;
+		return <Fragment>
+			{Platform.isDesktop && <div className="setting-item mod-toggle">
+				<ObsidianIcon icon="alert-triangle" size={20} className="cmdr-icon clickable-icon mod-warning" />
+				<div className="setting-item-info">
+					<div className="setting-item-name">
+						{pair.name}
+					</div>
+					<div className="setting-item-description">
+						{t("This Command is not available on this device.")}
+					</div>
+				</div>
+				<div className="setting-item-control">
+					<button
+						className="mod-warning"
+						style="display: flex"
+						onClick={handleRemove}
+						aria-label={t("Delete")}
+					>
+						<ObsidianIcon icon="lucide-trash" />
+					</button>
+				</div>
+			</div>}
+			{Platform.isMobile && <div className="mobile-option-setting-item" onClick={(): void => { new Notice(t("This Command is not available on this device.")); }}>
+				<span
+					className="mobile-option-setting-item-remove-icon"
+					onClick={handleRemove}
+				>
+					<ObsidianIcon
+						icon="minus-with-circle"
+						size={22}
+						style={{ color: "var(--text-error)" }}
+					/>
+				</span>
+				<span className="mobile-option-setting-item-option-icon mod-warning">
+					<ObsidianIcon
+						icon={"alert-triangle"}
+						size={22}
+					/>
+				</span>
+				<span className="mobile-option-setting-item-name">
+					{pair.name}
+				</span>
+			</div>}
+		</Fragment>;
 	}
 	const owningPluginID = cmd.id.split(":").first();
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
