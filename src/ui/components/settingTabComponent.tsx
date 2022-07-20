@@ -1,7 +1,8 @@
 import { Notice, Platform } from "obsidian";
 import { Fragment, h } from "preact";
-import { useEffect, useMemo, useState } from "preact/hooks";
+import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import t from "src/l10n";
+import { Tab } from "src/types";
 import { ObsidianIcon } from "src/util";
 import CommanderPlugin from "../../main";
 import About from "./About";
@@ -65,7 +66,7 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 		);
 	};
 
-	const tabs = useMemo(() => [
+	const tabs: Tab[] = useMemo(() => [
 		{
 			name: t("General"),
 			tab: <Fragment>
@@ -145,17 +146,7 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 				<h1>{plugin.manifest.name}</h1>
 			</div>}
 
-			{(Platform.isDesktop || open) && <nav class={`cmdr-setting-header ${mobileMode ? "cmdr-mobile" : ""}`}>
-				<div className="cmdr-setting-tab-group">
-					{tabs.map((tab, idx) => <div
-						className={activeTab === idx ? "cmdr-tab cmdr-tab-active" : "cmdr-tab"}
-						onClick={(): void => { setActiveTab(idx); setOpen(false); }}>
-						<span>{tab.name}</span>
-						{Platform.isMobile && <ObsidianIcon icon="chevron-right" size={24} />}
-					</div>)}
-				</div>
-				{Platform.isDesktop && <div className="cmdr-fill" />}
-			</nav>}
+			{(Platform.isDesktop || open) && <TabHeader tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} setOpen={setOpen} />}
 
 			<div class={`cmdr-setting-content ${mobileMode ? "cmdr-mobile" : ""}`}>
 				{(Platform.isDesktop || !open) && tabs[activeTab].tab}
@@ -163,5 +154,47 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 				{((Platform.isMobile && open) || (Platform.isDesktop && activeTab === 0)) && <About manifest={plugin.manifest} />}
 			</div>
 		</Fragment >
+	);
+}
+
+interface TabHeaderProps {
+	tabs: Tab[],
+	activeTab: number;
+	// eslint-disable-next-line no-unused-vars
+	setActiveTab: (idx: number) => void;
+	// eslint-disable-next-line no-unused-vars
+	setOpen: (open: boolean) => void;
+}
+export function TabHeader({ tabs, activeTab, setActiveTab, setOpen }: TabHeaderProps): h.JSX.Element {
+	const wrapper = useRef<HTMLElement>(null);
+
+	const handleScroll = (e: WheelEvent): void => {
+		e.preventDefault();
+		wrapper.current?.scrollBy({ left: e.deltaY > 0 ? 16 : -16 });
+	};
+
+	useEffect(() => {
+		const el = wrapper.current;
+		if (!el || Platform.isMobile) {
+			return;
+		}
+
+		el.addEventListener("wheel", handleScroll);
+		return () => el.removeEventListener("wheel", handleScroll);
+	}, []);
+
+	return (
+		<nav class={`cmdr-setting-header ${Platform.isMobile ? "cmdr-mobile" : ""}`} ref={wrapper}>
+			<div className="cmdr-setting-tab-group">
+				{tabs.map((tab, idx) => <div
+					className={activeTab === idx ? "cmdr-tab cmdr-tab-active" : "cmdr-tab"}
+					onClick={(): void => { setActiveTab(idx); setOpen(false); }}>
+					<span>{tab.name}</span>
+					{Platform.isMobile && <ObsidianIcon icon="chevron-right" size={24} />}
+				</div>)}
+			</div>
+
+			{Platform.isDesktop && <div className="cmdr-fill" />}
+		</nav>
 	);
 }

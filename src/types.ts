@@ -1,3 +1,5 @@
+import { h } from "preact";
+
 export interface CommanderSettings {
 	confirmDeletion: boolean;
 	showAddCommand: boolean;
@@ -19,6 +21,11 @@ export interface CommanderSettings {
 export interface Macro {
 	nodes: any[];
 	edges: any[]
+}
+
+export interface Tab {
+	name: string;
+	tab: h.JSX.Element;
 }
 
 export type Mode = "desktop" | "any" | "mobile" | string;

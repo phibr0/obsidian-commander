@@ -153,15 +153,14 @@ export class EditorMenuCommandManager extends Base {
 				const command = getCommandFromId(cmdPair.id);
 
 				//Command has been removed
-				if (!command) {
-					continue;
-				}
+				if (!command) continue;
+
+				if (!isModeActive(cmdPair.mode)) continue;
+
 				//Use the check callbacks accordingly
 				if ((command.checkCallback && !command.checkCallback(true))
 					|| (command.editorCheckCallback && !command.editorCheckCallback(true, editor, view))
 				) continue;
-
-				if (!isModeActive(cmdPair.mode)) continue;
 
 				menu.addItem(this.addRemovableCommand.call(this, command, cmdPair, plugin, menu, plugin.settings.editorMenu));
 			}
