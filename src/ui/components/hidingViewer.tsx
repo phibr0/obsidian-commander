@@ -4,8 +4,8 @@ import { useEffect, useState } from "preact/hooks";
 import t from "src/l10n";
 import CommanderPlugin from "src/main";
 import { updateHiderStylesheet } from "src/util";
-import Closable from "./Closable";
-import { ToggleComponent } from "./settingComponent";
+import Accordion from "./Accordion";
+import { EyeToggleComponent } from "./settingComponent";
 
 export default function HidingViewer({ plugin }: { plugin: CommanderPlugin }): h.JSX.Element {
 	return (
@@ -20,15 +20,22 @@ function LeftRibbonHider({ plugin }: { plugin: CommanderPlugin }): h.JSX.Element
 	const [ribbonCommands, setRibbonCommands] = useState<{ name: string, icon: string }[]>([]);
 	const hiddenCommands = plugin.settings.hide.leftRibbon;
 	useEffect(() => {
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		setRibbonCommands([...app.workspace.leftRibbon.ribbonActionsEl!.children].filter((el) => !el.hasClass("cmdr")).map((el) => { return { name: el.getAttribute("aria-label")!, icon: el.firstElementChild!.className! }; }));
+		setRibbonCommands(
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			[...app.workspace.leftRibbon.ribbonActionsEl!.children]
+				.filter((el) => !el.hasClass("cmdr"))
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+				.map((el) => { return { name: el.getAttribute("aria-label")!, icon: el.firstElementChild!.className! }; })
+		);
 	}, []);
 
 	return (
-		<Closable index={0} title={t("Left Ribbon")}>
-			{ribbonCommands.map((command) => <ToggleComponent
+		<Accordion index={0} title={t("Left Ribbon")}>
+			{ribbonCommands.map((command) => <EyeToggleComponent
 				name={command.name}
 				description=""
+				hideLabel={t("Hide")}
+				showLabel={t("Show")}
 				changeHandler={async (value): Promise<void> => {
 					if (!value) {
 						hiddenCommands.push(command.name);
@@ -40,7 +47,7 @@ function LeftRibbonHider({ plugin }: { plugin: CommanderPlugin }): h.JSX.Element
 				}}
 				value={hiddenCommands.contains(command.name)}
 			/>)}
-		</Closable>
+		</Accordion>
 	);
 }
 
@@ -54,11 +61,13 @@ function StatusbarHider({ plugin }: { plugin: CommanderPlugin }): h.JSX.Element 
 	}, []);
 
 	return (
-		<Closable index={1} title={t("Statusbar")}>
-			{pluginsWithRibbonItems.map((manifest) => <ToggleComponent
+		<Accordion index={1} title={t("Statusbar")}>
+			{pluginsWithRibbonItems.map((manifest) => <EyeToggleComponent
 				name={manifest.name}
 				description={manifest.description}
 				value={hiddenPlugins.contains(manifest.id)}
+				hideLabel={t("Hide")}
+				showLabel={t("Show")}
 				changeHandler={async (value): Promise<void> => {
 					if (!value) {
 						hiddenPlugins.push(manifest.id);
@@ -69,6 +78,6 @@ function StatusbarHider({ plugin }: { plugin: CommanderPlugin }): h.JSX.Element 
 					await plugin.saveSettings();
 				}}
 			/>)}
-		</Closable>
+		</Accordion>
 	);
 }

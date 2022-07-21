@@ -1,7 +1,7 @@
 {
 	"id": "cmdr",
 	"name": "Commander",
-	"version": "0.0.19",
+	"version": "0.0.20",
 	"minAppVersion": "0.15.0",
 	"description": "Customize your workspace by adding commands /everywhere/.",
 	"author": "jsmorabito & phibr0",

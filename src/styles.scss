@@ -96,9 +96,15 @@
 }
 
 .cmdr-accordion {
+	background-color: var(--background-primary);
+	padding: 12px;
+	border-radius: 12px;
+	margin-bottom: 16px;
+
 	.cmdr-accordion-chevron {
 		margin-left: 0;
 		margin-right: 4px;
+		height: 24px;
 		> svg {
 			transition: all 0.25s ease;
 		}
@@ -110,6 +116,10 @@
 		overflow: hidden;
 		margin-left: 14px;
 		padding-left: 14px;
+
+		.setting-item {
+			padding-top: 12px;
+		}
 	}
 
 	&[aria-expanded="false"] {
@@ -129,7 +139,6 @@
 
 		span {
 			font-weight: 600;
-			margin-bottom: 8px;
 			margin-top: 0;
 		}
 	}

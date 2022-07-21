@@ -183,6 +183,8 @@ export function TabHeader({ tabs, activeTab, setActiveTab, setOpen }: TabHeaderP
 		return () => el.removeEventListener("wheel", handleScroll);
 	}, []);
 
+	useEffect(() => document.querySelector(".cmdr-tab-active")?.scrollIntoView({ behavior: "smooth", block: "nearest" }), [activeTab]);
+
 	return (
 		<nav class={`cmdr-setting-header ${Platform.isMobile ? "cmdr-mobile" : ""}`} ref={wrapper}>
 			<div className="cmdr-setting-tab-group">

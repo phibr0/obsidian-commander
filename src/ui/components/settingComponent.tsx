@@ -1,5 +1,6 @@
 import { h } from "preact";
 import { useState } from "preact/hooks";
+import { ObsidianIcon } from "src/util";
 
 interface BaseComponentProps {
 	children: h.JSX.Element;
@@ -36,6 +37,26 @@ export function ToggleComponent(props: SettingProps<boolean>): h.JSX.Element {
 			<div
 				className={`checkbox-container ${state ? "is-enabled" : ""}`}
 				onClick={(): void => { setState(!state); props.changeHandler(state); }}
+			/>
+		</BaseComponent>
+	);
+}
+
+interface EyeToggleSettingProps extends SettingProps<boolean> {
+	hideLabel: string;
+	showLabel: string;
+}
+export function EyeToggleComponent({ name, description, changeHandler, value, hideLabel, showLabel }: EyeToggleSettingProps): h.JSX.Element {
+	const [state, setState] = useState(value);
+
+	return (
+		<BaseComponent name={name} description={description} className="mod-toggle">
+			<ObsidianIcon
+				aria-label={state ? showLabel : hideLabel}
+				icon={state ? "eye-off" : "eye"}
+				size={20}
+				className="clickable-icon"
+				onClick={(): void => { setState(!state); changeHandler(state); }}
 			/>
 		</BaseComponent>
 	);

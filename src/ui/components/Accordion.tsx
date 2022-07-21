@@ -7,7 +7,7 @@ interface ClosableProps extends ComponentProps<"details"> {
 	index: number;
 	children?: h.JSX.Element | h.JSX.Element[];
 }
-export default function Closable({ title, children, index }: ClosableProps): h.JSX.Element {
+export default function Accordion({ title, children, index }: ClosableProps): h.JSX.Element {
 	const [open, setOpen] = useState(false);
 
 	const toggleHandler = (): void => {
