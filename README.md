@@ -13,6 +13,9 @@ Commander is a plugin for [Obsidian](https://obsidian.md) which allows you to ad
 - hide commands added by Obsidian or other plugins	
 - choose which devices commands appear on (for sync users)
 
+## Demo
+![Commander Demo](https://user-images.githubusercontent.com/46250921/180301683-080256c4-84f9-4a2f-9b1c-f97af694683e.gif)
+
 
 ## How you can improve this Plugin
 
