@@ -111,3 +111,6 @@ export async function showConfetti({ target }: MouseEvent): Promise<void> {
 	myCanvas.remove();
 }
 
+export function updateSpacing(spacing: number): void {
+	activeDocument.body.style.setProperty("--cmdr-spacing", `${spacing}px`);
+}

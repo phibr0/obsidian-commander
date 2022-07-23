@@ -65,5 +65,9 @@
 	"Save": "Save",
 	"This Command is not available on this device.": "This Command is not available on this device.",
 	"Show": "Show",
-	"Hide": "Hide"
+	"Hide": "Hide",
+	"Hide other Commands": "Hide other Commands",
+	"Double click to enter custom value": "Double click to enter custom value",
+	"Choose custom spacing for Command Buttons": "Choose custom spacing for Command Buttons",
+	"Change the spacing between commands. You can set different values on mobile and desktop.": "Change the spacing between commands."
 }

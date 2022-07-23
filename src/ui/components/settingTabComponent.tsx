@@ -3,12 +3,12 @@ import { Fragment, h } from "preact";
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import t from "src/l10n";
 import { Tab } from "src/types";
-import { ObsidianIcon } from "src/util";
+import { ObsidianIcon, updateSpacing } from "src/util";
 import CommanderPlugin from "../../main";
 import About from "./About";
 import CommandViewer from "./commandViewerComponent";
-import HidingViewer from "./hidingViewer";
-import { ToggleComponent } from "./settingComponent";
+import { LeftRibbonHider, StatusbarHider } from "./hidingViewer";
+import { SliderComponent, ToggleComponent } from "./settingComponent";
 
 export default function settingTabComponent({ plugin, mobileMode }: { plugin: CommanderPlugin; mobileMode: boolean; }): h.JSX.Element {
 	const [activeTab, setActiveTab] = useState(0);
@@ -58,14 +58,6 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 		}
 	}, [open]);
 
-	const openHiderTab = (idx: number): void => {
-		setActiveTab(tabs.length - 1);
-		setTimeout(
-			() => dispatchEvent(new CustomEvent("cmdr-open-hider-tab", { detail: { index: idx } })),
-			50
-		);
-	};
-
 	const tabs: Tab[] = useMemo(() => [
 		{
 			name: t("General"),
@@ -104,6 +96,15 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 						plugin.settings.debug = !value;
 						await plugin.saveSettings();
 					}} />
+				<SliderComponent
+					value={plugin.settings.spacing}
+					name={t("Choose custom spacing for Command Buttons")}
+					description={t("Change the spacing between commands. You can set different values on mobile and desktop.")}
+					changeHandler={async (value): Promise<void> => {
+						updateSpacing(value);
+						plugin.settings.spacing = value;
+						await plugin.saveSettings();
+					}} />
 			</Fragment>
 		},
 		{
@@ -116,7 +117,9 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 		},
 		{
 			name: t("Left Ribbon"),
-			tab: <CommandViewer manager={plugin.manager.leftRibbon} plugin={plugin} onOpenHider={(): void => openHiderTab(0)} />
+			tab: <CommandViewer manager={plugin.manager.leftRibbon} plugin={plugin}>
+				<LeftRibbonHider plugin={plugin} />
+			</CommandViewer>
 		},
 		{
 			name: t("Right Ribbon"),
@@ -128,15 +131,13 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 		},
 		{
 			name: t("Statusbar"),
-			tab: <CommandViewer manager={plugin.manager.statusBar} plugin={plugin} onOpenHider={(): void => openHiderTab(1)} />
+			tab: <CommandViewer manager={plugin.manager.statusBar} plugin={plugin}>
+				<StatusbarHider plugin={plugin} />
+			</CommandViewer>
 		},
 		{
 			name: t("Page Header"),
 			tab: <CommandViewer manager={plugin.manager.pageHeader} plugin={plugin} />
-		},
-		{
-			name: t("Hide Commands"),
-			tab: <HidingViewer plugin={plugin} />
 		}
 	], []);
 

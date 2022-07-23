@@ -102,6 +102,7 @@ export default function CommandComponent({
 					<div className="setting-item-info">
 						<div className="setting-item-name">
 							<ChangeableText
+								ariaLabel={t("Double click to rename")}
 								handleChange={({ target }): void => {
 									{/* @ts-ignore */ }
 									handleRename(target?.value);

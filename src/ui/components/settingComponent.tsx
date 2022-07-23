@@ -1,6 +1,8 @@
 import { h } from "preact";
 import { useState } from "preact/hooks";
+import t from "src/l10n";
 import { ObsidianIcon } from "src/util";
+import ChangeableText from "./ChangeableText";
 
 interface BaseComponentProps {
 	children: h.JSX.Element;
@@ -58,6 +60,26 @@ export function EyeToggleComponent({ name, description, changeHandler, value, hi
 				className="clickable-icon"
 				onClick={(): void => { setState(!state); changeHandler(state); }}
 			/>
+		</BaseComponent>
+	);
+}
+
+export function SliderComponent(props: SettingProps<number>): h.JSX.Element {
+	const [val, setVal] = useState(props.value);
+
+	return (
+		<BaseComponent description={props.description} name={props.name} className="cmdr-slider">
+			<div>
+				<ChangeableText ariaLabel={t("Double click to enter custom value")} value={val.toString()} handleChange={({ target }): void => {
+					//@ts-expect-error
+					const n = Number(target.value);
+					if (!isNaN(n) && val !== n) {
+						setVal(n); props.changeHandler(n);
+					}
+				}} />
+				{/*@ts-expect-error*/}
+				<input class="slider" type="range" min="0" max="32" step="1" value={val} onMouseMove={({ target }): void => { if (val !== target.value) { setVal(target.value); props.changeHandler(target.value); } }} />
+			</div>
 		</BaseComponent>
 	);
 }

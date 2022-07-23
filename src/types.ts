@@ -16,6 +16,7 @@ export interface CommanderSettings {
 		statusbar: string[];
 		leftRibbon: string[];
 	}
+	spacing: number;
 }
 
 export interface Macro {

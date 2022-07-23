@@ -1,16 +1,17 @@
 import { h } from "preact";
 import { Ref, useEffect, useRef, useState } from "preact/hooks";
-import t from "src/l10n";
 
 interface Props {
 	value: string;
 	// eslint-disable-next-line no-unused-vars
 	handleChange: (e: Event) => void;
+	ariaLabel: string;
 }
 
 export default function ChangeableText({
 	value,
 	handleChange,
+	ariaLabel
 }: Props): h.JSX.Element {
 	const [showInputEle, setShowInput] = useState(false);
 	const el: Ref<HTMLInputElement> | undefined = useRef(null);
@@ -42,7 +43,7 @@ export default function ChangeableText({
 			) : (
 				<span
 					onDblClick={(): void => setShowInput(true)}
-					aria-label={t("Double click to rename")}
+					aria-label={ariaLabel}
 				>
 					{value}
 				</span>

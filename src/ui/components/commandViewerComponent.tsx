@@ -2,7 +2,7 @@ import { createContext, Fragment, h } from "preact";
 import CommanderPlugin from "src/main";
 import CommandComponent from "./commandComponent";
 import CommandManagerBase from "src/manager/commands/commandManager";
-import { chooseNewCommand, isModeActive, ObsidianIcon } from "src/util";
+import { chooseNewCommand, isModeActive } from "src/util";
 import { arrayMoveMutable } from "array-move";
 import ChooseIconModal from "../chooseIconModal";
 import ConfirmDeleteModal from "../confirmDeleteModal";
@@ -16,49 +16,51 @@ export const ManagerContext = createContext<CommandManagerBase>(null!);
 interface CommandViewerProps {
 	manager: CommandManagerBase;
 	plugin: CommanderPlugin
-	onOpenHider?: () => void
+	children?: h.JSX.Element | h.JSX.Element[]
 }
-export default function CommandViewer({ manager, plugin, onOpenHider }: CommandViewerProps): h.JSX.Element {
+export default function CommandViewer({ manager, plugin, children }: CommandViewerProps): h.JSX.Element {
 	return (
 		<Fragment>
 			<ManagerContext.Provider value={manager}>
-				{manager.pairs.map((cmd, idx) => {
-					if (cmd.mode.match(/desktop|mobile|any/) || cmd.mode === app.appId) {
-						return <CommandComponent
-							key={cmd.id}
-							pair={cmd}
-							handleRemove={async (): Promise<void> => {
-								if (!plugin.settings.confirmDeletion || await new ConfirmDeleteModal(plugin).didChooseRemove()) {
-									await manager.removeCommand(cmd); this.forceUpdate();
-								}
-							}}
-							handleUp={(): void => { arrayMoveMutable(manager.pairs, idx, idx - 1); manager.reorder(); this.forceUpdate(); }}
-							handleDown={(): void => { arrayMoveMutable(manager.pairs, idx, idx + 1); manager.reorder(); this.forceUpdate(); }}
-							handleRename={async (name): Promise<void> => { cmd.name = name; await plugin.saveSettings(); manager.reorder(); this.forceUpdate(); }}
-							handleNewIcon={async (): Promise<void> => {
-								const newIcon = await (new ChooseIconModal(plugin)).awaitSelection();
-								if (newIcon && newIcon !== cmd.icon) {
-									cmd.icon = newIcon;
+				<div className="cmdr-sep-con">
+					{manager.pairs.map((cmd, idx) => {
+						if (cmd.mode.match(/desktop|mobile|any/) || cmd.mode === app.appId) {
+							return <CommandComponent
+								key={cmd.id}
+								pair={cmd}
+								handleRemove={async (): Promise<void> => {
+									if (!plugin.settings.confirmDeletion || await new ConfirmDeleteModal(plugin).didChooseRemove()) {
+										await manager.removeCommand(cmd); this.forceUpdate();
+									}
+								}}
+								handleUp={(): void => { arrayMoveMutable(manager.pairs, idx, idx - 1); manager.reorder(); this.forceUpdate(); }}
+								handleDown={(): void => { arrayMoveMutable(manager.pairs, idx, idx + 1); manager.reorder(); this.forceUpdate(); }}
+								handleRename={async (name): Promise<void> => { cmd.name = name; await plugin.saveSettings(); manager.reorder(); this.forceUpdate(); }}
+								handleNewIcon={async (): Promise<void> => {
+									const newIcon = await (new ChooseIconModal(plugin)).awaitSelection();
+									if (newIcon && newIcon !== cmd.icon) {
+										cmd.icon = newIcon;
+										await plugin.saveSettings();
+										manager.reorder();
+										this.forceUpdate();
+									}
+									dispatchEvent(new Event("cmdr-icon-changed"));
+								}}
+								handleModeChange={async (mode?: string): Promise<void> => {
+									// This is the rotation
+									const modes = ["any", "desktop", "mobile", app.appId];
+									let currentIdx = modes.indexOf(cmd.mode);
+									if (currentIdx === 3) currentIdx = -1;
+
+									cmd.mode = mode || modes[currentIdx + 1];
 									await plugin.saveSettings();
 									manager.reorder();
 									this.forceUpdate();
-								}
-								dispatchEvent(new Event("cmdr-icon-changed"));
-							}}
-							handleModeChange={async (mode?: string): Promise<void> => {
-								// This is the rotation
-								const modes = ["any", "desktop", "mobile", app.appId];
-								let currentIdx = modes.indexOf(cmd.mode);
-								if (currentIdx === 3) currentIdx = -1;
-
-								cmd.mode = mode || modes[currentIdx + 1];
-								await plugin.saveSettings();
-								manager.reorder();
-								this.forceUpdate();
-							}}
-						/>;
-					}
-				})}
+								}}
+							/>;
+						}
+					})}
+				</div>
 				{!manager.pairs.some((pre) => isModeActive(pre.mode) || pre.mode.match(/mobile|desktop/)) && <div class="cmdr-commands-empty">
 					{/* This isn't really dangerous,
 					as the svg is inserted at build time and no other data can be passed to it */}
@@ -81,16 +83,10 @@ export default function CommandViewer({ manager, plugin, onOpenHider }: CommandV
 					>
 						{t("Add command")}
 					</button>
-
-					{onOpenHider && <ObsidianIcon
-						icon="eye-off"
-						size={18}
-						class="clickable-icon"
-						aria-label={t("Hide Commands of other Plugins")}
-						onClick={onOpenHider}
-					/>}
 				</div>
 			</ManagerContext.Provider>
+
+			{children}
 		</Fragment >
 	);
 }

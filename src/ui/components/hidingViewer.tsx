@@ -7,16 +7,8 @@ import { updateHiderStylesheet } from "src/util";
 import Accordion from "./Accordion";
 import { EyeToggleComponent } from "./settingComponent";
 
-export default function HidingViewer({ plugin }: { plugin: CommanderPlugin }): h.JSX.Element {
-	return (
-		<Fragment>
-			<LeftRibbonHider plugin={plugin} />
-			<StatusbarHider plugin={plugin} />
-		</Fragment>
-	);
-}
 
-function LeftRibbonHider({ plugin }: { plugin: CommanderPlugin }): h.JSX.Element {
+export function LeftRibbonHider({ plugin }: { plugin: CommanderPlugin }): h.JSX.Element {
 	const [ribbonCommands, setRibbonCommands] = useState<{ name: string, icon: string }[]>([]);
 	const hiddenCommands = plugin.settings.hide.leftRibbon;
 	useEffect(() => {
@@ -30,28 +22,31 @@ function LeftRibbonHider({ plugin }: { plugin: CommanderPlugin }): h.JSX.Element
 	}, []);
 
 	return (
-		<Accordion index={0} title={t("Left Ribbon")}>
-			{ribbonCommands.map((command) => <EyeToggleComponent
-				name={command.name}
-				description=""
-				hideLabel={t("Hide")}
-				showLabel={t("Show")}
-				changeHandler={async (value): Promise<void> => {
-					if (!value) {
-						hiddenCommands.push(command.name);
-					} else {
-						hiddenCommands.contains(command.name) && hiddenCommands.remove(command.name);
-					}
-					updateHiderStylesheet(plugin.settings);
-					await plugin.saveSettings();
-				}}
-				value={hiddenCommands.contains(command.name)}
-			/>)}
-		</Accordion>
+		<Fragment>
+			<hr />
+			<Accordion title={t("Hide other Commands")}>
+				{ribbonCommands.map((command) => <EyeToggleComponent
+					name={command.name}
+					description=""
+					hideLabel={t("Hide")}
+					showLabel={t("Show")}
+					changeHandler={async (value): Promise<void> => {
+						if (!value) {
+							hiddenCommands.push(command.name);
+						} else {
+							hiddenCommands.contains(command.name) && hiddenCommands.remove(command.name);
+						}
+						updateHiderStylesheet(plugin.settings);
+						await plugin.saveSettings();
+					}}
+					value={hiddenCommands.contains(command.name)}
+				/>)}
+			</Accordion>
+		</Fragment>
 	);
 }
 
-function StatusbarHider({ plugin }: { plugin: CommanderPlugin }): h.JSX.Element {
+export function StatusbarHider({ plugin }: { plugin: CommanderPlugin }): h.JSX.Element {
 	const hiddenPlugins = plugin.settings.hide.statusbar;
 	const [pluginsWithRibbonItems, setPluginsWithRibbonItems] = useState<PluginManifest[]>([]);
 	useEffect(() => {
@@ -61,23 +56,26 @@ function StatusbarHider({ plugin }: { plugin: CommanderPlugin }): h.JSX.Element 
 	}, []);
 
 	return (
-		<Accordion index={1} title={t("Statusbar")}>
-			{pluginsWithRibbonItems.map((manifest) => <EyeToggleComponent
-				name={manifest.name}
-				description={manifest.description}
-				value={hiddenPlugins.contains(manifest.id)}
-				hideLabel={t("Hide")}
-				showLabel={t("Show")}
-				changeHandler={async (value): Promise<void> => {
-					if (!value) {
-						hiddenPlugins.push(manifest.id);
-					} else {
-						hiddenPlugins.contains(manifest.id) && hiddenPlugins.remove(manifest.id);
-					}
-					updateHiderStylesheet(plugin.settings);
-					await plugin.saveSettings();
-				}}
-			/>)}
-		</Accordion>
+		<Fragment>
+			<hr />
+			<Accordion title={t("Hide other Commands")}>
+				{pluginsWithRibbonItems.map((manifest) => <EyeToggleComponent
+					name={manifest.name}
+					description={manifest.description}
+					value={hiddenPlugins.contains(manifest.id)}
+					hideLabel={t("Hide")}
+					showLabel={t("Show")}
+					changeHandler={async (value): Promise<void> => {
+						if (!value) {
+							hiddenPlugins.push(manifest.id);
+						} else {
+							hiddenPlugins.contains(manifest.id) && hiddenPlugins.remove(manifest.id);
+						}
+						updateHiderStylesheet(plugin.settings);
+						await plugin.saveSettings();
+					}}
+				/>)}
+			</Accordion>
+		</Fragment>
 	);
 }

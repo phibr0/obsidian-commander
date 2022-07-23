@@ -75,6 +75,10 @@
 }
 .cmdr-setting-content {
 	height: calc(100% - 10rem);
+
+	.setting-item:first {
+		border-top: none;
+	}
 }
 
 .cmdr-commands-empty {
@@ -95,10 +99,17 @@
 	}
 }
 
-.cmdr-accordion {
+.cmdr-sep-con:not(:empty) {
 	background-color: var(--background-primary);
 	padding: 12px;
 	border-radius: 12px;
+
+	.setting-item:last-of-type {
+		padding-bottom: 0;
+	}
+}
+
+.cmdr-accordion {
 	margin-bottom: 16px;
 
 	.cmdr-accordion-chevron {
@@ -357,4 +368,49 @@
 
 .cmdr-icon.clickable-icon.mod-warning {
 	cursor: default;
+}
+
+.cmdr-hider-title {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	h3 {
+		margin-top: 0;
+		margin-bottom: 8px;
+		font-weight: 900;
+	}
+
+	p {
+		margin-top: 0;
+		margin-bottom: 26px;
+		width: 50%;
+		text-align: center;
+	}
+}
+
+.setting-item-control .cmdr-editable {
+	width: 2em;
+	text-align: center;
+
+	input,
+	span {
+		width: 2em;
+	}
+}
+
+.cmdr-slider input.slider {
+	margin-left: 4px;
+}
+
+.view-action:not(:last-child) {
+	margin-right: var(--cmdr-spacing);
+}
+.titlebar-button:not(:last-child),
+.status-bar-item:not(:last-child) {
+	margin-right: calc(var(--cmdr-spacing) - 8px);
+}
+
+.side-dock-ribbon-action:not(:last-child) {
+	margin-bottom: calc(var(--cmdr-spacing) - 8px);
 }

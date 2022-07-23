@@ -1,3 +1,4 @@
+import { updateSpacing } from 'src/util';
 import { Plugin } from 'obsidian';
 import { DEFAULT_SETTINGS } from './constants';
 import t from './l10n';
@@ -34,6 +35,7 @@ export default class CommanderPlugin extends Plugin {
 		await this.loadSettings();
 
 		registerCustomIcons();
+		updateSpacing(this.settings.spacing);
 
 		this.manager = {
 			editorMenu: new EditorMenuCommandManager(this, this.settings.editorMenu),

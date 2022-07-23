@@ -65,5 +65,9 @@
 	"Save": "Speichern",
 	"This Command is not available on this device.": "Dieser Befehl ist auf diesem Gerät nicht verfügbar.",
 	"Show": "Anzeigen",
-	"Hide": "Verstecken"
+	"Hide": "Verstecken",
+	"Hide other Commands": "Andere Befehle verstecken",
+	"Double click to enter custom value": "Doppelklicken um eigenen Wert einzutragen",
+	"Choose custom spacing for Command Buttons": "Wähle den Abstand zwischen Befehlen",
+	"Change the spacing between commands. You can set different values on mobile and desktop.": "Verändert den Abstand zwischen Befehlen."
 }
