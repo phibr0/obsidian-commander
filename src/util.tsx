@@ -62,10 +62,10 @@ export function isModeActive(mode: string): boolean {
 export function updateHiderStylesheet(settings: CommanderSettings): void {
 	let style = "";
 	for (const id of settings.hide.statusbar) {
-		style += `div.status-bar-item.plugin-${id} {display: none; content-visibility: hidden;}`;
+		style += `div.status-bar-item.plugin-${id} {display: none !important; content-visibility: hidden;}`;
 	}
 	for (const name of settings.hide.leftRibbon) {
-		style += `div.side-dock-ribbon-action[aria-label="${name}"] {display: none; content-visibility: hidden;}`;
+		style += `div.side-dock-ribbon-action[aria-label="${name}"] {display: none !important; content-visibility: hidden;}`;
 	}
 
 	document.head.querySelector("style#cmdr")?.remove();
@@ -102,6 +102,7 @@ export async function showConfetti({ target }: MouseEvent): Promise<void> {
 		drift: -1,
 		ticks: 250,
 		origin: {
+			//Center of the target component using values from 0 to 1
 			x: (pos.x + pos.width / 2) / activeWindow.innerWidth,
 			y: (pos.y + pos.height / 2) / activeWindow.innerHeight,
 		},
