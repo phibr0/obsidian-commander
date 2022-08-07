@@ -9,7 +9,7 @@ Commander is a plugin for [Obsidian](https://obsidian.md) which allows you to ad
 
 -   add commands
 -   remove commands
--   re order commands
+-   re order commands (via plugin settings menu)
 -   edit commands
 -   hide commands added by Obsidian or other plugins
 -   choose which devices commands appear on (for sync users)
