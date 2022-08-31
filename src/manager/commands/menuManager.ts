@@ -147,7 +147,7 @@ export class EditorMenuCommandManager extends Base {
 
 	public applyEditorMenuCommands(plugin: CommanderPlugin) {
 		return async (menu: Menu, editor: Editor, view: MarkdownView): Promise<void> => {
-			//this.addCommandAddButton(plugin, menu, plugin.settings.editorMenu);
+			this.addCommandAddButton(plugin, menu, plugin.settings.editorMenu);
 
 			for (const cmdPair of plugin.settings.editorMenu) {
 				const command = getCommandFromId(cmdPair.id);

@@ -35,7 +35,7 @@ export default function About({ manifest }: { manifest: PluginManifest }): h.JSX
 			<Logo />
 			<b>{manifest.name}</b>
 			<Credits />
-			<span className="cmdr-version">{manifest.version}</span>
+			<a className="cmdr-version" href={"https://github.com/phibr0/obsidian-commander/releases/tag/" + manifest.version}>{manifest.version}</a>
 		</div>
 	);
 }

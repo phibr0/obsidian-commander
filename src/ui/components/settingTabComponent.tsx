@@ -108,27 +108,41 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 			</Fragment>
 		},
 		{
-			name: t("Editor Menu"),
-			tab: <CommandViewer manager={plugin.manager.editorMenu} plugin={plugin} />
-		},
-		{
-			name: t("File Menu"),
-			tab: <CommandViewer manager={plugin.manager.fileMenu} plugin={plugin} />
-		},
-		{
 			name: t("Left Ribbon"),
 			tab: <CommandViewer manager={plugin.manager.leftRibbon} plugin={plugin}>
 				<LeftRibbonHider plugin={plugin} />
 			</CommandViewer>
 		},
+		// {
+		// 	name: t("Right Ribbon"),
+		// 	tab: <CommandViewer manager={plugin.manager.rightRibbon} plugin={plugin} />
+		// },
 		{
-			name: t("Right Ribbon"),
-			tab: <CommandViewer manager={plugin.manager.rightRibbon} plugin={plugin} />
+			name: t("Page Header"),
+			tab: <CommandViewer manager={plugin.manager.pageHeader} plugin={plugin}>
+				<hr />
+				<div className="cmdr-sep-con callout" data-callout="warning">
+					<span className="cmdr-callout-warning"><ObsidianIcon icon="alert-circle" /> {t("Warning")}</span>
+					<p className="cmdr-warning-description">{t("As of Obsidian 0.16.0 you need to explicitly enable the View Header.")}</p>
+					<button onClick={(): void => {
+						app.setting.openTabById("appearance");
+						setTimeout(() => {
+							//@ts-expect-error
+							(app.setting.activeTab.containerEl as HTMLElement).scroll({
+								behavior: "smooth",
+								top: 250,
+							});
+							//@ts-expect-error
+							(app.setting.activeTab.containerEl as HTMLElement).querySelectorAll(".setting-item-heading")[1].nextSibling.addClass("cmdr-cta");
+						}, 50);
+					}} className="mod-cta">{t("Open Appearance Settings")}</button>
+				</div>
+			</CommandViewer>
 		},
-		{
-			name: t("Titlebar"),
-			tab: <CommandViewer manager={plugin.manager.titleBar} plugin={plugin} />
-		},
+		// {
+		// 	name: t("Titlebar"),
+		// 	tab: <CommandViewer manager={plugin.manager.titleBar} plugin={plugin} />
+		// },
 		{
 			name: t("Statusbar"),
 			tab: <CommandViewer manager={plugin.manager.statusBar} plugin={plugin}>
@@ -136,9 +150,13 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 			</CommandViewer>
 		},
 		{
-			name: t("Page Header"),
-			tab: <CommandViewer manager={plugin.manager.pageHeader} plugin={plugin} />
-		}
+			name: t("Editor Menu"),
+			tab: <CommandViewer manager={plugin.manager.editorMenu} plugin={plugin} />
+		},
+		{
+			name: t("File Menu"),
+			tab: <CommandViewer manager={plugin.manager.fileMenu} plugin={plugin} />
+		},
 	], []);
 
 	return (

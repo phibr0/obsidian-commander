@@ -29,7 +29,6 @@ export default function CommandComponent({
 }: CommandViewerProps): h.JSX.Element {
 	const cmd = getCommandFromId(pair.id);
 	if (!cmd) {
-		// !TODO
 		return <Fragment>
 			{Platform.isDesktop && <div className="setting-item mod-toggle">
 				<ObsidianIcon icon="alert-triangle" size={20} className="cmdr-icon clickable-icon mod-warning" />

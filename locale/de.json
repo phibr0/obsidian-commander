@@ -69,5 +69,8 @@
 	"Hide other Commands": "Andere Befehle verstecken",
 	"Double click to enter custom value": "Doppelklicken um eigenen Wert einzutragen",
 	"Choose custom spacing for Command Buttons": "Wähle den Abstand zwischen Befehlen",
-	"Change the spacing between commands. You can set different values on mobile and desktop.": "Verändert den Abstand zwischen Befehlen."
+	"Change the spacing between commands. You can set different values on mobile and desktop.": "Verändert den Abstand zwischen Befehlen.",
+	"Warning": "Achtung",
+	"As of Obsidian 0.16.0 you need to explicitly enable the View Header.": "Ab Obsidian Version 0.16.0 müssen Sie den \"View Header\" explizit aktivieren. Anschließend muss Obsidian neugestartet werden.",
+	"Open Appearance Settings": "Öffne Darstellungs-Einstellungen"
 }

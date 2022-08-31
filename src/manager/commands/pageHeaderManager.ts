@@ -13,7 +13,10 @@ export default class PageHeaderManager extends CommandManagerBase {
 
 	public constructor(plugin: CommanderPlugin, pairArray: CommandIconPair[]) {
 		super(plugin, pairArray);
-		this.init();
+		//@ts-ignore
+		if (app.vault.config.showViewHeader) {
+			this.init();
+		}
 	}
 
 	private getButtonIcon(
@@ -22,11 +25,10 @@ export default class PageHeaderManager extends CommandManagerBase {
 		icon: string,
 		iconSize: number,
 		classes: string[],
-		tag: 'a' | 'div' = 'a'
 	): HTMLElement {
 		const buttonClasses = classes.concat([id]);
 
-		const buttonIcon = createEl(tag, {
+		const buttonIcon = createEl('a', {
 			cls: buttonClasses,
 			attr: { 'aria-label-position': 'bottom', 'aria-label': name },
 		});
@@ -39,12 +41,12 @@ export default class PageHeaderManager extends CommandManagerBase {
 		pair: CommandIconPair
 	): void {
 		const { id, icon, name } = pair;
-		const classes = ['view-action', "cmdr-page-header"];
+		const classes = ['view-action', "clickable-icon", "cmdr-page-header"];
 
 		const buttonIcon = this.getButtonIcon(name, id, icon, 16, classes);
 		viewActions.prepend(buttonIcon);
 
-		this.plugin.registerDomEvent(buttonIcon, 'click', () => {
+		this.plugin.registerDomEvent(buttonIcon, 'mouseup', () => {
 			/* this way the pane gets activated from the click
 				otherwise the action would get executed on the former active pane
 				timeout of 1 was enough, but 5 is chosen for slower computers
@@ -115,9 +117,10 @@ export default class PageHeaderManager extends CommandManagerBase {
 
 			this.addButtonsToLeaf(activeLeaf);
 
+
 			this.plugin.register(() => this.addBtn.remove());
 			setIcon(this.addBtn, "plus");
-			this.addBtn.onclick = async (): Promise<void> => {
+			this.addBtn.onmouseup = async (): Promise<void> => {
 				const pair = await chooseNewCommand(this.plugin);
 				this.addCommand(pair);
 				this.reorder();

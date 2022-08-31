@@ -8,7 +8,6 @@ import {
 	PageHeaderManager,
 	RibbonManager,
 	StatusBarManager,
-	TitleBarManager,
 } from "./manager/commands";
 import { CommanderSettings, Macro } from './types';
 import CommanderSettingTab from './ui/settingTab';
@@ -25,8 +24,8 @@ export default class CommanderPlugin extends Plugin {
 		editorMenu: EditorMenuCommandManager,
 		fileMenu: FileMenuCommandManager,
 		leftRibbon: RibbonManager,
-		rightRibbon: RibbonManager,
-		titleBar: TitleBarManager,
+		//rightRibbon: RibbonManager,
+		//titleBar: TitleBarManager,
 		statusBar: StatusBarManager,
 		pageHeader: PageHeaderManager,
 	};
@@ -41,8 +40,8 @@ export default class CommanderPlugin extends Plugin {
 			editorMenu: new EditorMenuCommandManager(this, this.settings.editorMenu),
 			fileMenu: new FileMenuCommandManager(this, this.settings.fileMenu),
 			leftRibbon: new RibbonManager("left", this),
-			rightRibbon: new RibbonManager("right", this),
-			titleBar: new TitleBarManager(this, this.settings.titleBar),
+			//rightRibbon: new RibbonManager("right", this),
+			//titleBar: new TitleBarManager(this, this.settings.titleBar),
 			statusBar: new StatusBarManager(this, this.settings.statusBar),
 			pageHeader: new PageHeaderManager(this, this.settings.pageHeader),
 		};

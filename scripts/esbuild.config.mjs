@@ -4,7 +4,7 @@ import builtins from 'builtin-modules';
 import alias from "esbuild-plugin-alias";
 import { sassPlugin } from 'esbuild-sass-plugin';
 import { createRequire } from 'module';
-import { renameSync } from "fs";
+import { renameSync, copyFileSync } from "fs";
 const require = createRequire(import.meta.url);
 
 const banner = `/*
@@ -74,6 +74,20 @@ esbuild.build({
 				build.onEnd(() => {
 					try {
 						renameSync("main.css", "styles.css")
+					} catch (error) {
+						console.error(error);
+					}
+				});
+			},
+		},
+		{
+			name: "Move output",
+			setup(build) {
+				build.onEnd(() => {
+					try {
+						copyFileSync("styles.css", "../../vault/.obsidian/plugins/cmdr/styles.css");
+						copyFileSync("main.js", "../../vault/.obsidian/plugins/cmdr/main.js");
+						copyFileSync("manifest.json", "../../vault/.obsidian/plugins/cmdr/manifest.json");
 					} catch (error) {
 						console.error(error);
 					}

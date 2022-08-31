@@ -101,11 +101,26 @@
 
 .cmdr-sep-con:not(:empty) {
 	background-color: var(--background-primary);
+	border: 1px solid var(--background-modifier-border);
 	padding: 12px;
 	border-radius: 12px;
 
 	.setting-item:last-of-type {
 		padding-bottom: 0;
+	}
+
+	.cmdr-callout-warning {
+		padding: var(--callout-title-padding);
+		display: flex;
+		gap: var(--size-4-1);
+		font-size: var(--callout-title-size);
+		color: rgb(var(--callout-color));
+		line-height: var(--line-height-tight);
+		font-weight: bold;
+	}
+
+	p.cmdr-warning-description {
+		margin: 8px 0;
 	}
 }
 
@@ -151,6 +166,7 @@
 		span {
 			font-weight: 600;
 			margin-top: 0;
+			align-self: end;
 		}
 	}
 }
@@ -170,7 +186,7 @@
 
 .cmdr-adder {
 	opacity: 0;
-	transition: opacity 200ms ease;
+	transition: opacity 120ms ease;
 
 	&:hover {
 		opacity: 1;
@@ -272,7 +288,7 @@
 		}
 
 		&.cmdr-tab-active {
-			border-bottom: 2px solid var(--background-secondary);
+			border-bottom: 2px solid var(--background-primary);
 			transform: translateY(2px);
 			border-radius: 2px;
 			border-left: 2px solid var(--background-modifier-border);
@@ -352,6 +368,7 @@
 	}
 
 	.cmdr-version {
+		text-decoration: none;
 		font-size: 12px;
 		color: var(--text-muted);
 	}
@@ -360,9 +377,10 @@
 .cmdr-name-input-wrapper {
 	display: flex;
 	gap: 8px;
+	align-items: center;
 
 	button {
-		margin: 0;
+		margin: 8px;
 	}
 }
 
@@ -396,6 +414,7 @@
 	input,
 	span {
 		width: 2em;
+		color: var(--text-normal);
 	}
 }
 
@@ -413,4 +432,19 @@
 
 .side-dock-ribbon-action:not(:last-child) {
 	margin-bottom: calc(var(--cmdr-spacing) - 8px);
+}
+
+.cmdr-cta {
+	position: relative;
+
+	&::after {
+		content: "";
+		position: absolute;
+		top: -10%;
+		width: 104%;
+		left: -2%;
+		height: 120%;
+		outline: 2px solid var(--color-accent);
+		border-radius: 1em;
+	}
 }

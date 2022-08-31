@@ -51,7 +51,7 @@ export function ObsidianIcon({ icon, size, ...props }: ObsidianIconProps): h.JSX
 		setIcon(iconEl.current!, icon, size);
 	}, [icon, size]);
 
-	return <div ref={iconEl} {...props} style={{ display: "grid" }} />;
+	return <div ref={iconEl} {...props} />;
 }
 
 export function isModeActive(mode: string): boolean {

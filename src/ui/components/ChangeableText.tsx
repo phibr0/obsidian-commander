@@ -15,6 +15,7 @@ export default function ChangeableText({
 }: Props): h.JSX.Element {
 	const [showInputEle, setShowInput] = useState(false);
 	const el: Ref<HTMLInputElement> | undefined = useRef(null);
+	const [width, setWidth] = useState<number>(0);
 
 	useEffect(() => {
 		el?.current?.select();
@@ -27,6 +28,7 @@ export default function ChangeableText({
 				<input
 					type="text"
 					value={value}
+					style={{ width: width + 25 + "px" }}
 					onKeyDown={(e): void => {
 						/* If Enter was pressed, handle the name change and set to display mode */
 						if (
@@ -42,7 +44,8 @@ export default function ChangeableText({
 				/>
 			) : (
 				<span
-					onDblClick={(): void => setShowInput(true)}
+					/* @ts-ignore */
+					onDblClick={({ target }): void => { setWidth(target?.offsetWidth); setShowInput(true); }}
 					aria-label={ariaLabel}
 				>
 					{value}
