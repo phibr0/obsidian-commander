@@ -127,13 +127,13 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 					<button onClick={(): void => {
 						app.setting.openTabById("appearance");
 						setTimeout(() => {
-							//@ts-expect-error
+							//@ts-expect-error: activeTab contains the currently active Settings Tab.
 							(app.setting.activeTab.containerEl as HTMLElement).scroll({
 								behavior: "smooth",
 								top: 250,
 							});
-							//@ts-expect-error
-							(app.setting.activeTab.containerEl as HTMLElement).querySelectorAll(".setting-item-heading")[1].nextSibling.addClass("cmdr-cta");
+							//@ts-expect-error: activeTab contains the currently active Settings Tab.
+							(app.setting.activeTab.containerEl as HTMLElement).querySelectorAll(".setting-item-heading")[1].nextSibling?.nextSibling?.addClass("cmdr-cta");
 						}, 50);
 					}} className="mod-cta">{t("Open Appearance Settings")}</button>
 				</div>
