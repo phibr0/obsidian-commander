@@ -13,10 +13,7 @@ export default class PageHeaderManager extends CommandManagerBase {
 
 	public constructor(plugin: CommanderPlugin, pairArray: CommandIconPair[]) {
 		super(plugin, pairArray);
-		//@ts-ignore
-		if (app.vault.config.showViewHeader) {
-			this.init();
-		}
+		this.init();
 	}
 
 	private getButtonIcon(
