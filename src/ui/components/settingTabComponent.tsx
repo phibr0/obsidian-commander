@@ -73,19 +73,10 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 				<ToggleComponent
 					value={plugin.settings.showAddCommand}
 					name={t("Show \"Add Command\" Button")}
-					description={t("Show the \"Add Command\" Button in every Menu. Requires restart.")}
+					description={t("Show the \"Add Command\" Button in every Menu.")}
 					changeHandler={async (value): Promise<void> => {
 						plugin.settings.showAddCommand = !value;
-
-						if (!plugin.settings.showAddCommand) {
-							const elements = document.getElementsByClassName("cmdr-adder");
-							for (let i = elements.length - 1; i >= 0; i--) {
-								elements.item(i)?.remove();
-							}
-						} else {
-							new Notice(t("Please restart Obsidian for these changes to take effect."));
-						}
-
+						plugin.manager.pageHeader.reorder();
 						await plugin.saveSettings();
 					}} />
 				<ToggleComponent
