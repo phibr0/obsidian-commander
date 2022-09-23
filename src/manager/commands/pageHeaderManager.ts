@@ -110,16 +110,12 @@ export default class PageHeaderManager extends CommandManagerBase {
 			// Remove all buttons on plugin unload
 			this.pairs.slice().forEach(pair => this.removeButtons(pair));
 		});
-		this.plugin.registerEvent(app.workspace.on("file-open", () => {
-			const activeLeaf = app.workspace.getMostRecentLeaf();
-			if (!activeLeaf) {
-				return;
-			}
-
-			this.addButtonsToLeaf(activeLeaf);
-			if (this.plugin.settings.showAddCommand) activeLeaf.containerEl.getElementsByClassName('view-actions')[0].prepend(this.addBtn);
+		this.plugin.registerEvent(app.workspace.on("layout-change", () => {
+			this.addButtonsToAllLeaves();
 		}));
-
+		this.plugin.registerEvent(app.workspace.on("active-leaf-change", activeLeaf => {
+			if (this.plugin.settings.showAddCommand) activeLeaf?.containerEl.getElementsByClassName('view-actions')[0].prepend(this.addBtn);
+		}));
 		this.plugin.register(() => this.addBtn.remove());
 		setIcon(this.addBtn, "plus");
 		this.addBtn.onmouseup = async (): Promise<void> => {
@@ -133,8 +129,6 @@ export default class PageHeaderManager extends CommandManagerBase {
 
 	private addButtonsToAllLeaves(): void {
 		app.workspace.iterateAllLeaves(leaf => this.addButtonsToLeaf(leaf));
-		//@ts-ignore
-		app.workspace.onLayoutChange();
 	}
 
 	private addButtonsToLeaf(leaf: WorkspaceLeaf): void {
