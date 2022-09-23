@@ -46,7 +46,7 @@ export default class PageHeaderManager extends CommandManagerBase {
 		const buttonIcon = this.getButtonIcon(name, id, icon, 16, classes);
 		viewActions.prepend(buttonIcon);
 
-		this.plugin.registerDomEvent(buttonIcon, 'mouseup', () => {
+		buttonIcon.addEventListener('mouseup', () => {
 			/* this way the pane gets activated from the click
 				otherwise the action would get executed on the former active pane
 				timeout of 1 was enough, but 5 is chosen for slower computers
@@ -109,6 +109,10 @@ export default class PageHeaderManager extends CommandManagerBase {
 	}
 
 	private init(): void {
+		this.plugin.register(() => {
+			// Remove all buttons on plugin unload
+			this.pairs.slice().forEach(pair => this.removeButtons(pair));
+		});
 		this.plugin.registerEvent(app.workspace.on("file-open", () => {
 			const activeLeaf = app.workspace.getMostRecentLeaf();
 			if (!activeLeaf) {
@@ -116,17 +120,16 @@ export default class PageHeaderManager extends CommandManagerBase {
 			}
 
 			this.addButtonsToLeaf(activeLeaf);
-
-
-			this.plugin.register(() => this.addBtn.remove());
-			setIcon(this.addBtn, "plus");
-			this.addBtn.onmouseup = async (): Promise<void> => {
-				const pair = await chooseNewCommand(this.plugin);
-				this.addCommand(pair);
-				this.reorder();
-			};
 			if (this.plugin.settings.showAddCommand) activeLeaf.containerEl.getElementsByClassName('view-actions')[0].prepend(this.addBtn);
 		}));
+
+		this.plugin.register(() => this.addBtn.remove());
+		setIcon(this.addBtn, "plus");
+		this.addBtn.onmouseup = async (): Promise<void> => {
+			const pair = await chooseNewCommand(this.plugin);
+			this.addCommand(pair);
+			this.reorder();
+		};
 
 		app.workspace.onLayoutReady(() => setTimeout(() => this.addButtonsToAllLeaves(), 100));
 	}
@@ -170,14 +173,16 @@ export default class PageHeaderManager extends CommandManagerBase {
 		await this.plugin.saveSettings();
 	}
 
-	public async removeCommand(pair: CommandIconPair): Promise<void> {
-		this.pairs.remove(pair);
-
+	public removeButtons(pair: CommandIconPair) {
 		const x = activeDocument.getElementsByClassName(`view-action cmdr-page-header ${pair.id}`);
 		for (let i = x.length - 1; i >= 0; i--) {
 			x.item(i)?.remove();
 		}
+	}
 
+	public async removeCommand(pair: CommandIconPair): Promise<void> {
+		this.pairs.remove(pair);
+		this.removeButtons(pair);
 		await this.plugin.saveSettings();
 	}
 }
