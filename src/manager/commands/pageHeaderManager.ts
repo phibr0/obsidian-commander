@@ -137,8 +137,10 @@ export default class PageHeaderManager extends CommandManagerBase {
 			// View already has buttons and we're not doing a full refresh
 			return;
 		}
-		for (const pair of this.pairs)
+		for (let i = this.pairs.length -1; i>=0; i--) {
+			const pair = this.pairs[i];
 			if (isModeActive(pair.mode)) this.addPageHeaderButton(leaf, pair);
+		}
 		if (this.plugin.settings.showAddCommand) this.addAdderButton(leaf);
 	}
 
