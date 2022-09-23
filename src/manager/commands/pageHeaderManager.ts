@@ -9,7 +9,6 @@ import { chooseNewCommand, isModeActive } from "src/util";
 import CommandManagerBase from "./commandManager";
 
 export default class PageHeaderManager extends CommandManagerBase {
-	private addBtn = createDiv({ cls: "cmdr view-action cmdr-adder", attr: { "aria-label": t("Add new") } });
 	buttons = new WeakMap<ItemView, Map<string, HTMLElement>>();
 
 	public constructor(plugin: CommanderPlugin, pairArray: CommandIconPair[]) {
@@ -97,18 +96,20 @@ export default class PageHeaderManager extends CommandManagerBase {
 		this.plugin.registerEvent(app.workspace.on("layout-change", () => {
 			this.addButtonsToAllLeaves();
 		}));
-		this.plugin.registerEvent(app.workspace.on("active-leaf-change", activeLeaf => {
-			if (this.plugin.settings.showAddCommand) activeLeaf?.containerEl.getElementsByClassName('view-actions')[0].prepend(this.addBtn);
-		}));
-		this.plugin.register(() => this.addBtn.remove());
-		setIcon(this.addBtn, "plus");
-		this.addBtn.onmouseup = async (): Promise<void> => {
-			const pair = await chooseNewCommand(this.plugin);
-			this.addCommand(pair);
-			this.reorder();
-		};
-
 		app.workspace.onLayoutReady(() => setTimeout(() => this.addButtonsToAllLeaves(), 100));
+	}
+
+	private addAdderButton(leaf: WorkspaceLeaf) {
+		const { view } = leaf;
+		const id = "cmdr-adder";
+		if (!(view instanceof ItemView)) return;
+		if (this.buttons.get(view)?.has(id)) return;
+		const buttonIcon = view.addAction("plus",  t("Add new"), async () => {
+			this.addCommand(await chooseNewCommand(this.plugin));
+		});
+		buttonIcon.addClasses(["cmdr", id]);
+		if (!this.buttons.has(view)) this.buttons.set(view, new Map);
+		this.buttons.get(view)!.set(id, buttonIcon);
 	}
 
 	private addButtonsToAllLeaves(refresh: boolean = false): void {
@@ -124,6 +125,7 @@ export default class PageHeaderManager extends CommandManagerBase {
 		if (refresh) this.removeButtonsFromLeaf(leaf)
 		for (const pair of this.pairs)
 			if (isModeActive(pair.mode)) this.addPageHeaderButton(leaf, pair);
+		if (this.plugin.settings.showAddCommand) this.addAdderButton(leaf);
 	}
 
 	private removeButtonsFromLeaf(leaf: WorkspaceLeaf) {
@@ -138,7 +140,7 @@ export default class PageHeaderManager extends CommandManagerBase {
 
 	public async addCommand(pair: CommandIconPair): Promise<void> {
 		this.pairs.push(pair);
-		this.addButtonsToAllLeaves();
+		this.addButtonsToAllLeaves(true);
 		await this.plugin.saveSettings();
 	}
 
