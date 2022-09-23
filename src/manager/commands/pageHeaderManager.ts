@@ -1,4 +1,4 @@
-import { Menu, setIcon, WorkspaceLeaf } from "obsidian";
+import { ItemView, Menu, setIcon, WorkspaceLeaf } from "obsidian";
 import t from "src/l10n";
 import CommanderPlugin from "src/main";
 import { CommandIconPair } from "src/types";
@@ -16,41 +16,16 @@ export default class PageHeaderManager extends CommandManagerBase {
 		this.init();
 	}
 
-	private getButtonIcon(
-		name: string,
-		id: string,
-		icon: string,
-		iconSize: number,
-		classes: string[],
-	): HTMLElement {
-		const buttonClasses = classes.concat([id]);
-
-		const buttonIcon = createEl('a', {
-			cls: buttonClasses,
-			attr: { 'aria-label-position': 'bottom', 'aria-label': name },
-		});
-		setIcon(buttonIcon, icon, iconSize);
-		return buttonIcon;
-	}
-
 	private addPageHeaderButton(
-		viewActions: Element,
+		leaf: WorkspaceLeaf,
 		pair: CommandIconPair
 	): void {
 		const { id, icon, name } = pair;
-		const classes = ['view-action', "clickable-icon", "cmdr-page-header"];
-
-		const buttonIcon = this.getButtonIcon(name, id, icon, 16, classes);
-		viewActions.prepend(buttonIcon);
-
-		buttonIcon.addEventListener('mouseup', () => {
-			/* this way the pane gets activated from the click
-				otherwise the action would get executed on the former active pane
-				timeout of 1 was enough, but 5 is chosen for slower computers
-				may need to be made its own setting in the future
-				 */
-			setTimeout(() => app.commands.executeCommandById(id), 5);
+		const buttonIcon = (leaf.view as ItemView).addAction(icon, name, () => {
+			app.workspace.setActiveLeaf(leaf, {focus: true});
+			app.commands.executeCommandById(id);
 		});
+		buttonIcon.addClasses(["cmdr-page-header", id])
 		buttonIcon.addEventListener("contextmenu", (event) => {
 			event.stopImmediatePropagation();
 			new Menu()
@@ -143,7 +118,7 @@ export default class PageHeaderManager extends CommandManagerBase {
 			)[0]) {
 				if (isModeActive(pair.mode)) {
 					this.addPageHeaderButton(
-						viewActions,
+						leaf,
 						pair
 					);
 				}
@@ -161,6 +136,7 @@ export default class PageHeaderManager extends CommandManagerBase {
 
 	public async addCommand(pair: CommandIconPair): Promise<void> {
 		this.pairs.push(pair);
+		this.addButtonsToAllLeaves();
 		await this.plugin.saveSettings();
 	}
 
