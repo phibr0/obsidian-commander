@@ -23,15 +23,14 @@ export default class PageHeaderManager extends CommandManagerBase {
 		const { id, icon, name } = pair;
 		const { view } = leaf;
 		if (!(view instanceof ItemView)) return;
-		if (this.buttons.get(view)?.has(id)) return;
+		const buttons = this.buttonsFor(leaf, true);
+		if (!buttons || buttons.has(id)) return;
 
-		const buttonIcon = view.addAction(icon, name, () => {
+		const buttonIcon = (view as ItemView).addAction(icon, name, () => {
 			app.workspace.setActiveLeaf(leaf, {focus: true});
 			app.commands.executeCommandById(id);
 		});
-
-		if (!this.buttons.has(view)) this.buttons.set(view, new Map);
-		this.buttons.get(view)!.set(id, buttonIcon);
+		buttons.set(id, buttonIcon);
 
 		buttonIcon.addClasses(["cmdr-page-header", id])
 		buttonIcon.addEventListener("contextmenu", (event) => {
@@ -113,25 +112,42 @@ export default class PageHeaderManager extends CommandManagerBase {
 	}
 
 	private addButtonsToAllLeaves(refresh: boolean = false): void {
-		app.workspace.iterateAllLeaves(leaf => this.addButtonsToLeaf(leaf, refresh));
+		activeWindow.requestAnimationFrame(
+			() => app.workspace.iterateAllLeaves(leaf => this.addButtonsToLeaf(leaf, refresh))
+		);
 	}
 
 	private removeButtonsFromAllLeaves(): void {
-		app.workspace.iterateAllLeaves(leaf => this.removeButtonsFromLeaf(leaf));
+		activeWindow.requestAnimationFrame(
+			() => app.workspace.iterateAllLeaves(leaf => this.removeButtonsFromLeaf(leaf))
+		);
+	}
+
+	private buttonsFor(leaf: WorkspaceLeaf, create: boolean = false) {
+		if (!(leaf.view instanceof ItemView)) return;
+		if (create && !this.buttons.has(leaf.view)) this.buttons.set(leaf.view, new Map);
+		return this.buttons.get(leaf.view);
 	}
 
 	private addButtonsToLeaf(leaf: WorkspaceLeaf, refresh: boolean = false): void {
 		if (!(leaf.view instanceof ItemView)) return;
-		if (refresh) this.removeButtonsFromLeaf(leaf)
+		if (refresh) {
+			this.removeButtonsFromLeaf(leaf);
+		} else if (this.buttonsFor(leaf)?.size) {
+			// View already has buttons and we're not doing a full refresh
+			return;
+		}
 		for (const pair of this.pairs)
 			if (isModeActive(pair.mode)) this.addPageHeaderButton(leaf, pair);
 		if (this.plugin.settings.showAddCommand) this.addAdderButton(leaf);
 	}
 
 	private removeButtonsFromLeaf(leaf: WorkspaceLeaf) {
-		if (!(leaf.view instanceof ItemView)) return;
-		for (const button of this.buttons.get(leaf.view)?.values() ?? []) button.detach();
-		this.buttons.delete(leaf.view);
+		const buttons = this.buttonsFor(leaf);
+		if (buttons) {
+			for (const button of buttons.values()) button.detach();
+			buttons?.clear();
+		}
 	}
 
 	public reorder(): void | Promise<void> {
