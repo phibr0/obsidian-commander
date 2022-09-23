@@ -191,6 +191,13 @@
 	&:hover {
 		opacity: 1;
 	}
+	// place adder button to the left of commander-added buttons
+	order: -1001;
+}
+
+.cmdr-page-header {
+	// place commander buttons to the left of view and Obsidian buttons
+	order: -1000;
 }
 
 .cmdr-macro-builder {
