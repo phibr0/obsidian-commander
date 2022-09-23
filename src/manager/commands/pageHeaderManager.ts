@@ -10,6 +10,7 @@ import CommandManagerBase from "./commandManager";
 
 export default class PageHeaderManager extends CommandManagerBase {
 	private addBtn = createDiv({ cls: "cmdr view-action cmdr-adder", attr: { "aria-label": t("Add new") } });
+	buttons = new WeakMap<ItemView, Map<string, HTMLElement>>();
 
 	public constructor(plugin: CommanderPlugin, pairArray: CommandIconPair[]) {
 		super(plugin, pairArray);
@@ -21,10 +22,18 @@ export default class PageHeaderManager extends CommandManagerBase {
 		pair: CommandIconPair
 	): void {
 		const { id, icon, name } = pair;
-		const buttonIcon = (leaf.view as ItemView).addAction(icon, name, () => {
+		const { view } = leaf;
+		if (!(view instanceof ItemView)) return;
+		if (this.buttons.get(view)?.has(id)) return;
+
+		const buttonIcon = view.addAction(icon, name, () => {
 			app.workspace.setActiveLeaf(leaf, {focus: true});
 			app.commands.executeCommandById(id);
 		});
+
+		if (!this.buttons.has(view)) this.buttons.set(view, new Map);
+		this.buttons.get(view)!.set(id, buttonIcon);
+
 		buttonIcon.addClasses(["cmdr-page-header", id])
 		buttonIcon.addEventListener("contextmenu", (event) => {
 			event.stopImmediatePropagation();
@@ -83,7 +92,7 @@ export default class PageHeaderManager extends CommandManagerBase {
 	private init(): void {
 		this.plugin.register(() => {
 			// Remove all buttons on plugin unload
-			this.pairs.slice().forEach(pair => this.removeButtons(pair));
+			this.removeButtonsFromAllLeaves();
 		});
 		this.plugin.registerEvent(app.workspace.on("layout-change", () => {
 			this.addButtonsToAllLeaves();
@@ -102,36 +111,29 @@ export default class PageHeaderManager extends CommandManagerBase {
 		app.workspace.onLayoutReady(() => setTimeout(() => this.addButtonsToAllLeaves(), 100));
 	}
 
-	private addButtonsToAllLeaves(): void {
-		app.workspace.iterateAllLeaves(leaf => this.addButtonsToLeaf(leaf));
+	private addButtonsToAllLeaves(refresh: boolean = false): void {
+		app.workspace.iterateAllLeaves(leaf => this.addButtonsToLeaf(leaf, refresh));
 	}
 
-	private addButtonsToLeaf(leaf: WorkspaceLeaf): void {
-		const viewActions =
-			leaf.containerEl.getElementsByClassName('view-actions')[0];
+	private removeButtonsFromAllLeaves(): void {
+		app.workspace.iterateAllLeaves(leaf => this.removeButtonsFromLeaf(leaf));
+	}
 
-		if (!viewActions) return;
+	private addButtonsToLeaf(leaf: WorkspaceLeaf, refresh: boolean = false): void {
+		if (!(leaf.view instanceof ItemView)) return;
+		if (refresh) this.removeButtonsFromLeaf(leaf)
+		for (const pair of this.pairs)
+			if (isModeActive(pair.mode)) this.addPageHeaderButton(leaf, pair);
+	}
 
-		for (const pair of this.pairs) {
-			if (!viewActions.getElementsByClassName(
-				`view-action cmdr-page-header ${pair.id}`
-			)[0]) {
-				if (isModeActive(pair.mode)) {
-					this.addPageHeaderButton(
-						leaf,
-						pair
-					);
-				}
-			}
-		}
+	private removeButtonsFromLeaf(leaf: WorkspaceLeaf) {
+		if (!(leaf.view instanceof ItemView)) return;
+		for (const button of this.buttons.get(leaf.view)?.values() ?? []) button.detach();
+		this.buttons.delete(leaf.view);
 	}
 
 	public reorder(): void | Promise<void> {
-		const x = activeDocument.getElementsByClassName("view-action cmdr-page-header");
-		for (let i = x.length - 1; i >= 0; i--) {
-			x.item(i)?.remove();
-		}
-		this.addButtonsToAllLeaves();
+		this.addButtonsToAllLeaves(true);
 	}
 
 	public async addCommand(pair: CommandIconPair): Promise<void> {
@@ -140,16 +142,9 @@ export default class PageHeaderManager extends CommandManagerBase {
 		await this.plugin.saveSettings();
 	}
 
-	public removeButtons(pair: CommandIconPair) {
-		const x = activeDocument.getElementsByClassName(`view-action cmdr-page-header ${pair.id}`);
-		for (let i = x.length - 1; i >= 0; i--) {
-			x.item(i)?.remove();
-		}
-	}
-
 	public async removeCommand(pair: CommandIconPair): Promise<void> {
 		this.pairs.remove(pair);
-		this.removeButtons(pair);
+		this.addButtonsToAllLeaves(true);
 		await this.plugin.saveSettings();
 	}
 }
