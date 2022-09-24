@@ -1,4 +1,4 @@
-import { Menu, setIcon, WorkspaceLeaf } from "obsidian";
+import { ItemView, Menu, setIcon, WorkspaceLeaf } from "obsidian";
 import t from "src/l10n";
 import CommanderPlugin from "src/main";
 import { CommandIconPair } from "src/types";
@@ -9,51 +9,30 @@ import { chooseNewCommand, isModeActive } from "src/util";
 import CommandManagerBase from "./commandManager";
 
 export default class PageHeaderManager extends CommandManagerBase {
-	private addBtn = createDiv({ cls: "cmdr view-action cmdr-adder", attr: { "aria-label": t("Add new") } });
+	buttons = new WeakMap<ItemView, Map<string, HTMLElement>>();
 
 	public constructor(plugin: CommanderPlugin, pairArray: CommandIconPair[]) {
 		super(plugin, pairArray);
-		//@ts-ignore
-		if (app.vault.config.showViewHeader) {
-			this.init();
-		}
-	}
-
-	private getButtonIcon(
-		name: string,
-		id: string,
-		icon: string,
-		iconSize: number,
-		classes: string[],
-	): HTMLElement {
-		const buttonClasses = classes.concat([id]);
-
-		const buttonIcon = createEl('a', {
-			cls: buttonClasses,
-			attr: { 'aria-label-position': 'bottom', 'aria-label': name },
-		});
-		setIcon(buttonIcon, icon, iconSize);
-		return buttonIcon;
+		this.init();
 	}
 
 	private addPageHeaderButton(
-		viewActions: Element,
+		leaf: WorkspaceLeaf,
 		pair: CommandIconPair
 	): void {
 		const { id, icon, name } = pair;
-		const classes = ['view-action', "clickable-icon", "cmdr-page-header"];
+		const { view } = leaf;
+		if (!(view instanceof ItemView)) return;
+		const buttons = this.buttonsFor(leaf, true);
+		if (!buttons || buttons.has(id)) return;
 
-		const buttonIcon = this.getButtonIcon(name, id, icon, 16, classes);
-		viewActions.prepend(buttonIcon);
-
-		this.plugin.registerDomEvent(buttonIcon, 'mouseup', () => {
-			/* this way the pane gets activated from the click
-				otherwise the action would get executed on the former active pane
-				timeout of 1 was enough, but 5 is chosen for slower computers
-				may need to be made its own setting in the future
-				 */
-			setTimeout(() => app.commands.executeCommandById(id), 5);
+		const buttonIcon = (view as ItemView).addAction(icon, name, () => {
+			app.workspace.setActiveLeaf(leaf, {focus: true});
+			app.commands.executeCommandById(id);
 		});
+		buttons.set(id, buttonIcon);
+
+		buttonIcon.addClasses(["cmdr-page-header", id])
 		buttonIcon.addEventListener("contextmenu", (event) => {
 			event.stopImmediatePropagation();
 			new Menu()
@@ -109,75 +88,83 @@ export default class PageHeaderManager extends CommandManagerBase {
 	}
 
 	private init(): void {
-		this.plugin.registerEvent(app.workspace.on("file-open", () => {
-			const activeLeaf = app.workspace.getMostRecentLeaf();
-			if (!activeLeaf) {
-				return;
-			}
-
-			this.addButtonsToLeaf(activeLeaf);
-
-
-			this.plugin.register(() => this.addBtn.remove());
-			setIcon(this.addBtn, "plus");
-			this.addBtn.onmouseup = async (): Promise<void> => {
-				const pair = await chooseNewCommand(this.plugin);
-				this.addCommand(pair);
-				this.reorder();
-			};
-			if (this.plugin.settings.showAddCommand) activeLeaf.containerEl.getElementsByClassName('view-actions')[0].prepend(this.addBtn);
+		this.plugin.register(() => {
+			// Remove all buttons on plugin unload
+			this.removeButtonsFromAllLeaves();
+		});
+		this.plugin.registerEvent(app.workspace.on("layout-change", () => {
+			this.addButtonsToAllLeaves();
 		}));
-
 		app.workspace.onLayoutReady(() => setTimeout(() => this.addButtonsToAllLeaves(), 100));
 	}
 
-	private addButtonsToAllLeaves(): void {
-		app.workspace.iterateAllLeaves(leaf => this.addButtonsToLeaf(leaf));
-		//@ts-ignore
-		app.workspace.onLayoutChange();
+	private addAdderButton(leaf: WorkspaceLeaf) {
+		const { view } = leaf;
+		const id = "cmdr-adder";
+		if (!(view instanceof ItemView)) return;
+		if (this.buttons.get(view)?.has(id)) return;
+		const buttonIcon = view.addAction("plus",  t("Add new"), async () => {
+			this.addCommand(await chooseNewCommand(this.plugin));
+		});
+		buttonIcon.addClasses(["cmdr", id]);
+		if (!this.buttons.has(view)) this.buttons.set(view, new Map);
+		this.buttons.get(view)!.set(id, buttonIcon);
 	}
 
-	private addButtonsToLeaf(leaf: WorkspaceLeaf): void {
-		const viewActions =
-			leaf.containerEl.getElementsByClassName('view-actions')[0];
+	private addButtonsToAllLeaves(refresh: boolean = false): void {
+		activeWindow.requestAnimationFrame(
+			() => app.workspace.iterateAllLeaves(leaf => this.addButtonsToLeaf(leaf, refresh))
+		);
+	}
 
-		if (!viewActions) return;
+	private removeButtonsFromAllLeaves(): void {
+		activeWindow.requestAnimationFrame(
+			() => app.workspace.iterateAllLeaves(leaf => this.removeButtonsFromLeaf(leaf))
+		);
+	}
 
-		for (const pair of this.pairs) {
-			if (!viewActions.getElementsByClassName(
-				`view-action cmdr-page-header ${pair.id}`
-			)[0]) {
-				if (isModeActive(pair.mode)) {
-					this.addPageHeaderButton(
-						viewActions,
-						pair
-					);
-				}
-			}
+	private buttonsFor(leaf: WorkspaceLeaf, create: boolean = false) {
+		if (!(leaf.view instanceof ItemView)) return;
+		if (create && !this.buttons.has(leaf.view)) this.buttons.set(leaf.view, new Map);
+		return this.buttons.get(leaf.view);
+	}
+
+	private addButtonsToLeaf(leaf: WorkspaceLeaf, refresh: boolean = false): void {
+		if (!(leaf.view instanceof ItemView)) return;
+		if (refresh) {
+			this.removeButtonsFromLeaf(leaf);
+		} else if (this.buttonsFor(leaf)?.size) {
+			// View already has buttons and we're not doing a full refresh
+			return;
+		}
+		for (let i = this.pairs.length -1; i>=0; i--) {
+			const pair = this.pairs[i];
+			if (isModeActive(pair.mode)) this.addPageHeaderButton(leaf, pair);
+		}
+		if (this.plugin.settings.showAddCommand) this.addAdderButton(leaf);
+	}
+
+	private removeButtonsFromLeaf(leaf: WorkspaceLeaf) {
+		const buttons = this.buttonsFor(leaf);
+		if (buttons) {
+			for (const button of buttons.values()) button.detach();
+			buttons?.clear();
 		}
 	}
 
 	public reorder(): void | Promise<void> {
-		const x = activeDocument.getElementsByClassName("view-action cmdr-page-header");
-		for (let i = x.length - 1; i >= 0; i--) {
-			x.item(i)?.remove();
-		}
-		this.addButtonsToAllLeaves();
+		this.addButtonsToAllLeaves(true);
 	}
 
 	public async addCommand(pair: CommandIconPair): Promise<void> {
 		this.pairs.push(pair);
+		this.addButtonsToAllLeaves(true);
 		await this.plugin.saveSettings();
 	}
 
 	public async removeCommand(pair: CommandIconPair): Promise<void> {
 		this.pairs.remove(pair);
-
-		const x = activeDocument.getElementsByClassName(`view-action cmdr-page-header ${pair.id}`);
-		for (let i = x.length - 1; i >= 0; i--) {
-			x.item(i)?.remove();
-		}
-
+		this.addButtonsToAllLeaves(true);
 		await this.plugin.saveSettings();
 	}
 }
