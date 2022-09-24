@@ -29,8 +29,9 @@ export default function MacroBuilder(): h.JSX.Element {
 				content: <BaseComponent description="Start of your macro" icon="arrow-right" /> as React.ReactNode,
 				coordinates: [100, 150],
 				outputs: [
-					{ id: 'port-1', alignment: 'right' },
+					{ id: 'node-1-out', alignment: 'right' },
 				],
+				disableDrag: true,
 				data: {
 					foo: 'bar',
 					count: 0,
@@ -38,20 +39,53 @@ export default function MacroBuilder(): h.JSX.Element {
 			},
 			{
 				id: 'node-2',
-				content: 'Middle',
+				content: 'Wait x ms',
 				coordinates: [400, 150],
 				inputs: [
-					{ id: 'port-3', alignment: 'left' },
-					{ id: 'port-4', alignment: 'left' },
+					{ id: 'node-2-in', alignment: 'left' },
 				],
 				outputs: [
-					{ id: 'port-5', alignment: 'right' },
-					{ id: 'port-6', alignment: 'right' },
+					{ id: 'node-2-out', alignment: 'right' },
+				],
+			},
+			{
+				id: 'node-3',
+				content: 'Type "something" in the active editor',
+				coordinates: [700, 150],
+				inputs: [
+					{ id: 'node-3-in', alignment: 'left' },
+				],
+				outputs: [
+					{ id: 'node-3-out', alignment: 'right' },
+				],
+			},
+			{
+				id: 'node-4',
+				content: 'run command "Save current File"',
+				coordinates: [1000, 150],
+				inputs: [
+					{ id: 'node-4-in', alignment: 'left' },
+				],
+				outputs: [
+					{ id: 'node-4-out', alignment: 'right' },
+				],
+			},
+			{
+				id: 'node-5',
+				content: 'do the following x times',
+				coordinates: [1000, 150],
+				inputs: [
+					{ id: 'node-5-in', alignment: 'left' },
+				],
+				outputs: [
+					{ id: 'node-5-out', alignment: 'right' },
 				],
 			},
 		],
 		links: [
-			{ input: 'port-1', output: 'port-4' },
+			{ output: "node-1-out", input: "node-2-in" },
+			{ output: "node-2-out", input: "node-3-in" },
+			{ output: "node-3-out", input: "node-4-in" },
 		]
 	});
 

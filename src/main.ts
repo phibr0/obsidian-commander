@@ -17,6 +17,7 @@ import SettingTabModal from './ui/settingTabModal';
 import "./styles.scss";
 import { updateHiderStylesheet } from './util';
 import registerCustomIcons from './ui/icons';
+import MacroModal from './ui/macroModal';
 
 export default class CommanderPlugin extends Plugin {
 	public settings: CommanderSettings;

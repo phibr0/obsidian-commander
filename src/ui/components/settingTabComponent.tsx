@@ -124,7 +124,7 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 								top: 250,
 							});
 							//@ts-expect-error: activeTab contains the currently active Settings Tab.
-							(app.setting.activeTab.containerEl as HTMLElement).querySelectorAll(".setting-item-heading")[1].nextSibling?.nextSibling?.addClass("cmdr-cta");
+							(app.setting.activeTab.containerEl as HTMLElement).querySelectorAll(".setting-item-heading")[1].nextSibling?.nextSibling?.nextSibling?.addClass("cmdr-cta");
 						}, 50);
 					}} className="mod-cta">{t("Open Appearance Settings")}</button>
 				</div>
