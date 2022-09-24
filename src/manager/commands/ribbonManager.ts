@@ -75,7 +75,7 @@ export default class RibbonManager extends CommandManagerBase {
 			this.addCommand(pair);
 			this.reorder();
 		};
-		if (this.plugin.settings.showAddCommand) this.ribbonEl.ribbonActionsEl?.append(this.addBtn);
+		if (this.plugin.settings.showAddCommand) app.workspace.onLayoutReady(() => this.ribbonEl.ribbonActionsEl?.append(this.addBtn));
 	}
 
 	// eslint-disable-next-line no-unused-vars

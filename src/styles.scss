@@ -191,8 +191,10 @@
 	&:hover {
 		opacity: 1;
 	}
-	// place adder button to the left of commander-added buttons
-	order: -1001;
+	&.view-action {
+		// place adder button to the left of commander-added buttons
+		order: -1001;
+	}
 }
 
 .cmdr-page-header {
