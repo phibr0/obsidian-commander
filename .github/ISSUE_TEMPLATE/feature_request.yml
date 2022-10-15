@@ -6,7 +6,7 @@ body:
     attributes:
       value: |
         ## Self Check
-        - Try searching existing [GitHub Issues](https://github.com/phibr0/obsidian-dictionary/issues) (open or closed) for similar issues.
+        - Try searching existing [GitHub Issues](https://github.com/phibr0/obsidian-commander/issues) (open or closed) for similar issues.
   - type: textarea
     validations:
       required: true
