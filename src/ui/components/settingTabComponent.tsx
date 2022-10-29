@@ -6,8 +6,10 @@ import { Tab } from "src/types";
 import { ObsidianIcon, updateSpacing } from "src/util";
 import CommanderPlugin from "../../main";
 import About from "./About";
+import AdvancedToolbarSettings from "./AdvancedToolbarSettings";
 import CommandViewer from "./commandViewerComponent";
 import { LeftRibbonHider, StatusbarHider } from "./hidingViewer";
+import MacroViewer from "./MacroViewer";
 import { SliderComponent, ToggleComponent } from "./settingComponent";
 
 export default function settingTabComponent({ plugin, mobileMode }: { plugin: CommanderPlugin; mobileMode: boolean; }): h.JSX.Element {
@@ -49,11 +51,11 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 
 		if (!open) {
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			el.lastChild!.textContent = tabs[activeTab].name;
+			el.parentElement!.lastChild!.textContent = tabs[activeTab].name;
 			el.onclick = (): void => setOpen(true);
 		} else {
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			el.lastChild!.textContent = "Commander";
+			el.parentElement!.lastChild!.textContent = "Commander";
 			el.onclick = (): void => app.setting.closeActiveTab();
 		}
 	}, [open]);
@@ -113,7 +115,7 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 			tab: <CommandViewer manager={plugin.manager.pageHeader} plugin={plugin}>
 				<hr />
 				<div className="cmdr-sep-con callout" data-callout="warning">
-					<span className="cmdr-callout-warning"><ObsidianIcon icon="alert-circle" /> {t("Warning")}</span>
+					<span className="cmdr-callout-warning"><ObsidianIcon icon="alert-triangle" /> {t("Warning")}</span>
 					<p className="cmdr-warning-description">{t("As of Obsidian 0.16.0 you need to explicitly enable the View Header.")}</p>
 					<button onClick={(): void => {
 						app.setting.openTabById("appearance");
@@ -148,6 +150,26 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 			name: t("File Menu"),
 			tab: <CommandViewer manager={plugin.manager.fileMenu} plugin={plugin} />
 		},
+		{
+			name: t("Explorer"),
+			tab: <CommandViewer manager={plugin.manager.explorerManager} plugin={plugin}>
+				<hr />
+				<div className="cmdr-sep-con callout" data-callout="warning">
+					<span className="cmdr-callout-warning"><ObsidianIcon icon="alert-triangle" /> {t("Warning")}</span>
+					<p className="cmdr-warning-description">
+						{"When clicking on a Command in the Explorer, the Explorer view will become focused. This might interfere with Commands that are supposed to be executed on an active File/Explorer."}
+					</p>
+				</div>
+			</CommandViewer>
+		},
+		{
+			name: Platform.isMobile ? "Mobile Toolbar" : "Toolbar",
+			tab: <AdvancedToolbarSettings plugin={plugin} />
+		},
+		{
+			name: "Macros",
+			tab: <MacroViewer plugin={plugin} macros={plugin.settings.macros} />
+		}
 	], []);
 
 	return (
@@ -197,16 +219,16 @@ export function TabHeader({ tabs, activeTab, setActiveTab, setOpen }: TabHeaderP
 
 	return (
 		<nav class={`cmdr-setting-header ${Platform.isMobile ? "cmdr-mobile" : ""}`} ref={wrapper}>
-			<div className="cmdr-setting-tab-group">
+			<div class={`cmdr-setting-tab-group ${Platform.isMobile ? "vertical-tab-header-group-items" : ""}`}>
 				{tabs.map((tab, idx) => <div
-					className={activeTab === idx ? "cmdr-tab cmdr-tab-active" : "cmdr-tab"}
+					className={`cmdr-tab ${activeTab === idx ? "cmdr-tab-active" : ""} ${Platform.isMobile ? "vertical-tab-nav-item" : ""}`}
 					onClick={(): void => { setActiveTab(idx); setOpen(false); }}>
-					<span>{tab.name}</span>
-					{Platform.isMobile && <ObsidianIcon icon="chevron-right" size={24} />}
+					{tab.name}
+					{Platform.isMobile && <ObsidianIcon className="vertical-tab-nav-item-chevron" icon="chevron-right" size={24} />}
 				</div>)}
 			</div>
 
 			{Platform.isDesktop && <div className="cmdr-fill" />}
-		</nav>
+		</nav >
 	);
 }

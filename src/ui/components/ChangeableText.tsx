@@ -4,7 +4,7 @@ import { Ref, useEffect, useRef, useState } from "preact/hooks";
 interface Props {
 	value: string;
 	// eslint-disable-next-line no-unused-vars
-	handleChange: (e: Event) => void;
+	handleChange: (e: h.JSX.TargetedKeyboardEvent<HTMLInputElement>) => void;
 	ariaLabel: string;
 }
 

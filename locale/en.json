@@ -38,11 +38,11 @@
 	"General": "General",
 	"Editor Menu": "Editor Menu",
 	"File Menu": "File Menu",
-	"Left Ribbon": "Left Ribbon",
+	"Left Ribbon": "Ribbon",
 	"Right Ribbon": "Right Ribbon",
 	"Titlebar": "Titlebar",
-	"Statusbar": "Statusbar",
-	"Page Header": "Page Header",
+	"Statusbar": "Status Bar",
+	"Page Header": "Tab Bar",
 	"Support development": "Support development",
 	"No commands here!": "No commands here!",
 	"Would you like to add one now?": "Would you like to add one now?",
@@ -71,6 +71,7 @@
 	"Choose custom spacing for Command Buttons": "Choose custom spacing for Command Buttons",
 	"Change the spacing between commands. You can set different values on mobile and desktop.": "Change the spacing between commands.",
 	"Warning": "Warning",
-	"As of Obsidian 0.16.0 you need to explicitly enable the View Header.": "As of Obsidian 0.16.0 you need to explicitly enable the View Header. Once enabled, you might need to restart Obsidian.",
-	"Open Appearance Settings": "Open Appearance Settings"
+	"As of Obsidian 0.16.0 you need to explicitly enable the View Header.": "As of Obsidian 0.16.0 you need to explicitly enable the Tab Title Bar. Once enabled, you might need to restart Obsidian.",
+	"Open Appearance Settings": "Open Appearance Settings",
+	"Explorer": "Explorer"
 }

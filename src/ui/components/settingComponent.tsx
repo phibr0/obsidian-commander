@@ -30,6 +30,9 @@ interface SettingProps<T> {
 	// eslint-disable-next-line no-unused-vars
 	changeHandler: (value: T) => void;
 	value: T;
+	min?: number;
+	max?: number;
+	step?: number;
 }
 export function ToggleComponent(props: SettingProps<boolean>): h.JSX.Element {
 	const [state, setState] = useState(props.value);
@@ -78,7 +81,7 @@ export function SliderComponent(props: SettingProps<number>): h.JSX.Element {
 					}
 				}} />
 				{/*@ts-expect-error*/}
-				<input class="slider" type="range" min="0" max="32" step="1" value={val} onMouseMove={({ target }): void => { if (val !== target.value) { setVal(target.value); props.changeHandler(target.value); } }} />
+				<input class="slider" type="range" min={props.min ?? "0"} max={props.max ?? "32"} step={props.step ?? "1"} value={val} onPointerMove={({ target }): void => { if (val !== target.value) { setVal(target.value); props.changeHandler(target.value); } }} />
 			</div>
 		</BaseComponent>
 	);

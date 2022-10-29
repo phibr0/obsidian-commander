@@ -1,3 +1,4 @@
+import ExplorerManager from './explorerManager';
 import { EditorMenuCommandManager, FileMenuCommandManager } from './menuManager';
 import PageHeaderManager from './pageHeaderManager';
 import RibbonManager from './ribbonManager';
@@ -11,4 +12,5 @@ export {
 	RibbonManager,
 	StatusBarManager,
 	TitleBarManager,
+	ExplorerManager,
 };

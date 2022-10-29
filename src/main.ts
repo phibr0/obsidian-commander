@@ -1,50 +1,86 @@
-import { updateSpacing } from 'src/util';
-import { Plugin } from 'obsidian';
-import { DEFAULT_SETTINGS } from './constants';
-import t from './l10n';
+import { injectIcons, removeStyles, updateMacroCommands, updateStyles } from "src/util";
+import { updateSpacing } from "src/util";
+import { Command, Plugin } from "obsidian";
+import { DEFAULT_SETTINGS } from "./constants";
+import t from "./l10n";
 import {
 	EditorMenuCommandManager,
+	ExplorerManager,
 	FileMenuCommandManager,
 	PageHeaderManager,
 	RibbonManager,
 	StatusBarManager,
 } from "./manager/commands";
-import { CommanderSettings, Macro } from './types';
-import CommanderSettingTab from './ui/settingTab';
-import SettingTabModal from './ui/settingTabModal';
+import { Action, CommanderSettings, Macro } from "./types";
+import CommanderSettingTab from "./ui/settingTab";
+import SettingTabModal from "./ui/settingTabModal";
 
-//import 'beautiful-react-diagrams/styles.css';
-import "./styles.scss";
-import { updateHiderStylesheet } from './util';
-import registerCustomIcons from './ui/icons';
-import MacroModal from './ui/macroModal';
+import './styles/styles.scss';
+import './styles/advanced-toolbar.scss';
+import { updateHiderStylesheet } from "./util";
+import registerCustomIcons from "./ui/icons";
 
 export default class CommanderPlugin extends Plugin {
 	public settings: CommanderSettings;
 	public manager: {
-		editorMenu: EditorMenuCommandManager,
-		fileMenu: FileMenuCommandManager,
-		leftRibbon: RibbonManager,
+		editorMenu: EditorMenuCommandManager;
+		fileMenu: FileMenuCommandManager;
+		leftRibbon: RibbonManager;
 		//rightRibbon: RibbonManager,
 		//titleBar: TitleBarManager,
-		statusBar: StatusBarManager,
-		pageHeader: PageHeaderManager,
+		statusBar: StatusBarManager;
+		pageHeader: PageHeaderManager;
+		explorerManager: ExplorerManager;
 	};
+
+	async executeMacro(id: number) {
+		const macro = this.settings.macros[id];
+		if (!macro) throw new Error("Macro not found");
+
+		for (const command of macro.macro) {
+			switch (command.action) {
+				case Action.COMMAND: {
+					await app.commands.executeCommandById(command.commandId);
+					continue;
+				}
+				case Action.DELAY: {
+					await new Promise((resolve) =>
+						setTimeout(resolve, command.delay)
+					);
+					continue;
+				}
+				case Action.EDITOR: {
+					continue;
+				}
+				case Action.LOOP: {
+					for (let i = 0; i < command.times; i++) {
+						await app.commands.executeCommandById(
+							command.commandId
+						);
+					}
+					continue;
+				}
+			}
+		}
+	}
 
 	public async onload(): Promise<void> {
 		await this.loadSettings();
 
 		registerCustomIcons();
-		updateSpacing(this.settings.spacing);
 
 		this.manager = {
-			editorMenu: new EditorMenuCommandManager(this, this.settings.editorMenu),
+			editorMenu: new EditorMenuCommandManager(
+				this,
+				this.settings.editorMenu
+			),
 			fileMenu: new FileMenuCommandManager(this, this.settings.fileMenu),
 			leftRibbon: new RibbonManager("left", this),
 			//rightRibbon: new RibbonManager("right", this),
 			//titleBar: new TitleBarManager(this, this.settings.titleBar),
 			statusBar: new StatusBarManager(this, this.settings.statusBar),
 			pageHeader: new PageHeaderManager(this, this.settings.pageHeader),
+			explorerManager: new ExplorerManager(this, this.settings.explorer),
 		};
 
 		this.addSettingTab(new CommanderSettingTab(this));
@@ -55,39 +91,74 @@ export default class CommanderPlugin extends Plugin {
 			callback: () => new SettingTabModal(this).open(),
 		});
 
-		// this.addCommand({
-		// 	name: t("Open Macro Builder"),
-		// 	id: "open-macro-builder",
-		// 	callback: () => new MacroModal(this).open(),
-		// });
-
 		this.registerEvent(
-			app.workspace.on('editor-menu', this.manager.editorMenu.applyEditorMenuCommands(this)),
+			app.workspace.on(
+				"editor-menu",
+				this.manager.editorMenu.applyEditorMenuCommands(this)
+			)
 		);
 
 		this.registerEvent(
-			app.workspace.on('file-menu', this.manager.fileMenu.applyFileMenuCommands(this)),
+			app.workspace.on(
+				"file-menu",
+				this.manager.fileMenu.applyFileMenuCommands(this)
+			)
 		);
 
-		updateHiderStylesheet(this.settings);
+		app.workspace.onLayoutReady(() => {
+			updateHiderStylesheet(this.settings);
+			updateMacroCommands(this);
+			updateSpacing(this.settings.spacing);
+			updateStyles(this.settings.advancedToolbar);
+			injectIcons(this.settings.advancedToolbar);
+		});
 	}
 
 	public onunload(): void {
 		document.head.querySelector("style#cmdr")?.remove();
+		removeStyles();
 	}
 
-	// Macros become quite large objects, because we are saving the whole flowchart state (including position, etc.)
-	// This is why they are encoded into a single line base64 string to save space (wip)
 	private async loadSettings(): Promise<void> {
 		const data = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
-		data.macros = data.macros.map((str: string) => JSON.parse(window.atob(str)));
 		this.settings = data;
 	}
 
 	public async saveSettings(): Promise<void> {
-		const data = Object.assign({}, this.settings);
-		// @ts-expect-error: We are assigning the base64 Version of the stringified macro object to the macros attribute
-		data.macros = data.macros.map((obj: Macro) => window.btoa(JSON.stringify(obj)));
-		await this.saveData(data);
+		await this.saveData(this.settings);
+	}
+
+	public listActiveToolbarCommands(): String[] {
+		//@ts-ignore
+		const activeCommands = this.app.vault.getConfig('mobileToolbarCommands');
+		return activeCommands;
+	}
+
+	public getCommands(): Command[] {
+		const commands: Command[] = [];
+		this.listActiveToolbarCommands().forEach(id => {
+			//@ts-ignore
+			const c = this.app.commands.commands[id];
+			if (c) commands.push(c);
+		});
+		return commands;
+	}
+
+
+	public getCommandsWithoutIcons(includeSelfAdded = true): Command[] {
+		const commands: Command[] = [];
+		this.getCommands().forEach(c => {
+			if (c && !c.icon) {
+				commands.push(c);
+			}
+		});
+		if (includeSelfAdded) {
+			this.getCommands().forEach(c => {
+				if (this.settings.advancedToolbar.mappedIcons.find(m => m.commandID === c.id)) {
+					commands.push(c);
+				}
+			});
+		}
+		return commands;
 	}
 }

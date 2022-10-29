@@ -31,7 +31,7 @@ abstract class Base extends CommandManagerBase {
 
 			item.dom.style.display = "flex";
 			const optionEl = createDiv({
-				cls: "clickable-icon cmdr-menu-more-options"
+				cls: "cmdr-menu-more-options"
 			});
 			let optionMenu: Menu | null = null;
 			optionEl.addEventListener("click", (event) => {

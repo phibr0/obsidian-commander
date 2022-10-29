@@ -1,5 +1,5 @@
 import { isModeActive } from 'src/util';
-import { Menu, setIcon, WorkspaceRibbon } from "obsidian";
+import { Menu, Platform, setIcon, WorkspaceRibbon } from "obsidian";
 import CommandManagerBase from "./commandManager";
 import CommanderPlugin from "src/main";
 import { CommandIconPair } from "src/types";
@@ -22,17 +22,25 @@ export default class RibbonManager extends CommandManagerBase {
 	) {
 		super(plugin, plugin.settings[`${side}Ribbon`]);
 		this.actions = {};
-		this.ribbonEl = app.workspace[`${side}Ribbon`];
 
 		app.workspace.onLayoutReady(() => {
 			if (this.side === "right") {
 				this.addActionContainer();
+			} else {
+				this.ribbonEl = app.workspace.leftRibbon;
 			}
 			this.addBtn = createDiv({ cls: "cmdr side-dock-ribbon-action cmdr-adder", attr: { "aria-label-position": side === "left" ? "right" : "left", "aria-label": t("Add new") } });
 			this.init();
 		});
 
-		this.plugin.register(() => Object.values(this.actions).forEach(el => el.remove()));
+		this.plugin.register(() => {
+			if (Platform.isMobile) {
+				Object.keys(this.actions).forEach((id) => this.removeActionMobile(id));
+			}
+			else {
+				Object.values(this.actions).forEach(el => el.remove());
+			}
+		});
 	}
 
 	public async addCommand(pair: CommandIconPair): Promise<void> {
@@ -57,7 +65,12 @@ export default class RibbonManager extends CommandManagerBase {
 
 	public reorder(): void | Promise<void> {
 		this.addBtn.remove();
-		Object.values(this.actions).forEach(el => el.remove());
+		if (Platform.isMobile) {
+			Object.keys(this.actions).forEach((id) => this.removeActionMobile(id));
+		}
+		else {
+			Object.values(this.actions).forEach(el => el.remove());
+		}
 		this.init();
 	}
 
@@ -75,7 +88,23 @@ export default class RibbonManager extends CommandManagerBase {
 			this.addCommand(pair);
 			this.reorder();
 		};
-		if (this.plugin.settings.showAddCommand) app.workspace.onLayoutReady(() => this.ribbonEl.ribbonActionsEl?.append(this.addBtn));
+		if (this.plugin.settings.showAddCommand) app.workspace.onLayoutReady(() => this.ribbonEl.ribbonActionsEl?.append?.(this.addBtn));
+	}
+
+	private addActionMobile(name: string, icon: string, callback: () => void) {
+		app.workspace.leftRibbon.orderedRibbonActions.push({
+			// @ts-expect-error
+			cmdr__id: name + icon,
+			title: name,
+			icon,
+			callback,
+		});
+	}
+
+	private removeActionMobile(id: string): void {
+		app.workspace.leftRibbon.orderedRibbonActions =
+			// @ts-expect-error
+			app.workspace.leftRibbon.orderedRibbonActions.filter((action) => action.cmdr__id !== id);
 	}
 
 	// eslint-disable-next-line no-unused-vars
@@ -85,6 +114,12 @@ export default class RibbonManager extends CommandManagerBase {
 		newAction.addClass("cmdr");
 		newAction.setAttribute("aria-label-position", this.side === "left" ? "right" : "left");
 		this.actions[name + icon] = newAction;
+
+		if (Platform.isMobile) {
+			// @ts-expect-error
+			this.addActionMobile(name, icon, callback);
+			return;
+		}
 
 		let isRemovable = false;
 
@@ -174,6 +209,10 @@ export default class RibbonManager extends CommandManagerBase {
 	}
 
 	private async removeAction(id: string): Promise<void> {
+		if (Platform.isMobile) {
+			this.removeActionMobile(id);
+			return;
+		}
 		this.actions[id].addClass("cmdr-ribbon-removing");
 		this.actions[id].addEventListener("transitionend", () => {
 			this.actions[id].remove();

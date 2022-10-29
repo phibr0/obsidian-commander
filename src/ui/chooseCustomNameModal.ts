@@ -33,6 +33,7 @@ export default class ChooseCustomNameModal extends SuggestModal<string> {
 		const wrapper = createDiv({ cls: "cmdr-name-input-wrapper" });
 		this.inputEl.parentNode?.insertBefore(wrapper, this.inputEl);
 		wrapper.appendChild(this.inputEl);
+		wrapper.parentElement!.style.display = "block";
 
 		const btn = createEl("button", { text: t("Save"), cls: "mod-cta" });
 		btn.onclick = (e): void => this.selectSuggestion(this.inputEl.value, e);

@@ -1,5 +1,23 @@
 import { h } from "preact";
 
+export enum Action {
+	COMMAND,
+	DELAY,
+	EDITOR,
+	LOOP,
+}
+
+export type MacroItem = { action: Action.COMMAND, commandId: string }
+	| { action: Action.DELAY, delay: number }
+	| { action: Action.EDITOR }
+	| { action: Action.LOOP, times: number, commandId: string };
+
+export interface Macro {
+	name: string;
+	icon: string;
+	macro: MacroItem[];
+}
+
 export interface CommanderSettings {
 	confirmDeletion: boolean;
 	showAddCommand: boolean;
@@ -11,17 +29,28 @@ export interface CommanderSettings {
 	titleBar: CommandIconPair[];
 	statusBar: CommandIconPair[];
 	pageHeader: CommandIconPair[];
+	explorer: CommandIconPair[];
 	macros: Macro[];
 	hide: {
 		statusbar: string[];
 		leftRibbon: string[];
-	}
+	};
 	spacing: number;
+	advancedToolbar: AdvancedToolbarSettings;
 }
 
-export interface Macro {
-	nodes: any[];
-	edges: any[]
+export interface AdvancedToolbarSettings {
+	rowHeight: number;
+	rowCount: number;
+	spacing: number;
+	buttonWidth: number;
+	columnLayout: boolean;
+	mappedIcons: {
+		iconID: string;
+		commandID: string;
+	}[];
+	tooltips: boolean;
+	heightOffset: number;
 }
 
 export interface Tab {
@@ -68,6 +97,11 @@ declare module "obsidian" {
 	}
 
 	interface WorkspaceRibbon {
+		orderedRibbonActions: {
+			icon: string;
+			title: string;
+			callback: () => void;
+		}[];
 		collapseButtonEl: HTMLElement;
 		ribbonActionsEl?: HTMLElement;
 		addRibbonActionButton: (icon: string, name: string, callback: (event: MouseEvent) => void) => void;
