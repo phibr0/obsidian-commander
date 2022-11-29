@@ -15,84 +15,97 @@ if you want to view the source, please visit the github repository of this plugi
 
 const prod = (process.argv[2] === 'production');
 
-esbuild.build({
-	banner: {
-		js: banner,
-	},
-	footer: {
-		js: "\n/* by phibr0 */"
-	},
-	entryPoints: ['src/main.ts'],
-	bundle: true,
-	external: [
-		'obsidian',
-		'electron',
-		'@codemirror/autocomplete',
-		'@codemirror/closebrackets',
-		'@codemirror/collab',
-		'@codemirror/commands',
-		'@codemirror/comment',
-		'@codemirror/fold',
-		'@codemirror/gutter',
-		'@codemirror/highlight',
-		'@codemirror/history',
-		'@codemirror/language',
-		'@codemirror/lint',
-		'@codemirror/matchbrackets',
-		'@codemirror/panel',
-		'@codemirror/rangeset',
-		'@codemirror/rectangular-selection',
-		'@codemirror/search',
-		'@codemirror/state',
-		'@codemirror/stream-parser',
-		'@codemirror/text',
-		'@codemirror/tooltip',
-		'@codemirror/view',
-		...builtins],
-	format: 'cjs',
-	watch: !prod,
-	loader: {
-		'.svg': 'text',
-	},
-	target: 'es2015',
-	logLevel: "info",
-	sourcemap: prod ? false : 'inline',
-	minify: prod,
-	treeShaking: true,
-	outfile: 'main.js',
-	plugins: [
-		alias({
-			"react": require.resolve("preact/compat"),
-			"react-dom/test-utils": require.resolve("preact/test-utils"),
-			"react-dom": require.resolve("preact/compat"),
-			"react/jsx-runtime": require.resolve("preact/jsx-runtime"),
-		}),
-		sassPlugin(),
-		{
-			name: "Rename Stylesheet",
-			setup(build) {
-				build.onEnd(() => {
-					try {
-						renameSync("main.css", "styles.css")
-					} catch (error) {
-						console.error(error);
-					}
-				});
-			},
+esbuild
+	.build({
+		banner: {
+			js: banner,
 		},
-		{
-			name: "Move output",
-			setup(build) {
-				build.onEnd(() => {
-					try {
-						copyFileSync("styles.css", "../../vault/.obsidian/plugins/cmdr/styles.css");
-						copyFileSync("main.js", "../../vault/.obsidian/plugins/cmdr/main.js");
-						copyFileSync("manifest.json", "../../vault/.obsidian/plugins/cmdr/manifest.json");
-					} catch (error) {
-						console.error(error);
-					}
-				});
+		footer: {
+			js: "\n/* by phibr0 */",
+		},
+		entryPoints: ["src/main.ts"],
+		bundle: true,
+		external: [
+			"obsidian",
+			"electron",
+			"@codemirror/autocomplete",
+			"@codemirror/closebrackets",
+			"@codemirror/collab",
+			"@codemirror/commands",
+			"@codemirror/comment",
+			"@codemirror/fold",
+			"@codemirror/gutter",
+			"@codemirror/highlight",
+			"@codemirror/history",
+			"@codemirror/language",
+			"@codemirror/lint",
+			"@codemirror/matchbrackets",
+			"@codemirror/panel",
+			"@codemirror/rangeset",
+			"@codemirror/rectangular-selection",
+			"@codemirror/search",
+			"@codemirror/state",
+			"@codemirror/stream-parser",
+			"@codemirror/text",
+			"@codemirror/tooltip",
+			"@codemirror/view",
+			...builtins,
+		],
+		format: "cjs",
+		watch: !prod,
+		loader: {
+			".svg": "text",
+		},
+		target: "es2017",
+		logLevel: "info",
+		sourcemap: prod ? false : "inline",
+		minify: prod,
+		treeShaking: true,
+		outfile: "main.js",
+		jsx: "automatic",
+		plugins: [
+			alias({
+				react: require.resolve("preact/compat"),
+				"react-dom/test-utils": require.resolve("preact/test-utils"),
+				"react-dom": require.resolve("preact/compat"),
+				"react/jsx-runtime": require.resolve("preact/jsx-runtime"),
+			}),
+			sassPlugin(),
+			{
+				name: "Rename Stylesheet",
+				setup(build) {
+					build.onEnd(() => {
+						try {
+							renameSync("main.css", "styles.css");
+						} catch (error) {
+							console.error(error);
+						}
+					});
+				},
 			},
-		}
-	],
-}).catch(() => process.exit(1));
+			{
+				name: "Move output",
+				setup(build) {
+					build.onEnd(() => {
+						try {
+							copyFileSync(
+								"styles.css",
+								"../../vault/.obsidian/plugins/cmdr/styles.css"
+							);
+							copyFileSync(
+								"main.js",
+								"../../vault/.obsidian/plugins/cmdr/main.js"
+							);
+							copyFileSync(
+								"manifest.json",
+								"../../vault/.obsidian/plugins/cmdr/manifest.json"
+							);
+						} catch (error) {
+							console.error(error);
+						}
+					});
+				},
+			},
+		],
+	})
+	.catch(() => process.exit(1));
