@@ -25,39 +25,92 @@ export default function CommandViewer({ manager, plugin, children }: CommandView
 				<div className="cmdr-sep-con">
 					{manager.pairs.map((cmd, idx) => {
 						if (cmd.mode.match(/desktop|mobile|any/) || cmd.mode === app.appId) {
-							return <CommandComponent
-								key={cmd.id}
-								pair={cmd}
-								handleRemove={async (): Promise<void> => {
-									if (!plugin.settings.confirmDeletion || await new ConfirmDeleteModal(plugin).didChooseRemove()) {
-										await manager.removeCommand(cmd); this.forceUpdate();
-									}
-								}}
-								handleUp={(): void => { arrayMoveMutable(manager.pairs, idx, idx - 1); manager.reorder(); this.forceUpdate(); }}
-								handleDown={(): void => { arrayMoveMutable(manager.pairs, idx, idx + 1); manager.reorder(); this.forceUpdate(); }}
-								handleRename={async (name): Promise<void> => { cmd.name = name; await plugin.saveSettings(); manager.reorder(); this.forceUpdate(); }}
-								handleNewIcon={async (): Promise<void> => {
-									const newIcon = await (new ChooseIconModal(plugin)).awaitSelection();
-									if (newIcon && newIcon !== cmd.icon) {
-										cmd.icon = newIcon;
+							return (
+								<CommandComponent
+									key={cmd.id}
+									pair={cmd}
+									handleRemove={async (): Promise<void> => {
+										if (
+											!plugin.settings.confirmDeletion ||
+											(await new ConfirmDeleteModal(
+												plugin
+											).didChooseRemove())
+										) {
+											await manager.removeCommand(cmd);
+											this.forceUpdate();
+										}
+									}}
+									handleUp={(): void => {
+										arrayMoveMutable(
+											manager.pairs,
+											idx,
+											idx - 1
+										);
+										manager.reorder();
+										this.forceUpdate();
+									}}
+									handleDown={(): void => {
+										arrayMoveMutable(
+											manager.pairs,
+											idx,
+											idx + 1
+										);
+										manager.reorder();
+										this.forceUpdate();
+									}}
+									handleRename={async (
+										name
+									): Promise<void> => {
+										cmd.name = name;
 										await plugin.saveSettings();
 										manager.reorder();
 										this.forceUpdate();
-									}
-									dispatchEvent(new Event("cmdr-icon-changed"));
-								}}
-								handleModeChange={async (mode?: string): Promise<void> => {
-									// This is the rotation
-									const modes = ["any", "desktop", "mobile", app.appId];
-									let currentIdx = modes.indexOf(cmd.mode);
-									if (currentIdx === 3) currentIdx = -1;
+									}}
+									handleNewIcon={async (): Promise<void> => {
+										const newIcon =
+											await new ChooseIconModal(
+												plugin
+											).awaitSelection();
+										if (newIcon && newIcon !== cmd.icon) {
+											cmd.icon = newIcon;
+											await plugin.saveSettings();
+											manager.reorder();
+											this.forceUpdate();
+										}
+										dispatchEvent(
+											new Event("cmdr-icon-changed")
+										);
+									}}
+									handleModeChange={async (
+										mode?: string
+									): Promise<void> => {
+										// This is the rotation
+										const modes = [
+											"any",
+											"desktop",
+											"mobile",
+											app.appId,
+										];
+										let currentIdx = modes.indexOf(
+											cmd.mode
+										);
+										if (currentIdx === 3) currentIdx = -1;
 
-									cmd.mode = mode || modes[currentIdx + 1];
-									await plugin.saveSettings();
-									manager.reorder();
-									this.forceUpdate();
-								}}
-							/>;
+										cmd.mode =
+											mode || modes[currentIdx + 1];
+										await plugin.saveSettings();
+										manager.reorder();
+										this.forceUpdate();
+									}}
+									handleColorChange={async (
+										color?: string
+									): Promise<void> => {
+										cmd.color = color;
+										await plugin.saveSettings();
+										manager.reorder();
+									}}
+								/>
+							);
 						}
 					})}
 				</div>

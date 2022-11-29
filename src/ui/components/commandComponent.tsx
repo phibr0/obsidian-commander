@@ -5,6 +5,7 @@ import { CommandIconPair } from "src/types";
 import { getCommandFromId, ObsidianIcon } from "src/util";
 import MobileModifyModal from "../mobileModifyModal";
 import ChangeableText from "./ChangeableText";
+import { ColorPicker } from "./ColorPicker";
 
 interface CommandViewerProps {
 	pair: CommandIconPair;
@@ -12,10 +13,9 @@ interface CommandViewerProps {
 	handleUp: () => void;
 	handleDown: () => void;
 	handleNewIcon: () => void;
-	// eslint-disable-next-line no-unused-vars
 	handleRename: (name: string) => void;
-	// eslint-disable-next-line no-unused-vars
 	handleModeChange: (mode?: string) => void;
+	handleColorChange: (color?: string) => void;
 }
 
 export default function CommandComponent({
@@ -26,53 +26,70 @@ export default function CommandComponent({
 	handleNewIcon,
 	handleRename,
 	handleModeChange,
+	handleColorChange,
 }: CommandViewerProps): h.JSX.Element {
 	const cmd = getCommandFromId(pair.id);
 	if (!cmd) {
-		return <Fragment>
-			{Platform.isDesktop && <div className="setting-item mod-toggle">
-				<ObsidianIcon icon="alert-triangle" size={20} className="cmdr-icon clickable-icon mod-warning" />
-				<div className="setting-item-info">
-					<div className="setting-item-name">
-						{pair.name}
+		return (
+			<Fragment>
+				{Platform.isDesktop && (
+					<div className="setting-item mod-toggle">
+						<ObsidianIcon
+							icon="alert-triangle"
+							size={20}
+							className="cmdr-icon clickable-icon mod-warning"
+						/>
+						<div className="setting-item-info">
+							<div className="setting-item-name">{pair.name}</div>
+							<div className="setting-item-description">
+								{t(
+									"This Command is not available on this device."
+								)}
+							</div>
+						</div>
+						<div className="setting-item-control">
+							<button
+								className="mod-warning"
+								style="display: flex"
+								onClick={handleRemove}
+								aria-label={t("Delete")}
+							>
+								<ObsidianIcon icon="lucide-trash" />
+							</button>
+						</div>
 					</div>
-					<div className="setting-item-description">
-						{t("This Command is not available on this device.")}
-					</div>
-				</div>
-				<div className="setting-item-control">
-					<button
-						className="mod-warning"
-						style="display: flex"
-						onClick={handleRemove}
-						aria-label={t("Delete")}
+				)}
+				{Platform.isMobile && (
+					<div
+						className="mobile-option-setting-item"
+						onClick={(): void => {
+							new Notice(
+								t(
+									"This Command is not available on this device."
+								)
+							);
+						}}
 					>
-						<ObsidianIcon icon="lucide-trash" />
-					</button>
-				</div>
-			</div>}
-			{Platform.isMobile && <div className="mobile-option-setting-item" onClick={(): void => { new Notice(t("This Command is not available on this device.")); }}>
-				<span
-					className="mobile-option-setting-item-remove-icon"
-					onClick={handleRemove}
-				>
-					<ObsidianIcon
-						icon="minus-with-circle"
-						size={22}
-						style={{ color: "var(--text-error)" }}
-					/>
-				</span>
-				<span className="mobile-option-setting-item-option-icon mod-warning">
-					<ObsidianIcon
-						icon={"alert-triangle"}
-						size={22}
-					/>
-				</span>
-				<span className="mobile-option-setting-item-name">
-					{pair.name}
-				</span>
-			</div>}
-		</Fragment>;
+						<span
+							className="mobile-option-setting-item-remove-icon"
+							onClick={handleRemove}
+						>
+							<ObsidianIcon
+								icon="minus-with-circle"
+								size={22}
+								style={{ color: "var(--text-error)" }}
+							/>
+						</span>
+						<span className="mobile-option-setting-item-option-icon mod-warning">
+							<ObsidianIcon icon={"alert-triangle"} size={22} />
+						</span>
+						<span className="mobile-option-setting-item-name">
+							{pair.name}
+						</span>
+					</div>
+				)}
+			</Fragment>
+		);
 	}
 	const owningPluginID = cmd.id.split(":").first();
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -103,10 +120,9 @@ export default function CommandComponent({
 							<ChangeableText
 								ariaLabel={t("Double click to rename")}
 								handleChange={({ target }): void => {
-									{/* @ts-ignore */ }
+									/* @ts-ignore */
 									handleRename(target?.value);
-								}
-								}
+								}}
 								value={pair.name}
 							/>
 							{pair.name !== cmd.name && (
@@ -124,12 +140,16 @@ export default function CommandComponent({
 							)}{" "}
 							{isChecked
 								? t(
-									"Warning: This is a checked Command, meaning it might not run under every circumstance."
-								)
+										"Warning: This is a checked Command, meaning it might not run under every circumstance."
+								  )
 								: ""}
 						</div>
 					</div>
 					<div className="setting-item-control">
+						<ColorPicker
+							initialColor={pair.color ?? "#000"}
+							onChange={handleColorChange}
+						/>
 						<ObsidianIcon
 							icon="arrow-down"
 							className="setting-editor-extra-setting-button clickable-icon"
@@ -179,16 +199,33 @@ export default function CommandComponent({
 							icon={pair.icon}
 							size={22}
 							onClick={(): void => {
-								new MobileModifyModal(pair, handleRename, handleNewIcon, handleModeChange).open();
+								new MobileModifyModal(
+									pair,
+									handleRename,
+									handleNewIcon,
+									handleModeChange,
+									handleColorChange
+								).open();
 							}}
 						/>
 					</span>
-					<span className="mobile-option-setting-item-name" onClick={(): void => {
-						new MobileModifyModal(pair, handleRename, handleNewIcon, handleModeChange).open();
-					}}>
+					<span
+						className="mobile-option-setting-item-name"
+						onClick={(): void => {
+							new MobileModifyModal(
+								pair,
+								handleRename,
+								handleNewIcon,
+								handleModeChange,
+								handleColorChange
+							).open();
+						}}
+					>
 						{pair.name}
 						{pair.name !== cmd.name && (
-							<span className="cmdr-option-setting-name">({cmd.name})</span>
+							<span className="cmdr-option-setting-name">
+								({cmd.name})
+							</span>
 						)}
 					</span>
 					<span className="mobile-option-setting-item-option-icon">
@@ -206,7 +243,13 @@ export default function CommandComponent({
 							icon="three-horizontal-bars"
 							className="clickable-icon"
 							onClick={(): void => {
-								new MobileModifyModal(pair, handleRename, handleNewIcon, handleModeChange).open();
+								new MobileModifyModal(
+									pair,
+									handleRename,
+									handleNewIcon,
+									handleModeChange,
+									handleColorChange
+								).open();
 							}}
 						/>
 					</span>

@@ -8,12 +8,13 @@ export default class MobileModifyModal extends Modal {
 	private reactComponent: VNode;
 	public remove: boolean;
 
-	// eslint-disable-next-line no-unused-vars
 	public constructor(
 		public pair: CommandIconPair,
 		public handleRename: (name: string) => void,
 		public handleNewIcon: () => void,
-		public handleModeChange: (mode?: string) => void) {
+		public handleModeChange: (mode?: string) => void,
+		public handleColorChange: (color?: string) => void
+	) {
 		super(app);
 	}
 

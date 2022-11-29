@@ -90,6 +90,10 @@ export default class ExplorerManager extends CommandManagerBase {
 
 		const btn = createDiv({ cls: "cmdr clickable-icon", attr: { "aria-label-position": "top", "aria-label": pair.name, "data-cmdr": pair.icon + pair.name } });
 		this.actions.set(pair, btn);
+		btn.style.color =
+			pair.color === "#000000" || pair.color === undefined
+				? "inherit"
+				: pair.color;
 
 		let isRemovable = false;
 

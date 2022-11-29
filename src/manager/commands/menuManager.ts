@@ -27,6 +27,10 @@ abstract class Base extends CommandManagerBase {
 	protected addRemovableCommand(this: (item: MenuItem) => void, command: Command, cmdPair: CommandIconPair, plugin: CommanderPlugin, menu: Menu, commandList: CommandIconPair[]): (item: MenuItem) => void {
 		return (item: MenuItem) => {
 			item.dom.addClass("cmdr");
+			item.dom.style.color =
+				cmdPair.color === "#000000" || cmdPair.color === undefined
+					? "inherit"
+					: cmdPair.color;
 			item.setSection("cmdr");
 
 			item.dom.style.display = "flex";

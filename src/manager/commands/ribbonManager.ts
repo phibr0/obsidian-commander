@@ -112,6 +112,10 @@ export default class RibbonManager extends CommandManagerBase {
 		// eslint-disable-next-line @typescript-eslint/no-empty-function
 		const newAction = this.ribbonEl.makeRibbonActionButton(icon, name, () => { });
 		newAction.addClass("cmdr");
+		newAction.style.color =
+			pair.color === "#000000" || pair.color === undefined
+				? "inherit"
+				: pair.color;
 		newAction.setAttribute("aria-label-position", this.side === "left" ? "right" : "left");
 		this.actions[name + icon] = newAction;
 

@@ -66,6 +66,7 @@ export interface CommandIconPair {
 	icon: string;
 	name: string;
 	mode: Mode;
+	color?: string;
 }
 
 /* eslint-disable no-unused-vars */

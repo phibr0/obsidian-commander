@@ -32,7 +32,11 @@ export default class PageHeaderManager extends CommandManagerBase {
 		});
 		buttons.set(id, buttonIcon);
 
-		buttonIcon.addClasses(["cmdr-page-header", id])
+		buttonIcon.addClasses(["cmdr-page-header", id]);
+		buttonIcon.style.color =
+			pair.color === "#000000" || pair.color === undefined
+				? "inherit"
+				: pair.color;
 		buttonIcon.addEventListener("contextmenu", (event) => {
 			event.stopImmediatePropagation();
 			new Menu()
