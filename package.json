@@ -1,6 +1,6 @@
 {
 	"name": "cmdr",
-	"version": "0.4.0",
+	"version": "0.4.1",
 	"description": "Customize your workspace by adding commands /everywhere/.",
 	"main": "main.js",
 	"scripts": {
@@ -9,7 +9,7 @@
 		"version": "node scripts/version-bump.mjs && git add manifest.json versions.json",
 		"icons": "node scripts/update-icon-list.mjs",
 		"build:css": "npx tailwindcss -i ./main.css -o ./styles.css --minify",
-		"build": "pnpm run build:esbuild && pnpm run build:css",
+		"build": "npm run build:esbuild && npm run build:css",
 		"dev:css": "npx tailwindcss -i ./main.css -o ./styles.css --watch",
 		"dev": "npm-run-all --parallel dev:*"
 	},
