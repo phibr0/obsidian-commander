@@ -4,7 +4,7 @@ import builtins from 'builtin-modules';
 import alias from "esbuild-plugin-alias";
 import { sassPlugin } from 'esbuild-sass-plugin';
 import { createRequire } from 'module';
-import { renameSync, copyFileSync } from "fs";
+import { renameSync, copyFileSync, appendFileSync } from "fs";
 const require = createRequire(import.meta.url);
 
 const banner = `/*
@@ -13,7 +13,7 @@ if you want to view the source, please visit the github repository of this plugi
 */
 `;
 
-const prod = (process.argv[2] === 'production');
+const prod = process.argv[2] === "production";
 
 esbuild
 	.build({
@@ -72,11 +72,14 @@ esbuild
 			}),
 			sassPlugin(),
 			{
-				name: "Rename Stylesheet",
+				name: "Insert Tailwind Directives",
 				setup(build) {
 					build.onEnd(() => {
 						try {
-							renameSync("main.css", "styles.css");
+							appendFileSync(
+								"main.css",
+								"\n@tailwind components;\n@tailwind utilities;\n"
+							);
 						} catch (error) {
 							console.error(error);
 						}
@@ -87,22 +90,27 @@ esbuild
 				name: "Move output",
 				setup(build) {
 					build.onEnd(() => {
-						try {
-							copyFileSync(
-								"styles.css",
-								"../../vault/.obsidian/plugins/cmdr/styles.css"
-							);
-							copyFileSync(
-								"main.js",
-								"../../vault/.obsidian/plugins/cmdr/main.js"
-							);
-							copyFileSync(
-								"manifest.json",
-								"../../vault/.obsidian/plugins/cmdr/manifest.json"
-							);
-						} catch (error) {
-							console.error(error);
-						}
+						setTimeout(
+							() => {
+								try {
+									copyFileSync(
+										"styles.css",
+										"../../vault/.obsidian/plugins/cmdr/styles.css"
+									);
+									copyFileSync(
+										"main.js",
+										"../../vault/.obsidian/plugins/cmdr/main.js"
+									);
+									copyFileSync(
+										"manifest.json",
+										"../../vault/.obsidian/plugins/cmdr/manifest.json"
+									);
+								} catch (error) {
+									console.error(error);
+								}
+							},
+							prod ? 5000 : 500
+						);
 					});
 				},
 			},

@@ -4,10 +4,14 @@
 	"description": "Customize your workspace by adding commands /everywhere/.",
 	"main": "main.js",
 	"scripts": {
-		"dev": "node scripts/esbuild.config.mjs",
-		"build": "tsc -noEmit -skipLibCheck && node scripts/esbuild.config.mjs production",
+		"dev:esbuild": "node scripts/esbuild.config.mjs",
+		"build:esbuild": "tsc -noEmit -skipLibCheck && node scripts/esbuild.config.mjs production",
 		"version": "node scripts/version-bump.mjs && git add manifest.json versions.json",
-		"icons": "node scripts/update-icon-list.mjs"
+		"icons": "node scripts/update-icon-list.mjs",
+		"build:css": "npx tailwindcss -i ./main.css -o ./styles.css --minify",
+		"build": "pnpm run build:esbuild && pnpm run build:css",
+		"dev:css": "npx tailwindcss -i ./main.css -o ./styles.css --watch",
+		"dev": "npm-run-all --parallel dev:*"
 	},
 	"keywords": [],
 	"author": "jsmorabito & phibr0",
@@ -33,7 +37,9 @@
 		"esbuild-plugin-alias": "^0.2.1",
 		"esbuild-sass-plugin": "^2.4.2",
 		"node-fetch": "^3.3.0",
+		"npm-run-all": "^4.1.5",
 		"obsidian": "latest",
+		"tailwindcss": "^3.2.4",
 		"tslib": "^2.4.1",
 		"typescript": "^4.9.3"
 	},
