@@ -15,6 +15,7 @@ export type MacroItem = { action: Action.COMMAND, commandId: string }
 export interface Macro {
 	name: string;
 	icon: string;
+	startup?: boolean;
 	macro: MacroItem[];
 }
 

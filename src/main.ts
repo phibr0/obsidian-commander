@@ -33,6 +33,17 @@ export default class CommanderPlugin extends Plugin {
 		explorerManager: ExplorerManager;
 	};
 
+	async executeStartupMacros() {
+		const ref = setTimeout(() => {
+			this.settings.macros.forEach((macro, idx) => {
+				if (macro.startup) {
+					this.executeMacro(idx);
+				}
+			});
+		}, 1000);
+		this.register(() => clearTimeout(ref));
+	}
+
 	async executeMacro(id: number) {
 		const macro = this.settings.macros[id];
 		if (!macro) throw new Error("Macro not found");
@@ -111,6 +122,8 @@ export default class CommanderPlugin extends Plugin {
 			updateSpacing(this.settings.spacing);
 			updateStyles(this.settings.advancedToolbar);
 			injectIcons(this.settings.advancedToolbar);
+
+			this.executeStartupMacros();
 		});
 	}
 
@@ -130,13 +143,15 @@ export default class CommanderPlugin extends Plugin {
 
 	public listActiveToolbarCommands(): String[] {
 		//@ts-ignore
-		const activeCommands = this.app.vault.getConfig('mobileToolbarCommands');
+		const activeCommands = this.app.vault.getConfig(
+			"mobileToolbarCommands"
+		);
 		return activeCommands;
 	}
 
 	public getCommands(): Command[] {
 		const commands: Command[] = [];
-		this.listActiveToolbarCommands().forEach(id => {
+		this.listActiveToolbarCommands().forEach((id) => {
 			//@ts-ignore
 			const c = this.app.commands.commands[id];
 			if (c) commands.push(c);
@@ -144,17 +159,20 @@ export default class CommanderPlugin extends Plugin {
 		return commands;
 	}
 
-
 	public getCommandsWithoutIcons(includeSelfAdded = true): Command[] {
 		const commands: Command[] = [];
-		this.getCommands().forEach(c => {
+		this.getCommands().forEach((c) => {
 			if (c && !c.icon) {
 				commands.push(c);
 			}
 		});
 		if (includeSelfAdded) {
-			this.getCommands().forEach(c => {
-				if (this.settings.advancedToolbar.mappedIcons.find(m => m.commandID === c.id)) {
+			this.getCommands().forEach((c) => {
+				if (
+					this.settings.advancedToolbar.mappedIcons.find(
+						(m) => m.commandID === c.id
+					)
+				) {
 					commands.push(c);
 				}
 			});
