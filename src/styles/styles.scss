@@ -318,6 +318,19 @@
 	}
 }
 
+.is-tablet .cmdr-tab {
+	border: none !important;
+	margin-bottom: 2px;
+	padding: 10px;
+	font-size: 1.08em;
+	display: flex;
+	align-items: center;
+	.cmdr-block {
+		display: flex;
+		align-items: center;
+	}
+}
+
 .cmdr-mobile-modify-grid {
 	padding: 22px;
 

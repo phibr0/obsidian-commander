@@ -218,17 +218,40 @@ export function TabHeader({ tabs, activeTab, setActiveTab, setOpen }: TabHeaderP
 	useEffect(() => document.querySelector(".cmdr-tab-active")?.scrollIntoView({ behavior: "smooth", block: "nearest" }), [activeTab]);
 
 	return (
-		<nav class={`cmdr-setting-header ${Platform.isMobile ? "cmdr-mobile" : ""}`} ref={wrapper}>
-			<div class={`cmdr-setting-tab-group ${Platform.isMobile ? "vertical-tab-header-group-items" : ""}`}>
-				{tabs.map((tab, idx) => <div
-					className={`cmdr-tab ${activeTab === idx ? "cmdr-tab-active" : ""} ${Platform.isMobile ? "vertical-tab-nav-item" : ""}`}
-					onClick={(): void => { setActiveTab(idx); setOpen(false); }}>
-					{tab.name}
-					{Platform.isMobile && <ObsidianIcon className="vertical-tab-nav-item-chevron" icon="chevron-right" size={24} />}
-				</div>)}
+		<nav
+			class={`cmdr-setting-header ${
+				Platform.isMobile ? "cmdr-mobile" : ""
+			}`}
+			ref={wrapper}
+		>
+			<div
+				class={`cmdr-setting-tab-group ${
+					Platform.isMobile ? "vertical-tab-header-group-items" : ""
+				}`}
+			>
+				{tabs.map((tab, idx) => (
+					<div
+						className={`cmdr-tab ${
+							activeTab === idx ? "cmdr-tab-active" : ""
+						} ${Platform.isMobile ? "vertical-tab-nav-item" : ""}`}
+						onClick={(): void => {
+							setActiveTab(idx);
+							setOpen(false);
+						}}
+					>
+						{tab.name}
+						{Platform.isMobile && (
+							<ObsidianIcon
+								className="vertical-tab-nav-item-chevron cmdr-block"
+								icon="chevron-right"
+								size={24}
+							/>
+						)}
+					</div>
+				))}
 			</div>
 
 			{Platform.isDesktop && <div className="cmdr-fill" />}
-		</nav >
+		</nav>
 	);
 }
