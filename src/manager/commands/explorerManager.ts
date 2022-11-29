@@ -86,7 +86,7 @@ export default class ExplorerManager extends CommandManagerBase {
 	}
 
 	private addAction(pair: CommandIconPair, leaf: WorkspaceLeaf): void {
-		if (this.buttonExists(leaf, pair)) { console.log("Button already exists"); return; };
+		if (this.buttonExists(leaf, pair)) { return; };
 
 		const btn = createDiv({ cls: "cmdr clickable-icon", attr: { "aria-label-position": "top", "aria-label": pair.name, "data-cmdr": pair.icon + pair.name } });
 		this.actions.set(pair, btn);
