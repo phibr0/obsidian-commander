@@ -36,7 +36,8 @@ export default class TitleBarManager extends CommandManagerBase {
 			this.plugin.saveSettings();
 
 			this.plugin.register(() => this.addBtn.remove());
-			setIcon(this.addBtn, "plus", 12);
+			this.addBtn.style.setProperty("--icon-size", `12px`);
+			setIcon(this.addBtn, "plus");
 			this.addBtn.onclick = async (): Promise<void> => {
 				const pair = await chooseNewCommand(this.plugin);
 				this.addCommand(pair);

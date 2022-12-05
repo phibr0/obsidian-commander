@@ -74,8 +74,11 @@ function render(containerEl: HTMLElement, plugin: CommanderPlugin) {
 					if (command.icon) {
 						setIcon(iconDiv, command.icon, 20);
 					} else {
+						iconDiv.style.setProperty("--icon-size", "20px");
 						const currentIcon = plugin.settings.advancedToolbar.mappedIcons.find(m => m.commandID === command.id)?.iconID;
-						currentIcon ? setIcon(iconDiv, currentIcon, 20) : bt.setButtonText("No Icon");
+						currentIcon
+							? setIcon(iconDiv, currentIcon)
+							: bt.setButtonText("No Icon");
 					}
 					bt.onClick(async () => {
 						const icon = await new ChooseIconModal(plugin).awaitSelection();

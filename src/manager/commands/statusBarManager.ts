@@ -40,12 +40,13 @@ export default class StatusBarManager extends CommandManagerBase {
 				}
 
 				new Menu()
-					.addItem(item => {
-						item
-							.setTitle(t("Add command"))
+					.addItem((item) => {
+						item.setTitle(t("Add command"))
 							.setIcon("command")
 							.onClick(async () => {
-								const pair = await chooseNewCommand(this.plugin);
+								const pair = await chooseNewCommand(
+									this.plugin
+								);
 								this.addCommand(pair);
 							});
 					})
@@ -53,7 +54,8 @@ export default class StatusBarManager extends CommandManagerBase {
 			});
 
 			this.plugin.register(() => this.addBtn.remove());
-			setIcon(this.addBtn, "plus", 12);
+			this.addBtn.style.setProperty("--icon-size", `12px`);
+			setIcon(this.addBtn, "plus");
 			this.addBtn.onclick = async (): Promise<void> => {
 				const pair = await chooseNewCommand(this.plugin);
 				this.addCommand(pair);
@@ -93,12 +95,14 @@ export default class StatusBarManager extends CommandManagerBase {
 
 		const setNormal = (): void => {
 			btn.empty();
-			setIcon(btn, pair.icon, 12);
+			btn.style.setProperty("--icon-size", `12px`);
+			setIcon(btn, pair.icon);
 			btn.onclick = (): void => app.commands.executeCommandById(pair.id);
 		};
 		const setRemovable = (): void => {
 			btn.empty();
-			setIcon(btn, "trash", 12);
+			btn.style.setProperty("--icon-size", `12px`);
+			setIcon(btn, "trash");
 			btn.onclick = async (): Promise<void> => {
 				if (!this.plugin.settings.confirmDeletion || (await new ConfirmDeleteModal(this.plugin).didChooseRemove())) {
 					this.removeCommand(pair);

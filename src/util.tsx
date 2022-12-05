@@ -48,7 +48,8 @@ export function ObsidianIcon({ icon, size, ...props }: ObsidianIconProps): h.JSX
 
 	useLayoutEffect(() => {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		setIcon(iconEl.current!, icon, size);
+		iconEl.current!.style.setProperty("--icon-size", `${size}px`);
+		setIcon(iconEl.current!, icon);
 	}, [icon, size]);
 
 	return <div ref={iconEl} {...props} />;

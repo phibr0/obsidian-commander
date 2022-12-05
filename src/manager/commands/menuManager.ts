@@ -85,7 +85,8 @@ abstract class Base extends CommandManagerBase {
 				}
 
 			});
-			setIcon(optionEl, "more-vertical", 16);
+			optionEl.style.setProperty("--icon-size", `16px`);
+			setIcon(optionEl, "more-vertical");
 			item.dom.append(optionEl);
 
 			item
