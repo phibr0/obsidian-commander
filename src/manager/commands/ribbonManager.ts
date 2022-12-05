@@ -88,7 +88,10 @@ export default class RibbonManager extends CommandManagerBase {
 			this.addCommand(pair);
 			this.reorder();
 		};
-		if (this.plugin.settings.showAddCommand) app.workspace.onLayoutReady(() => this.ribbonEl.ribbonActionsEl?.append?.(this.addBtn));
+		if (this.plugin.settings.showAddCommand)
+			app.workspace.onLayoutReady(() =>
+				this.ribbonEl.ribbonItemsEl?.append?.(this.addBtn)
+			);
 	}
 
 	private addActionMobile(name: string, icon: string, callback: () => void) {
@@ -110,13 +113,20 @@ export default class RibbonManager extends CommandManagerBase {
 	// eslint-disable-next-line no-unused-vars
 	private addAction(name: string, icon: string, pair: CommandIconPair, callback: (event: MouseEvent) => void): void {
 		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		const newAction = this.ribbonEl.makeRibbonActionButton(icon, name, () => { });
+		const newAction = this.ribbonEl.makeRibbonItemButton(
+			icon,
+			name,
+			() => {}
+		);
 		newAction.addClass("cmdr");
 		newAction.style.color =
 			pair.color === "#000000" || pair.color === undefined
 				? "inherit"
 				: pair.color;
-		newAction.setAttribute("aria-label-position", this.side === "left" ? "right" : "left");
+		newAction.setAttribute(
+			"aria-label-position",
+			this.side === "left" ? "right" : "left"
+		);
 		this.actions[name + icon] = newAction;
 
 		if (Platform.isMobile) {
@@ -136,7 +146,12 @@ export default class RibbonManager extends CommandManagerBase {
 			newAction.empty();
 			setIcon(newAction, "trash");
 			newAction.onclick = async (): Promise<void> => {
-				if (!this.plugin.settings.confirmDeletion || (await new ConfirmDeleteModal(this.plugin).didChooseRemove())) {
+				if (
+					!this.plugin.settings.confirmDeletion ||
+					(await new ConfirmDeleteModal(
+						this.plugin
+					).didChooseRemove())
+				) {
 					this.removeCommand(pair);
 				}
 			};
@@ -157,9 +172,8 @@ export default class RibbonManager extends CommandManagerBase {
 		newAction.addEventListener("contextmenu", (event) => {
 			event.stopImmediatePropagation();
 			new Menu()
-				.addItem(item => {
-					item
-						.setTitle(t("Add command"))
+				.addItem((item) => {
+					item.setTitle(t("Add command"))
 						.setIcon("command")
 						.onClick(async () => {
 							const pair = await chooseNewCommand(this.plugin);
@@ -167,12 +181,13 @@ export default class RibbonManager extends CommandManagerBase {
 						});
 				})
 				.addSeparator()
-				.addItem(item => {
-					item
-						.setTitle(t("Change Icon"))
+				.addItem((item) => {
+					item.setTitle(t("Change Icon"))
 						.setIcon("box")
 						.onClick(async () => {
-							const newIcon = await (new ChooseIconModal(this.plugin)).awaitSelection();
+							const newIcon = await new ChooseIconModal(
+								this.plugin
+							).awaitSelection();
 							if (newIcon && newIcon !== pair.icon) {
 								pair.icon = newIcon;
 								await this.plugin.saveSettings();
@@ -180,12 +195,13 @@ export default class RibbonManager extends CommandManagerBase {
 							}
 						});
 				})
-				.addItem(item => {
-					item
-						.setTitle(t("Rename"))
+				.addItem((item) => {
+					item.setTitle(t("Rename"))
 						.setIcon("text-cursor-input")
 						.onClick(async () => {
-							const newName = await (new ChooseCustomNameModal(pair.name)).awaitSelection();
+							const newName = await new ChooseCustomNameModal(
+								pair.name
+							).awaitSelection();
 							if (newName && newName !== pair.name) {
 								pair.name = newName;
 								await this.plugin.saveSettings();
@@ -193,13 +209,17 @@ export default class RibbonManager extends CommandManagerBase {
 							}
 						});
 				})
-				.addItem(item => {
+				.addItem((item) => {
 					item.dom.addClass("is-warning");
-					item
-						.setTitle(t("Delete"))
+					item.setTitle(t("Delete"))
 						.setIcon("lucide-trash")
 						.onClick(async () => {
-							if (!this.plugin.settings.confirmDeletion || (await new ConfirmDeleteModal(this.plugin).didChooseRemove())) {
+							if (
+								!this.plugin.settings.confirmDeletion ||
+								(await new ConfirmDeleteModal(
+									this.plugin
+								).didChooseRemove())
+							) {
 								this.removeCommand(pair);
 							}
 						});
@@ -209,7 +229,7 @@ export default class RibbonManager extends CommandManagerBase {
 
 		setNormal();
 
-		this.ribbonEl.ribbonActionsEl?.append(newAction);
+		this.ribbonEl.ribbonItemsEl?.append(newAction);
 	}
 
 	private async removeAction(id: string): Promise<void> {
@@ -227,7 +247,7 @@ export default class RibbonManager extends CommandManagerBase {
 	private addActionContainer(): void {
 		const div = createDiv({ cls: `side-dock-actions cmdr-${this.side}-ribbon` });
 		this.ribbonEl.collapseButtonEl.insertAdjacentElement("afterend", div);
-		this.ribbonEl.ribbonActionsEl = div;
+		this.ribbonEl.ribbonItemsEl = div;
 
 		this.plugin.register(() => div.remove());
 	}

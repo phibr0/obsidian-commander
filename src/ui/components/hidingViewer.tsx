@@ -7,45 +7,6 @@ import { updateHiderStylesheet } from "src/util";
 import Accordion from "./Accordion";
 import { EyeToggleComponent } from "./settingComponent";
 
-
-export function LeftRibbonHider({ plugin }: { plugin: CommanderPlugin }): h.JSX.Element {
-	const [ribbonCommands, setRibbonCommands] = useState<{ name: string, icon: string }[]>([]);
-	const hiddenCommands = plugin.settings.hide.leftRibbon;
-	useEffect(() => {
-		setRibbonCommands(
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			[...app.workspace.leftRibbon.ribbonActionsEl!.children]
-				.filter((el) => !el.hasClass("cmdr"))
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				.map((el) => { return { name: el.getAttribute("aria-label")!, icon: el.firstElementChild!.className! }; })
-		);
-	}, []);
-
-	return (
-		<Fragment>
-			<hr />
-			<Accordion title={t("Hide other Commands")}>
-				{ribbonCommands.map((command) => <EyeToggleComponent
-					name={command.name}
-					description=""
-					hideLabel={t("Hide")}
-					showLabel={t("Show")}
-					changeHandler={async (value): Promise<void> => {
-						if (!value) {
-							hiddenCommands.push(command.name);
-						} else {
-							hiddenCommands.contains(command.name) && hiddenCommands.remove(command.name);
-						}
-						updateHiderStylesheet(plugin.settings);
-						await plugin.saveSettings();
-					}}
-					value={hiddenCommands.contains(command.name)}
-				/>)}
-			</Accordion>
-		</Fragment>
-	);
-}
-
 export function StatusbarHider({ plugin }: { plugin: CommanderPlugin }): h.JSX.Element {
 	const hiddenPlugins = plugin.settings.hide.statusbar;
 	const [pluginsWithRibbonItems, setPluginsWithRibbonItems] = useState<PluginManifest[]>([]);

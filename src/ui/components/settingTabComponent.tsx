@@ -60,117 +60,202 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 		}
 	}, [open]);
 
-	const tabs: Tab[] = useMemo(() => [
-		{
-			name: t("General"),
-			tab: <Fragment>
-				<ToggleComponent
-					name={t("Always ask before removing?")}
-					description={t("Always show a Popup to confirm deletion of a Command.")}
-					value={plugin.settings.confirmDeletion}
-					changeHandler={async (value): Promise<void> => {
-						plugin.settings.confirmDeletion = !value;
-						await plugin.saveSettings();
-					}} />
-				<ToggleComponent
-					value={plugin.settings.showAddCommand}
-					name={t("Show \"Add Command\" Button")}
-					description={t("Show the \"Add Command\" Button in every Menu.")}
-					changeHandler={async (value): Promise<void> => {
-						plugin.settings.showAddCommand = !value;
-						plugin.manager.pageHeader.reorder();
-						await plugin.saveSettings();
-					}} />
-				<ToggleComponent
-					value={plugin.settings.debug}
-					name={t("Enable debugging")}
-					description={t("Enable console output.")}
-					changeHandler={async (value): Promise<void> => {
-						plugin.settings.debug = !value;
-						await plugin.saveSettings();
-					}} />
-				<SliderComponent
-					value={plugin.settings.spacing}
-					name={t("Choose custom spacing for Command Buttons")}
-					description={t("Change the spacing between commands. You can set different values on mobile and desktop.")}
-					changeHandler={async (value): Promise<void> => {
-						updateSpacing(value);
-						plugin.settings.spacing = value;
-						await plugin.saveSettings();
-					}} />
-			</Fragment>
-		},
-		{
-			name: t("Left Ribbon"),
-			tab: <CommandViewer manager={plugin.manager.leftRibbon} plugin={plugin}>
-				<LeftRibbonHider plugin={plugin} />
-			</CommandViewer>
-		},
-		// {
-		// 	name: t("Right Ribbon"),
-		// 	tab: <CommandViewer manager={plugin.manager.rightRibbon} plugin={plugin} />
-		// },
-		{
-			name: t("Page Header"),
-			tab: <CommandViewer manager={plugin.manager.pageHeader} plugin={plugin}>
-				<hr />
-				<div className="cmdr-sep-con callout" data-callout="warning">
-					<span className="cmdr-callout-warning"><ObsidianIcon icon="alert-triangle" /> {t("Warning")}</span>
-					<p className="cmdr-warning-description">{t("As of Obsidian 0.16.0 you need to explicitly enable the View Header.")}</p>
-					<button onClick={(): void => {
-						app.setting.openTabById("appearance");
-						setTimeout(() => {
-							//@ts-expect-error: activeTab contains the currently active Settings Tab.
-							(app.setting.activeTab.containerEl as HTMLElement).scroll({
-								behavior: "smooth",
-								top: 250,
-							});
-							//@ts-expect-error: activeTab contains the currently active Settings Tab.
-							(app.setting.activeTab.containerEl as HTMLElement).querySelectorAll(".setting-item-heading")[1].nextSibling?.nextSibling?.nextSibling?.addClass("cmdr-cta");
-						}, 50);
-					}} className="mod-cta">{t("Open Appearance Settings")}</button>
-				</div>
-			</CommandViewer>
-		},
-		// {
-		// 	name: t("Titlebar"),
-		// 	tab: <CommandViewer manager={plugin.manager.titleBar} plugin={plugin} />
-		// },
-		{
-			name: t("Statusbar"),
-			tab: <CommandViewer manager={plugin.manager.statusBar} plugin={plugin}>
-				<StatusbarHider plugin={plugin} />
-			</CommandViewer>
-		},
-		{
-			name: t("Editor Menu"),
-			tab: <CommandViewer manager={plugin.manager.editorMenu} plugin={plugin} />
-		},
-		{
-			name: t("File Menu"),
-			tab: <CommandViewer manager={plugin.manager.fileMenu} plugin={plugin} />
-		},
-		{
-			name: t("Explorer"),
-			tab: <CommandViewer manager={plugin.manager.explorerManager} plugin={plugin}>
-				<hr />
-				<div className="cmdr-sep-con callout" data-callout="warning">
-					<span className="cmdr-callout-warning"><ObsidianIcon icon="alert-triangle" /> {t("Warning")}</span>
-					<p className="cmdr-warning-description">
-						{"When clicking on a Command in the Explorer, the Explorer view will become focused. This might interfere with Commands that are supposed to be executed on an active File/Explorer."}
-					</p>
-				</div>
-			</CommandViewer>
-		},
-		{
-			name: Platform.isMobile ? "Mobile Toolbar" : "Toolbar",
-			tab: <AdvancedToolbarSettings plugin={plugin} />
-		},
-		{
-			name: "Macros",
-			tab: <MacroViewer plugin={plugin} macros={plugin.settings.macros} />
-		}
-	], []);
+	const tabs: Tab[] = useMemo(
+		() => [
+			{
+				name: t("General"),
+				tab: (
+					<Fragment>
+						<ToggleComponent
+							name={t("Always ask before removing?")}
+							description={t(
+								"Always show a Popup to confirm deletion of a Command."
+							)}
+							value={plugin.settings.confirmDeletion}
+							changeHandler={async (value): Promise<void> => {
+								plugin.settings.confirmDeletion = !value;
+								await plugin.saveSettings();
+							}}
+						/>
+						<ToggleComponent
+							value={plugin.settings.showAddCommand}
+							name={t('Show "Add Command" Button')}
+							description={t(
+								'Show the "Add Command" Button in every Menu.'
+							)}
+							changeHandler={async (value): Promise<void> => {
+								plugin.settings.showAddCommand = !value;
+								plugin.manager.pageHeader.reorder();
+								await plugin.saveSettings();
+							}}
+						/>
+						<ToggleComponent
+							value={plugin.settings.debug}
+							name={t("Enable debugging")}
+							description={t("Enable console output.")}
+							changeHandler={async (value): Promise<void> => {
+								plugin.settings.debug = !value;
+								await plugin.saveSettings();
+							}}
+						/>
+						<SliderComponent
+							value={plugin.settings.spacing}
+							name={t(
+								"Choose custom spacing for Command Buttons"
+							)}
+							description={t(
+								"Change the spacing between commands. You can set different values on mobile and desktop."
+							)}
+							changeHandler={async (value): Promise<void> => {
+								updateSpacing(value);
+								plugin.settings.spacing = value;
+								await plugin.saveSettings();
+							}}
+						/>
+					</Fragment>
+				),
+			},
+			{
+				name: t("Left Ribbon"),
+				tab: (
+					<CommandViewer
+						manager={plugin.manager.leftRibbon}
+						plugin={plugin}
+					/>
+				),
+			},
+			// {
+			// 	name: t("Right Ribbon"),
+			// 	tab: <CommandViewer manager={plugin.manager.rightRibbon} plugin={plugin} />
+			// },
+			{
+				name: t("Page Header"),
+				tab: (
+					<CommandViewer
+						manager={plugin.manager.pageHeader}
+						plugin={plugin}
+					>
+						<hr />
+						<div
+							className="cmdr-sep-con callout"
+							data-callout="warning"
+						>
+							<span className="cmdr-callout-warning">
+								<ObsidianIcon icon="alert-triangle" />{" "}
+								{t("Warning")}
+							</span>
+							<p className="cmdr-warning-description">
+								{t(
+									"As of Obsidian 0.16.0 you need to explicitly enable the View Header."
+								)}
+							</p>
+							<button
+								onClick={(): void => {
+									app.setting.openTabById("appearance");
+									setTimeout(() => {
+										//@ts-expect-error: activeTab contains the currently active Settings Tab.
+										(
+											app.setting.activeTab
+												.containerEl as HTMLElement
+										).scroll({
+											behavior: "smooth",
+											top: 250,
+										});
+										//@ts-expect-error: activeTab contains the currently active Settings Tab.
+										(
+											app.setting.activeTab
+												.containerEl as HTMLElement
+										)
+											.querySelectorAll(
+												".setting-item-heading"
+											)[1]
+											.nextSibling?.nextSibling?.nextSibling?.addClass?.(
+												"cmdr-cta"
+											);
+									}, 50);
+								}}
+								className="mod-cta"
+							>
+								{t("Open Appearance Settings")}
+							</button>
+						</div>
+					</CommandViewer>
+				),
+			},
+			// {
+			// 	name: t("Titlebar"),
+			// 	tab: <CommandViewer manager={plugin.manager.titleBar} plugin={plugin} />
+			// },
+			{
+				name: t("Statusbar"),
+				tab: (
+					<CommandViewer
+						manager={plugin.manager.statusBar}
+						plugin={plugin}
+					>
+						<StatusbarHider plugin={plugin} />
+					</CommandViewer>
+				),
+			},
+			{
+				name: t("Editor Menu"),
+				tab: (
+					<CommandViewer
+						manager={plugin.manager.editorMenu}
+						plugin={plugin}
+					/>
+				),
+			},
+			{
+				name: t("File Menu"),
+				tab: (
+					<CommandViewer
+						manager={plugin.manager.fileMenu}
+						plugin={plugin}
+					/>
+				),
+			},
+			{
+				name: t("Explorer"),
+				tab: (
+					<CommandViewer
+						manager={plugin.manager.explorerManager}
+						plugin={plugin}
+					>
+						<hr />
+						<div
+							className="cmdr-sep-con callout"
+							data-callout="warning"
+						>
+							<span className="cmdr-callout-warning">
+								<ObsidianIcon icon="alert-triangle" />{" "}
+								{t("Warning")}
+							</span>
+							<p className="cmdr-warning-description">
+								{
+									"When clicking on a Command in the Explorer, the Explorer view will become focused. This might interfere with Commands that are supposed to be executed on an active File/Explorer."
+								}
+							</p>
+						</div>
+					</CommandViewer>
+				),
+			},
+			{
+				name: Platform.isMobile ? "Mobile Toolbar" : "Toolbar",
+				tab: <AdvancedToolbarSettings plugin={plugin} />,
+			},
+			{
+				name: "Macros",
+				tab: (
+					<MacroViewer
+						plugin={plugin}
+						macros={plugin.settings.macros}
+					/>
+				),
+			},
+		],
+		[]
+	);
 
 	return (
 		<Fragment>

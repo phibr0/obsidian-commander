@@ -106,8 +106,16 @@ declare module "obsidian" {
 		}[];
 		collapseButtonEl: HTMLElement;
 		ribbonActionsEl?: HTMLElement;
-		addRibbonActionButton: (icon: string, name: string, callback: (event: MouseEvent) => void) => void;
-		makeRibbonActionButton: (icon: string, name: string, callback: (event: MouseEvent) => void) => HTMLElement;
+		addRibbonItemButton: (
+			icon: string,
+			name: string,
+			callback: (event: MouseEvent) => void
+		) => void;
+		makeRibbonItemButton: (
+			icon: string,
+			name: string,
+			callback: (event: MouseEvent) => void
+		) => HTMLElement;
 	}
 
 	interface WorkspaceLeaf {
