@@ -1,4 +1,4 @@
-import { Notice, Platform } from "obsidian";
+import { Platform } from "obsidian";
 import { Fragment, h } from "preact";
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import t from "src/l10n";
@@ -8,11 +8,17 @@ import CommanderPlugin from "../../main";
 import About from "./About";
 import AdvancedToolbarSettings from "./AdvancedToolbarSettings";
 import CommandViewer from "./commandViewerComponent";
-import { LeftRibbonHider, StatusbarHider } from "./hidingViewer";
+import { StatusbarHider } from "./hidingViewer";
 import MacroViewer from "./MacroViewer";
 import { SliderComponent, ToggleComponent } from "./settingComponent";
 
-export default function settingTabComponent({ plugin, mobileMode }: { plugin: CommanderPlugin; mobileMode: boolean; }): h.JSX.Element {
+export default function settingTabComponent({
+	plugin,
+	mobileMode,
+}: {
+	plugin: CommanderPlugin;
+	mobileMode: boolean;
+}): h.JSX.Element {
 	const [activeTab, setActiveTab] = useState(0);
 	const [open, setOpen] = useState(true);
 
@@ -37,7 +43,9 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 	if (Platform.isMobile) {
 		useEffect(() => {
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			const old_element = document.querySelector(".modal-setting-back-button")!;
+			const old_element = document.querySelector(
+				".modal-setting-back-button"
+			)!;
 			const new_element = old_element.cloneNode(true);
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			old_element.parentNode!.replaceChild(new_element, old_element);
@@ -46,7 +54,9 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 	}
 
 	useEffect(() => {
-		const el = document.querySelector<HTMLElement>(".modal-setting-back-button");
+		const el = document.querySelector<HTMLElement>(
+			".modal-setting-back-button"
+		);
 		if (!el) return;
 
 		if (!open) {
@@ -153,22 +163,18 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 								onClick={(): void => {
 									app.setting.openTabById("appearance");
 									setTimeout(() => {
-										//@ts-expect-error: activeTab contains the currently active Settings Tab.
-										(
-											app.setting.activeTab
-												.containerEl as HTMLElement
-										).scroll({
-											behavior: "smooth",
-											top: 250,
-										});
-										//@ts-expect-error: activeTab contains the currently active Settings Tab.
-										(
-											app.setting.activeTab
-												.containerEl as HTMLElement
-										)
+										app.setting.activeTab.containerEl.scroll(
+											{
+												behavior: "smooth",
+												top: 250,
+											}
+										);
+
+										app.setting.activeTab.containerEl
 											.querySelectorAll(
 												".setting-item-heading"
 											)[1]
+											// @ts-ignore
 											.nextSibling?.nextSibling?.nextSibling?.addClass?.(
 												"cmdr-cta"
 											);
@@ -259,30 +265,51 @@ export default function settingTabComponent({ plugin, mobileMode }: { plugin: Co
 
 	return (
 		<Fragment>
-			{Platform.isDesktop && <div className="cmdr-setting-title">
-				<h1>{plugin.manifest.name}</h1>
-			</div>}
+			{Platform.isDesktop && (
+				<div className="cmdr-setting-title">
+					<h1>{plugin.manifest.name}</h1>
+				</div>
+			)}
 
-			{(Platform.isDesktop || open) && <TabHeader tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} setOpen={setOpen} />}
+			{(Platform.isDesktop || open) && (
+				<TabHeader
+					tabs={tabs}
+					activeTab={activeTab}
+					setActiveTab={setActiveTab}
+					setOpen={setOpen}
+				/>
+			)}
 
-			<div class={`cmdr-setting-content ${mobileMode ? "cmdr-mobile" : ""}`}>
+			<div
+				class={`cmdr-setting-content ${
+					mobileMode ? "cmdr-mobile" : ""
+				}`}
+			>
 				{(Platform.isDesktop || !open) && tabs[activeTab].tab}
 
-				{((Platform.isMobile && open) || (Platform.isDesktop && activeTab === 0)) && <About manifest={plugin.manifest} />}
+				{((Platform.isMobile && open) ||
+					(Platform.isDesktop && activeTab === 0)) && (
+					<About manifest={plugin.manifest} />
+				)}
 			</div>
-		</Fragment >
+		</Fragment>
 	);
 }
 
 interface TabHeaderProps {
-	tabs: Tab[],
+	tabs: Tab[];
 	activeTab: number;
 	// eslint-disable-next-line no-unused-vars
 	setActiveTab: (idx: number) => void;
 	// eslint-disable-next-line no-unused-vars
 	setOpen: (open: boolean) => void;
 }
-export function TabHeader({ tabs, activeTab, setActiveTab, setOpen }: TabHeaderProps): h.JSX.Element {
+export function TabHeader({
+	tabs,
+	activeTab,
+	setActiveTab,
+	setOpen,
+}: TabHeaderProps): h.JSX.Element {
 	const wrapper = useRef<HTMLElement>(null);
 
 	const handleScroll = (e: WheelEvent): void => {
@@ -300,7 +327,13 @@ export function TabHeader({ tabs, activeTab, setActiveTab, setOpen }: TabHeaderP
 		return () => el.removeEventListener("wheel", handleScroll);
 	}, []);
 
-	useEffect(() => document.querySelector(".cmdr-tab-active")?.scrollIntoView({ behavior: "smooth", block: "nearest" }), [activeTab]);
+	useEffect(
+		() =>
+			document
+				.querySelector(".cmdr-tab-active")
+				?.scrollIntoView({ behavior: "smooth", block: "nearest" }),
+		[activeTab]
+	);
 
 	return (
 		<nav

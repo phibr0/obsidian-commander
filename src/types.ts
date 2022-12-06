@@ -79,23 +79,26 @@ declare module "obsidian" {
 		commands: {
 			commands: {
 				[id: string]: Command;
-			}
+			};
 			executeCommandById: (id: string) => void;
-		}
+		};
 		plugins: {
 			manifests: {
 				[id: string]: PluginManifest;
-			}
-		}
+			};
+		};
 		statusBar: {
 			containerEl: HTMLElement;
-		}
+		};
 		appId: string;
 		isMobile: boolean;
 		setting: {
 			closeActiveTab: () => void;
 			openTabById: (id: string) => void;
-		},
+			activeTab: {
+				containerEl: HTMLElement;
+			};
+		};
 	}
 
 	interface WorkspaceRibbon {
@@ -105,7 +108,7 @@ declare module "obsidian" {
 			callback: () => void;
 		}[];
 		collapseButtonEl: HTMLElement;
-		ribbonActionsEl?: HTMLElement;
+		ribbonItemsEl?: HTMLElement;
 		addRibbonItemButton: (
 			icon: string,
 			name: string,
