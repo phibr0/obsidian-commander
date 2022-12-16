@@ -54,7 +54,6 @@ export default class StatusBarManager extends CommandManagerBase {
 			});
 
 			this.plugin.register(() => this.addBtn.remove());
-			this.addBtn.style.setProperty("--icon-size", `12px`);
 			setIcon(this.addBtn, "plus");
 			this.addBtn.onclick = async (): Promise<void> => {
 				const pair = await chooseNewCommand(this.plugin);
@@ -95,13 +94,11 @@ export default class StatusBarManager extends CommandManagerBase {
 
 		const setNormal = (): void => {
 			btn.empty();
-			btn.style.setProperty("--icon-size", `12px`);
 			setIcon(btn, pair.icon);
 			btn.onclick = (): void => app.commands.executeCommandById(pair.id);
 		};
 		const setRemovable = (): void => {
 			btn.empty();
-			btn.style.setProperty("--icon-size", `12px`);
 			setIcon(btn, "trash");
 			btn.onclick = async (): Promise<void> => {
 				if (!this.plugin.settings.confirmDeletion || (await new ConfirmDeleteModal(this.plugin).didChooseRemove())) {

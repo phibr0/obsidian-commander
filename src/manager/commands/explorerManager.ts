@@ -99,13 +99,11 @@ export default class ExplorerManager extends CommandManagerBase {
 
 		const setNormal = (): void => {
 			btn.empty();
-			btn.style.setProperty("--icon-size", `12px`);
 			setIcon(btn, pair.icon);
 			btn.onclick = (): void => app.commands.executeCommandById(pair.id);
 		};
 		const setRemovable = (): void => {
 			btn.empty();
-			btn.style.setProperty("--icon-size", `12px`);
 			setIcon(btn, "trash");
 			btn.onclick = async (): Promise<void> => {
 				if (

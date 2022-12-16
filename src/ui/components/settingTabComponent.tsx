@@ -131,7 +131,22 @@ export default function settingTabComponent({
 					<CommandViewer
 						manager={plugin.manager.leftRibbon}
 						plugin={plugin}
-					/>
+					>
+						<hr />
+						<div
+							className="cmdr-sep-con callout"
+							data-callout="warning"
+						>
+							<span className="cmdr-callout-warning">
+								Reordering/Sorting
+							</span>
+							<p className="cmdr-warning-description">
+								As of Obsidian 1.1.0 you can reorder the Buttons
+								in the left ribbon by dragging. This will
+								replace the old sorting feature.
+							</p>
+						</div>
+					</CommandViewer>
 				),
 			},
 			// {

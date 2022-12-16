@@ -11,21 +11,22 @@ import {
 	RibbonManager,
 	StatusBarManager,
 } from "./manager/commands";
-import { Action, CommanderSettings, Macro } from "./types";
+import { Action, CommanderSettings } from "./types";
 import CommanderSettingTab from "./ui/settingTab";
 import SettingTabModal from "./ui/settingTabModal";
 
-import './styles/styles.scss';
-import './styles/advanced-toolbar.scss';
+import "./styles/styles.scss";
+import "./styles/advanced-toolbar.scss";
 import { updateHiderStylesheet } from "./util";
 import registerCustomIcons from "./ui/icons";
+import LeftRibbonManager from "./manager/commands/leftRibbonManager";
 
 export default class CommanderPlugin extends Plugin {
 	public settings: CommanderSettings;
 	public manager: {
 		editorMenu: EditorMenuCommandManager;
 		fileMenu: FileMenuCommandManager;
-		leftRibbon: RibbonManager;
+		leftRibbon: LeftRibbonManager;
 		//rightRibbon: RibbonManager,
 		//titleBar: TitleBarManager,
 		statusBar: StatusBarManager;
@@ -33,18 +34,18 @@ export default class CommanderPlugin extends Plugin {
 		explorerManager: ExplorerManager;
 	};
 
-	async executeStartupMacros() {
+	public async executeStartupMacros(): Promise<void> {
 		const ref = setTimeout(() => {
-			this.settings.macros.forEach((macro, idx) => {
+			this.settings.macros.forEach(async (macro, idx) => {
 				if (macro.startup) {
-					this.executeMacro(idx);
+					await this.executeMacro(idx);
 				}
 			});
 		}, 1000);
 		this.register(() => clearTimeout(ref));
 	}
 
-	async executeMacro(id: number) {
+	public async executeMacro(id: number): Promise<void> {
 		const macro = this.settings.macros[id];
 		if (!macro) throw new Error("Macro not found");
 
@@ -77,6 +78,7 @@ export default class CommanderPlugin extends Plugin {
 
 	public async onload(): Promise<void> {
 		await this.loadSettings();
+		delete this.settings.hide.leftRibbon;
 
 		registerCustomIcons();
 
@@ -86,7 +88,7 @@ export default class CommanderPlugin extends Plugin {
 				this.settings.editorMenu
 			),
 			fileMenu: new FileMenuCommandManager(this, this.settings.fileMenu),
-			leftRibbon: new RibbonManager("left", this),
+			leftRibbon: new LeftRibbonManager(this),
 			//rightRibbon: new RibbonManager("right", this),
 			//titleBar: new TitleBarManager(this, this.settings.titleBar),
 			statusBar: new StatusBarManager(this, this.settings.statusBar),
@@ -141,7 +143,7 @@ export default class CommanderPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-	public listActiveToolbarCommands(): String[] {
+	public listActiveToolbarCommands(): string[] {
 		//@ts-ignore
 		const activeCommands = this.app.vault.getConfig(
 			"mobileToolbarCommands"

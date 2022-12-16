@@ -43,12 +43,15 @@ interface ObsidianIconProps extends ComponentProps<"div"> {
 	icon: string;
 	size?: number;
 }
-export function ObsidianIcon({ icon, size, ...props }: ObsidianIconProps): h.JSX.Element {
+export function ObsidianIcon({
+	icon,
+	size,
+	...props
+}: ObsidianIconProps): h.JSX.Element {
 	const iconEl = useRef<HTMLDivElement>(null);
 
 	useLayoutEffect(() => {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		iconEl.current!.style.setProperty("--icon-size", `${size}px`);
 		setIcon(iconEl.current!, icon);
 	}, [icon, size]);
 
@@ -57,7 +60,12 @@ export function ObsidianIcon({ icon, size, ...props }: ObsidianIconProps): h.JSX
 
 export function isModeActive(mode: string): boolean {
 	const { isMobile, appId } = app;
-	return mode === "any" || mode === appId || (mode === "mobile" && isMobile) || (mode === "desktop" && !isMobile);
+	return (
+		mode === "any" ||
+		mode === appId ||
+		(mode === "mobile" && isMobile) ||
+		(mode === "desktop" && !isMobile)
+	);
 }
 
 export function updateHiderStylesheet(settings: CommanderSettings): void {
@@ -65,14 +73,17 @@ export function updateHiderStylesheet(settings: CommanderSettings): void {
 	for (const id of settings.hide.statusbar) {
 		style += `div.status-bar-item.plugin-${id} {display: none !important; content-visibility: hidden;}`;
 	}
-	for (const name of settings.hide.leftRibbon) {
-		style += `div.side-dock-ribbon-action[aria-label="${name}"] {display: none !important; content-visibility: hidden;}`;
-	}
 
 	document.head.querySelector("style#cmdr")?.remove();
 
 	if (style) {
-		document.head.appendChild(createEl("style", { attr: { "id": "cmdr" }, text: style, type: "text/css" }));
+		document.head.appendChild(
+			createEl("style", {
+				attr: { id: "cmdr" },
+				text: style,
+				type: "text/css",
+			})
+		);
 	}
 }
 

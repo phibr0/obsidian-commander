@@ -43,37 +43,44 @@ abstract class Base extends CommandManagerBase {
 				event.stopImmediatePropagation();
 				if (!optionMenu) {
 					optionMenu = new Menu()
-						.addItem(item => {
-							item
-								.setTitle(t("Change Icon"))
+						.addItem((item) => {
+							item.setTitle(t("Change Icon"))
 								.setIcon("box")
 								.onClick(async () => {
-									const newIcon = await (new ChooseIconModal(plugin)).awaitSelection();
+									const newIcon = await new ChooseIconModal(
+										plugin
+									).awaitSelection();
 									if (newIcon && newIcon !== cmdPair.icon) {
 										cmdPair.icon = newIcon;
 										await plugin.saveSettings();
 									}
 								});
 						})
-						.addItem(item => {
-							item
-								.setTitle(t("Rename"))
+						.addItem((item) => {
+							item.setTitle(t("Rename"))
 								.setIcon("text-cursor-input")
 								.onClick(async () => {
-									const newName = await (new ChooseCustomNameModal(cmdPair.name)).awaitSelection();
+									const newName =
+										await new ChooseCustomNameModal(
+											cmdPair.name
+										).awaitSelection();
 									if (newName && newName !== cmdPair.name) {
 										cmdPair.name = newName;
 										await plugin.saveSettings();
 									}
 								});
 						})
-						.addItem(item => {
+						.addItem((item) => {
 							item.dom.addClass("is-warning");
-							item
-								.setTitle(t("Delete"))
+							item.setTitle(t("Delete"))
 								.setIcon("lucide-trash")
 								.onClick(async () => {
-									if (!plugin.settings.confirmDeletion || (await new ConfirmDeleteModal(plugin).didChooseRemove())) {
+									if (
+										!plugin.settings.confirmDeletion ||
+										(await new ConfirmDeleteModal(
+											plugin
+										).didChooseRemove())
+									) {
 										removeMenu();
 									}
 								});
@@ -83,9 +90,7 @@ abstract class Base extends CommandManagerBase {
 					optionMenu.hide();
 					optionMenu = null;
 				}
-
 			});
-			optionEl.style.setProperty("--icon-size", `16px`);
 			setIcon(optionEl, "more-vertical");
 			item.dom.append(optionEl);
 

@@ -5,8 +5,6 @@ import { Macro, Action, MacroItem } from "src/types";
 import { getCommandFromId, ObsidianIcon } from "src/util";
 import AddCommandModal from "../addCommandModal";
 import ChooseIconModal from "../chooseIconModal";
-import ChangeableText from "./ChangeableText";
-import CustomJSModal from "./customJSModal";
 import { SliderComponent } from "./settingComponent";
 
 interface MacroBuilderProps {
@@ -15,7 +13,12 @@ interface MacroBuilderProps {
 	onSave: (macro: Macro) => void;
 	onCancel: () => void;
 }
-export default function ({ plugin, macro, onSave, onCancel }: MacroBuilderProps): h.JSX.Element {
+export default function ({
+	plugin,
+	macro,
+	onSave,
+	onCancel,
+}: MacroBuilderProps): h.JSX.Element {
 	const [name, setName] = useState(macro.name || "Macro Name");
 	const [icon, setIcon] = useState(macro.icon || "star");
 	const [startup, setStartup] = useState(macro.startup || false);
@@ -40,11 +43,6 @@ export default function ({ plugin, macro, onSave, onCancel }: MacroBuilderProps)
 			...macroCommands,
 			{ action: Action.DELAY, delay: 250 },
 		]);
-	};
-
-	const handleAddCustomJS = async () => {
-		//new CustomJSModal(plugin).open();
-		//setMacroCommands([...macroCommands, { action: Action.CUSTOM_JS, code: "" }]);
 	};
 
 	return (

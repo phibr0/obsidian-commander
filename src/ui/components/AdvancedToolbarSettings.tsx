@@ -166,28 +166,40 @@ export default function AdvancedToolbarSettings({ plugin }: { plugin: CommanderP
 	const ref = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
-		render(ref.current!, plugin);
+		if (ref.current) {
+			render(ref.current, plugin);
+		}
+		return () => ref.current && ref.current.empty();
 	}, []);
 
 	return (
 		<Fragment>
 			<div className="cmdr-sep-con callout" data-callout="info">
-				<span className="cmdr-callout-warning"><ObsidianIcon icon="alert-circle" /> {"Info"}</span>
+				<span className="cmdr-callout-warning">
+					<ObsidianIcon icon="alert-circle" /> {"Info"}
+				</span>
 				<p className="cmdr-warning-description">
 					{"The Toolbar is only available in Obsidian Mobile. "}
-					{Platform.isMobile && <>
-						{"To configure which Commands show up in the Toolbar, open the Mobile Settings."}
-					</>
-					}
+					{Platform.isMobile && (
+						<>
+							{
+								"To configure which Commands show up in the Toolbar, open the Mobile Settings."
+							}
+						</>
+					)}
 				</p>
-				{Platform.isMobile && <button onClick={(): void => {
-					app.setting.openTabById("mobile");
-				}} className="mod-cta">
-					{"Open Mobile Settings"}
-				</button>
-				}
+				{Platform.isMobile && (
+					<button
+						onClick={(): void => {
+							app.setting.openTabById("mobile");
+						}}
+						className="mod-cta"
+					>
+						{"Open Mobile Settings"}
+					</button>
+				)}
 			</div>
-			<div ref={ref} style={{ paddingBottom: "256px" }} />
+			<div ref={ref} style={{ paddingBottom: "128px" }} />
 		</Fragment>
 	);
 }

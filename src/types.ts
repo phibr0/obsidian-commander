@@ -34,7 +34,7 @@ export interface CommanderSettings {
 	macros: Macro[];
 	hide: {
 		statusbar: string[];
-		leftRibbon: string[];
+		leftRibbon?: string[];
 	};
 	spacing: number;
 	advancedToolbar: AdvancedToolbarSettings;
@@ -108,7 +108,7 @@ declare module "obsidian" {
 			callback: () => void;
 		}[];
 		collapseButtonEl: HTMLElement;
-		ribbonItemsEl?: HTMLElement;
+		ribbonItemsEl: HTMLElement;
 		addRibbonItemButton: (
 			icon: string,
 			name: string,
