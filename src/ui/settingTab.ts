@@ -12,7 +12,13 @@ export default class CommanderSettingTab extends PluginSettingTab {
 	}
 
 	public display(): void {
-		render(h(settingTabComponent, { plugin: this.plugin, mobileMode: Platform.isMobile }), this.containerEl);
+		render(
+			h(settingTabComponent, {
+				plugin: this.plugin,
+				mobileMode: Platform.isMobile,
+			}),
+			this.containerEl
+		);
 	}
 
 	public hide(): void {

@@ -7,10 +7,11 @@ export enum Action {
 	LOOP,
 }
 
-export type MacroItem = { action: Action.COMMAND, commandId: string }
-	| { action: Action.DELAY, delay: number }
+export type MacroItem =
+	| { action: Action.COMMAND; commandId: string }
+	| { action: Action.DELAY; delay: number }
 	| { action: Action.EDITOR }
-	| { action: Action.LOOP, times: number, commandId: string };
+	| { action: Action.LOOP; times: number; commandId: string };
 
 export interface Macro {
 	name: string;
@@ -34,7 +35,7 @@ export interface CommanderSettings {
 	macros: Macro[];
 	hide: {
 		statusbar: string[];
-		leftRibbon?: string[];
+		leftRibbon: string[];
 	};
 	spacing: number;
 	advancedToolbar: AdvancedToolbarSettings;

@@ -1,4 +1,9 @@
-import { injectIcons, removeStyles, updateMacroCommands, updateStyles } from "src/util";
+import {
+	injectIcons,
+	removeStyles,
+	updateMacroCommands,
+	updateStyles,
+} from "src/util";
 import { updateSpacing } from "src/util";
 import { Command, Plugin } from "obsidian";
 import { DEFAULT_SETTINGS } from "./constants";
@@ -8,7 +13,6 @@ import {
 	ExplorerManager,
 	FileMenuCommandManager,
 	PageHeaderManager,
-	RibbonManager,
 	StatusBarManager,
 } from "./manager/commands";
 import { Action, CommanderSettings } from "./types";
@@ -35,14 +39,11 @@ export default class CommanderPlugin extends Plugin {
 	};
 
 	public async executeStartupMacros(): Promise<void> {
-		const ref = setTimeout(() => {
-			this.settings.macros.forEach(async (macro, idx) => {
-				if (macro.startup) {
-					await this.executeMacro(idx);
-				}
-			});
-		}, 1000);
-		this.register(() => clearTimeout(ref));
+		this.settings.macros.forEach((macro, idx) => {
+			if (macro.startup) {
+				this.executeMacro(idx);
+			}
+		});
 	}
 
 	public async executeMacro(id: number): Promise<void> {
@@ -78,7 +79,7 @@ export default class CommanderPlugin extends Plugin {
 
 	public async onload(): Promise<void> {
 		await this.loadSettings();
-		delete this.settings.hide.leftRibbon;
+		this.settings.hide.leftRibbon ??= []; // TODO: remove this in a future version
 
 		registerCustomIcons();
 

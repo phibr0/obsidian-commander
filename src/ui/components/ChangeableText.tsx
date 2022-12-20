@@ -11,7 +11,7 @@ interface Props {
 export default function ChangeableText({
 	value,
 	handleChange,
-	ariaLabel
+	ariaLabel,
 }: Props): h.JSX.Element {
 	const [showInputEle, setShowInput] = useState(false);
 	const el: Ref<HTMLInputElement> | undefined = useRef(null);
@@ -44,8 +44,11 @@ export default function ChangeableText({
 				/>
 			) : (
 				<span
-					/* @ts-ignore */
-					onDblClick={({ target }): void => { setWidth(target?.offsetWidth); setShowInput(true); }}
+					onDblClick={({ target }): void => {
+						/* @ts-ignore */
+						setWidth(target?.offsetWidth);
+						setShowInput(true);
+					}}
 					aria-label={ariaLabel}
 				>
 					{value}

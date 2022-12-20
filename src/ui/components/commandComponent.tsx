@@ -16,6 +16,7 @@ interface CommandViewerProps {
 	handleRename: (name: string) => void;
 	handleModeChange: (mode?: string) => void;
 	handleColorChange: (color?: string) => void;
+	sortable?: boolean;
 }
 
 export default function CommandComponent({
@@ -27,6 +28,7 @@ export default function CommandComponent({
 	handleRename,
 	handleModeChange,
 	handleColorChange,
+	sortable = true,
 }: CommandViewerProps): h.JSX.Element {
 	const cmd = getCommandFromId(pair.id);
 	if (!cmd) {
@@ -150,18 +152,22 @@ export default function CommandComponent({
 							initialColor={pair.color ?? "#000"}
 							onChange={handleColorChange}
 						/>
-						<ObsidianIcon
-							icon="arrow-down"
-							className="setting-editor-extra-setting-button clickable-icon"
-							onClick={handleDown}
-							aria-label={t("Move down")}
-						/>
-						<ObsidianIcon
-							icon="arrow-up"
-							className="setting-editor-extra-setting-button clickable-icon"
-							onClick={handleUp}
-							aria-label={t("Move up")}
-						/>
+						{sortable && (
+							<>
+								<ObsidianIcon
+									icon="arrow-down"
+									className="setting-editor-extra-setting-button clickable-icon"
+									onClick={handleDown}
+									aria-label={t("Move down")}
+								/>
+								<ObsidianIcon
+									icon="arrow-up"
+									className="setting-editor-extra-setting-button clickable-icon"
+									onClick={handleUp}
+									aria-label={t("Move up")}
+								/>
+							</>
+						)}
 						<ObsidianIcon
 							icon={modeIcon}
 							className="setting-editor-extra-setting-button clickable-icon"
@@ -229,16 +235,20 @@ export default function CommandComponent({
 						)}
 					</span>
 					<span className="mobile-option-setting-item-option-icon">
-						<ObsidianIcon
-							icon="arrow-down"
-							className="clickable-icon"
-							onClick={handleDown}
-						/>
-						<ObsidianIcon
-							icon="arrow-up"
-							className="clickable-icon"
-							onClick={handleUp}
-						/>
+						{sortable && (
+							<>
+								<ObsidianIcon
+									icon="arrow-down"
+									className="clickable-icon"
+									onClick={handleDown}
+								/>
+								<ObsidianIcon
+									icon="arrow-up"
+									className="clickable-icon"
+									onClick={handleUp}
+								/>
+							</>
+						)}
 						<ObsidianIcon
 							icon="three-horizontal-bars"
 							className="clickable-icon"

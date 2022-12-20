@@ -18,7 +18,10 @@ export default function Accordion({
 
 	return (
 		<div className="cmdr-accordion cmdr-sep-con" aria-expanded={open}>
-			<div className="cmdr-accordion-header" onClick={toggleHandler}>
+			<div
+				className="cmdr-accordion-header cmdr-mb-1"
+				onClick={toggleHandler}
+			>
 				<ObsidianIcon
 					className="cmdr-accordion-chevron clickable-icon"
 					icon="chevron-down"

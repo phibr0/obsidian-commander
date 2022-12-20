@@ -1,9 +1,9 @@
 import esbuild from "esbuild";
 import process from "process";
-import builtins from 'builtin-modules';
+import builtins from "builtin-modules";
 import alias from "esbuild-plugin-alias";
-import { sassPlugin } from 'esbuild-sass-plugin';
-import { createRequire } from 'module';
+import { sassPlugin } from "esbuild-sass-plugin";
+import { createRequire } from "module";
 import { renameSync, copyFileSync, appendFileSync } from "fs";
 const require = createRequire(import.meta.url);
 
