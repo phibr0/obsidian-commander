@@ -1,4 +1,4 @@
-import { isModeActive } from 'src/util';
+import { isModeActive } from "src/util";
 import { Menu, Platform, setIcon, WorkspaceRibbon } from "obsidian";
 import CommandManagerBase from "./commandManager";
 import CommanderPlugin from "src/main";
@@ -7,7 +7,7 @@ import ConfirmDeleteModal from "src/ui/confirmDeleteModal";
 import { chooseNewCommand, getCommandFromId } from "src/util";
 import ChooseCustomNameModal from "src/ui/chooseCustomNameModal";
 import ChooseIconModal from "src/ui/chooseIconModal";
-import t from 'src/l10n';
+import t from "src/l10n";
 
 export default class RibbonManager extends CommandManagerBase {
 	private actions: {
@@ -18,7 +18,7 @@ export default class RibbonManager extends CommandManagerBase {
 
 	public constructor(
 		private side: "left" | "right",
-		plugin: CommanderPlugin,
+		plugin: CommanderPlugin
 	) {
 		super(plugin, plugin.settings[`${side}Ribbon`]);
 		this.actions = {};
@@ -29,16 +29,23 @@ export default class RibbonManager extends CommandManagerBase {
 			} else {
 				this.ribbonEl = app.workspace.leftRibbon;
 			}
-			this.addBtn = createDiv({ cls: "cmdr side-dock-ribbon-action cmdr-adder", attr: { "aria-label-position": side === "left" ? "right" : "left", "aria-label": t("Add new") } });
+			this.addBtn = createDiv({
+				cls: "cmdr side-dock-ribbon-action cmdr-adder",
+				attr: {
+					"aria-label-position": side === "left" ? "right" : "left",
+					"aria-label": t("Add new"),
+				},
+			});
 			this.init();
 		});
 
 		this.plugin.register(() => {
 			if (Platform.isMobile) {
-				Object.keys(this.actions).forEach((id) => this.removeActionMobile(id));
-			}
-			else {
-				Object.values(this.actions).forEach(el => el.remove());
+				Object.keys(this.actions).forEach((id) =>
+					this.removeActionMobile(id)
+				);
+			} else {
+				Object.values(this.actions).forEach((el) => el.remove());
 			}
 		});
 	}
@@ -46,11 +53,24 @@ export default class RibbonManager extends CommandManagerBase {
 	public async addCommand(pair: CommandIconPair): Promise<void> {
 		const cmd = getCommandFromId(pair.id);
 		if (cmd) {
-			this.addAction(pair.name ?? cmd.name, pair.icon, pair, () => app.commands.executeCommandById(pair.id));
+			this.addAction(pair.name ?? cmd.name, pair.icon, pair, () =>
+				app.commands.executeCommandById(pair.id)
+			);
 		} else {
-			this.addAction(t("This Command seems to have been removed. {{command_name}}").replace("{{command_name}}", pair.name || ""), "trash", pair, (event: MouseEvent) => {
-				this.removeAction((event.target as HTMLElement).getAttribute("aria-label") + "trash");
-			});
+			this.addAction(
+				t(
+					"This Command seems to have been removed. {{command_name}}"
+				).replace("{{command_name}}", pair.name || ""),
+				"trash",
+				pair,
+				(event: MouseEvent) => {
+					this.removeAction(
+						(event.target as HTMLElement).getAttribute(
+							"aria-label"
+						) + "trash"
+					);
+				}
+			);
 		}
 
 		this.pairs.push(pair);
@@ -66,10 +86,11 @@ export default class RibbonManager extends CommandManagerBase {
 	public reorder(): void | Promise<void> {
 		this.addBtn.remove();
 		if (Platform.isMobile) {
-			Object.keys(this.actions).forEach((id) => this.removeActionMobile(id));
-		}
-		else {
-			Object.values(this.actions).forEach(el => el.remove());
+			Object.keys(this.actions).forEach((id) =>
+				this.removeActionMobile(id)
+			);
+		} else {
+			Object.values(this.actions).forEach((el) => el.remove());
 		}
 		this.init();
 	}
@@ -77,7 +98,9 @@ export default class RibbonManager extends CommandManagerBase {
 	private init(): void {
 		for (const c of this.pairs) {
 			if (isModeActive(c.mode)) {
-				this.addAction(c.name, c.icon, c, () => app.commands.executeCommandById(c.id));
+				this.addAction(c.name, c.icon, c, () =>
+					app.commands.executeCommandById(c.id)
+				);
 			}
 		}
 
@@ -107,11 +130,18 @@ export default class RibbonManager extends CommandManagerBase {
 	private removeActionMobile(id: string): void {
 		app.workspace.leftRibbon.orderedRibbonActions =
 			// @ts-expect-error
-			app.workspace.leftRibbon.orderedRibbonActions.filter((action) => action.cmdr__id !== id);
+			app.workspace.leftRibbon.orderedRibbonActions.filter(
+				(action) => action.cmdr__id !== id
+			);
 	}
 
 	// eslint-disable-next-line no-unused-vars
-	private addAction(name: string, icon: string, pair: CommandIconPair, callback: (event: MouseEvent) => void): void {
+	private addAction(
+		name: string,
+		icon: string,
+		pair: CommandIconPair,
+		callback: (event: MouseEvent) => void
+	): void {
 		// eslint-disable-next-line @typescript-eslint/no-empty-function
 		const newAction = this.ribbonEl.makeRibbonItemButton(
 			icon,
@@ -245,7 +275,9 @@ export default class RibbonManager extends CommandManagerBase {
 	}
 
 	private addActionContainer(): void {
-		const div = createDiv({ cls: `side-dock-actions cmdr-${this.side}-ribbon` });
+		const div = createDiv({
+			cls: `side-dock-actions cmdr-${this.side}-ribbon`,
+		});
 		this.ribbonEl.collapseButtonEl.insertAdjacentElement("afterend", div);
 		this.ribbonEl.ribbonItemsEl = div;
 

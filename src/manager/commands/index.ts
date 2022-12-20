@@ -1,9 +1,12 @@
-import ExplorerManager from './explorerManager';
-import { EditorMenuCommandManager, FileMenuCommandManager } from './menuManager';
-import PageHeaderManager from './pageHeaderManager';
-import RibbonManager from './ribbonManager';
-import StatusBarManager from './statusBarManager';
-import TitleBarManager from './titleBarManager';
+import ExplorerManager from "./explorerManager";
+import {
+	EditorMenuCommandManager,
+	FileMenuCommandManager,
+} from "./menuManager";
+import PageHeaderManager from "./pageHeaderManager";
+import RibbonManager from "./ribbonManager";
+import StatusBarManager from "./statusBarManager";
+import TitleBarManager from "./titleBarManager";
 
 export {
 	EditorMenuCommandManager,

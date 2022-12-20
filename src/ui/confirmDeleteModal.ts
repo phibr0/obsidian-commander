@@ -31,5 +31,3 @@ export default class ConfirmDeleteModal extends Modal {
 		render(null, this.contentEl);
 	}
 }
-
-

@@ -15,11 +15,13 @@ export default class ExplorerManager extends CommandManagerBase {
 	public constructor(plugin: CommanderPlugin, pairs: CommandIconPair[]) {
 		super(plugin, pairs);
 		this.init();
-		this.plugin.register(() => this.actions.forEach((_, key) => this.removeAction(key)));
+		this.plugin.register(() =>
+			this.actions.forEach((_, key) => this.removeAction(key))
+		);
 	}
 
 	private getFileExplorers(): WorkspaceLeaf[] {
-		return app.workspace.getLeavesOfType('file-explorer');
+		return app.workspace.getLeavesOfType("file-explorer");
 	}
 
 	private init(): void {
@@ -35,7 +37,7 @@ export default class ExplorerManager extends CommandManagerBase {
 
 					// File explorers that get opened later on
 					this.plugin.registerEvent(
-						app.workspace.on('layout-change', () => {
+						app.workspace.on("layout-change", () => {
 							const explorers = this.getFileExplorers();
 							explorers.forEach((exp) => {
 								this.addAction(cmd, exp);
@@ -63,7 +65,7 @@ export default class ExplorerManager extends CommandManagerBase {
 
 		// File explorers that get opened later on
 		this.plugin.registerEvent(
-			app.workspace.on('layout-change', () => {
+			app.workspace.on("layout-change", () => {
 				const explorers = this.getFileExplorers();
 				explorers.forEach((exp) => {
 					this.addAction(pair, exp);
@@ -80,15 +82,29 @@ export default class ExplorerManager extends CommandManagerBase {
 	}
 
 	private buttonExists(leaf: WorkspaceLeaf, action: CommandIconPair) {
-		return [...leaf.view.containerEl.querySelectorAll('div.nav-buttons-container > .cmdr.clickable-icon')].some(element =>
-			element.getAttribute("data-cmdr") === action.icon + action.name
+		return [
+			...leaf.view.containerEl.querySelectorAll(
+				"div.nav-buttons-container > .cmdr.clickable-icon"
+			),
+		].some(
+			(element) =>
+				element.getAttribute("data-cmdr") === action.icon + action.name
 		);
 	}
 
 	private addAction(pair: CommandIconPair, leaf: WorkspaceLeaf): void {
-		if (this.buttonExists(leaf, pair)) { return; };
+		if (this.buttonExists(leaf, pair)) {
+			return;
+		}
 
-		const btn = createDiv({ cls: "cmdr clickable-icon", attr: { "aria-label-position": "top", "aria-label": pair.name, "data-cmdr": pair.icon + pair.name } });
+		const btn = createDiv({
+			cls: "cmdr clickable-icon",
+			attr: {
+				"aria-label-position": "top",
+				"aria-label": pair.name,
+				"data-cmdr": pair.icon + pair.name,
+			},
+		});
 		this.actions.set(pair, btn);
 		btn.style.color =
 			pair.color === "#000000" || pair.color === undefined
@@ -132,9 +148,8 @@ export default class ExplorerManager extends CommandManagerBase {
 		btn.addEventListener("contextmenu", (event) => {
 			event.stopImmediatePropagation();
 			new Menu()
-				.addItem(item => {
-					item
-						.setTitle(t("Add command"))
+				.addItem((item) => {
+					item.setTitle(t("Add command"))
 						.setIcon("command")
 						.onClick(async () => {
 							const pair = await chooseNewCommand(this.plugin);
@@ -142,12 +157,13 @@ export default class ExplorerManager extends CommandManagerBase {
 						});
 				})
 				.addSeparator()
-				.addItem(item => {
-					item
-						.setTitle(t("Change Icon"))
+				.addItem((item) => {
+					item.setTitle(t("Change Icon"))
 						.setIcon("box")
 						.onClick(async () => {
-							const newIcon = await (new ChooseIconModal(this.plugin)).awaitSelection();
+							const newIcon = await new ChooseIconModal(
+								this.plugin
+							).awaitSelection();
 							if (newIcon && newIcon !== pair.icon) {
 								pair.icon = newIcon;
 								await this.plugin.saveSettings();
@@ -155,12 +171,13 @@ export default class ExplorerManager extends CommandManagerBase {
 							}
 						});
 				})
-				.addItem(item => {
-					item
-						.setTitle(t("Rename"))
+				.addItem((item) => {
+					item.setTitle(t("Rename"))
 						.setIcon("text-cursor-input")
 						.onClick(async () => {
-							const newName = await (new ChooseCustomNameModal(pair.name)).awaitSelection();
+							const newName = await new ChooseCustomNameModal(
+								pair.name
+							).awaitSelection();
 							if (newName && newName !== pair.name) {
 								pair.name = newName;
 								await this.plugin.saveSettings();
@@ -168,13 +185,17 @@ export default class ExplorerManager extends CommandManagerBase {
 							}
 						});
 				})
-				.addItem(item => {
+				.addItem((item) => {
 					item.dom.addClass("is-warning");
-					item
-						.setTitle(t("Delete"))
+					item.setTitle(t("Delete"))
 						.setIcon("lucide-trash")
 						.onClick(async () => {
-							if (!this.plugin.settings.confirmDeletion || (await new ConfirmDeleteModal(this.plugin).didChooseRemove())) {
+							if (
+								!this.plugin.settings.confirmDeletion ||
+								(await new ConfirmDeleteModal(
+									this.plugin
+								).didChooseRemove())
+							) {
 								this.removeCommand(pair);
 							}
 						});
@@ -183,7 +204,9 @@ export default class ExplorerManager extends CommandManagerBase {
 		});
 
 		setNormal();
-		leaf.view?.containerEl?.querySelector?.("div.nav-buttons-container")?.appendChild?.(btn);
+		leaf.view?.containerEl
+			?.querySelector?.("div.nav-buttons-container")
+			?.appendChild?.(btn);
 	}
 
 	private removeAction(pair: CommandIconPair, instant = false): void {
@@ -202,5 +225,4 @@ export default class ExplorerManager extends CommandManagerBase {
 			this.actions.delete(pair);
 		});
 	}
-
 }
