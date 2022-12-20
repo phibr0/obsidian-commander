@@ -27,7 +27,7 @@ export default class PageHeaderManager extends CommandManagerBase {
 		if (!buttons || buttons.has(id)) return;
 
 		const buttonIcon = (view as ItemView).addAction(icon, name, () => {
-			app.workspace.setActiveLeaf(leaf, {focus: true});
+			app.workspace.setActiveLeaf(leaf, { focus: true });
 			app.commands.executeCommandById(id);
 		});
 		buttons.set(id, buttonIcon);
@@ -40,9 +40,8 @@ export default class PageHeaderManager extends CommandManagerBase {
 		buttonIcon.addEventListener("contextmenu", (event) => {
 			event.stopImmediatePropagation();
 			new Menu()
-				.addItem(item => {
-					item
-						.setTitle(t("Add command"))
+				.addItem((item) => {
+					item.setTitle(t("Add command"))
 						.setIcon("command")
 						.onClick(async () => {
 							const pair = await chooseNewCommand(this.plugin);
@@ -50,12 +49,13 @@ export default class PageHeaderManager extends CommandManagerBase {
 						});
 				})
 				.addSeparator()
-				.addItem(item => {
-					item
-						.setTitle(t("Change Icon"))
+				.addItem((item) => {
+					item.setTitle(t("Change Icon"))
 						.setIcon("box")
 						.onClick(async () => {
-							const newIcon = await (new ChooseIconModal(this.plugin)).awaitSelection();
+							const newIcon = await new ChooseIconModal(
+								this.plugin
+							).awaitSelection();
 							if (newIcon && newIcon !== pair.icon) {
 								pair.icon = newIcon;
 								await this.plugin.saveSettings();
@@ -63,12 +63,13 @@ export default class PageHeaderManager extends CommandManagerBase {
 							}
 						});
 				})
-				.addItem(item => {
-					item
-						.setTitle(t("Rename"))
+				.addItem((item) => {
+					item.setTitle(t("Rename"))
 						.setIcon("text-cursor-input")
 						.onClick(async () => {
-							const newName = await (new ChooseCustomNameModal(pair.name)).awaitSelection();
+							const newName = await new ChooseCustomNameModal(
+								pair.name
+							).awaitSelection();
 							if (newName && newName !== pair.name) {
 								pair.name = newName;
 								await this.plugin.saveSettings();
@@ -76,13 +77,17 @@ export default class PageHeaderManager extends CommandManagerBase {
 							}
 						});
 				})
-				.addItem(item => {
+				.addItem((item) => {
 					item.dom.addClass("is-warning");
-					item
-						.setTitle(t("Delete"))
+					item.setTitle(t("Delete"))
 						.setIcon("lucide-trash")
 						.onClick(async () => {
-							if (!this.plugin.settings.confirmDeletion || (await new ConfirmDeleteModal(this.plugin).didChooseRemove())) {
+							if (
+								!this.plugin.settings.confirmDeletion ||
+								(await new ConfirmDeleteModal(
+									this.plugin
+								).didChooseRemove())
+							) {
 								this.removeCommand(pair);
 							}
 						});
@@ -96,10 +101,14 @@ export default class PageHeaderManager extends CommandManagerBase {
 			// Remove all buttons on plugin unload
 			this.removeButtonsFromAllLeaves();
 		});
-		this.plugin.registerEvent(app.workspace.on("layout-change", () => {
-			this.addButtonsToAllLeaves();
-		}));
-		app.workspace.onLayoutReady(() => setTimeout(() => this.addButtonsToAllLeaves(), 100));
+		this.plugin.registerEvent(
+			app.workspace.on("layout-change", () => {
+				this.addButtonsToAllLeaves();
+			})
+		);
+		app.workspace.onLayoutReady(() =>
+			setTimeout(() => this.addButtonsToAllLeaves(), 100)
+		);
 	}
 
 	private addAdderButton(leaf: WorkspaceLeaf) {
@@ -107,33 +116,38 @@ export default class PageHeaderManager extends CommandManagerBase {
 		const id = "cmdr-adder";
 		if (!(view instanceof ItemView)) return;
 		if (this.buttons.get(view)?.has(id)) return;
-		const buttonIcon = view.addAction("plus",  t("Add new"), async () => {
+		const buttonIcon = view.addAction("plus", t("Add new"), async () => {
 			this.addCommand(await chooseNewCommand(this.plugin));
 		});
 		buttonIcon.addClasses(["cmdr", id]);
-		if (!this.buttons.has(view)) this.buttons.set(view, new Map);
+		if (!this.buttons.has(view)) this.buttons.set(view, new Map());
 		this.buttons.get(view)!.set(id, buttonIcon);
 	}
 
-	private addButtonsToAllLeaves(refresh: boolean = false): void {
-		activeWindow.requestAnimationFrame(
-			() => app.workspace.iterateAllLeaves(leaf => this.addButtonsToLeaf(leaf, refresh))
+	private addButtonsToAllLeaves(refresh = false): void {
+		activeWindow.requestAnimationFrame(() =>
+			app.workspace.iterateAllLeaves((leaf) =>
+				this.addButtonsToLeaf(leaf, refresh)
+			)
 		);
 	}
 
 	private removeButtonsFromAllLeaves(): void {
-		activeWindow.requestAnimationFrame(
-			() => app.workspace.iterateAllLeaves(leaf => this.removeButtonsFromLeaf(leaf))
+		activeWindow.requestAnimationFrame(() =>
+			app.workspace.iterateAllLeaves((leaf) =>
+				this.removeButtonsFromLeaf(leaf)
+			)
 		);
 	}
 
-	private buttonsFor(leaf: WorkspaceLeaf, create: boolean = false) {
+	private buttonsFor(leaf: WorkspaceLeaf, create = false) {
 		if (!(leaf.view instanceof ItemView)) return;
-		if (create && !this.buttons.has(leaf.view)) this.buttons.set(leaf.view, new Map);
+		if (create && !this.buttons.has(leaf.view))
+			this.buttons.set(leaf.view, new Map());
 		return this.buttons.get(leaf.view);
 	}
 
-	private addButtonsToLeaf(leaf: WorkspaceLeaf, refresh: boolean = false): void {
+	private addButtonsToLeaf(leaf: WorkspaceLeaf, refresh = false): void {
 		if (!(leaf.view instanceof ItemView)) return;
 		if (refresh) {
 			this.removeButtonsFromLeaf(leaf);
@@ -141,7 +155,7 @@ export default class PageHeaderManager extends CommandManagerBase {
 			// View already has buttons and we're not doing a full refresh
 			return;
 		}
-		for (let i = this.pairs.length -1; i>=0; i--) {
+		for (let i = this.pairs.length - 1; i >= 0; i--) {
 			const pair = this.pairs[i];
 			if (isModeActive(pair.mode)) this.addPageHeaderButton(leaf, pair);
 		}

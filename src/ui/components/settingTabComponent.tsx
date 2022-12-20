@@ -8,7 +8,7 @@ import CommanderPlugin from "../../main";
 import About from "./About";
 import AdvancedToolbarSettings from "./AdvancedToolbarSettings";
 import CommandViewer from "./commandViewerComponent";
-import { StatusbarHider } from "./hidingViewer";
+import { LeftRibbonHider, StatusbarHider } from "./hidingViewer";
 import MacroViewer from "./MacroViewer";
 import { SliderComponent, ToggleComponent } from "./settingComponent";
 
@@ -90,21 +90,12 @@ export default function settingTabComponent({
 						<ToggleComponent
 							value={plugin.settings.showAddCommand}
 							name={t('Show "Add Command" Button')}
-							description={t(
+							description={
 								'Show the "Add Command" Button in every Menu.'
-							)}
+							}
 							changeHandler={async (value): Promise<void> => {
 								plugin.settings.showAddCommand = !value;
 								plugin.manager.pageHeader.reorder();
-								await plugin.saveSettings();
-							}}
-						/>
-						<ToggleComponent
-							value={plugin.settings.debug}
-							name={t("Enable debugging")}
-							description={t("Enable console output.")}
-							changeHandler={async (value): Promise<void> => {
-								plugin.settings.debug = !value;
 								await plugin.saveSettings();
 							}}
 						/>
@@ -131,14 +122,16 @@ export default function settingTabComponent({
 					<CommandViewer
 						manager={plugin.manager.leftRibbon}
 						plugin={plugin}
+						sortable={false}
 					>
-						<hr />
+						<LeftRibbonHider plugin={plugin} />
 						<div
 							className="cmdr-sep-con callout"
 							data-callout="warning"
 						>
 							<span className="cmdr-callout-warning">
-								Reordering/Sorting
+								<ObsidianIcon icon="alert-triangle" />{" "}
+								Reordering and Sorting
 							</span>
 							<p className="cmdr-warning-description">
 								As of Obsidian 1.1.0 you can reorder the Buttons

@@ -15,18 +15,28 @@ export const ManagerContext = createContext<CommandManagerBase>(null!);
 
 interface CommandViewerProps {
 	manager: CommandManagerBase;
-	plugin: CommanderPlugin
-	children?: h.JSX.Element | h.JSX.Element[]
+	plugin: CommanderPlugin;
+	children?: h.JSX.Element | h.JSX.Element[];
+	sortable?: boolean;
 }
-export default function CommandViewer({ manager, plugin, children }: CommandViewerProps): h.JSX.Element {
+export default function CommandViewer({
+	manager,
+	plugin,
+	children,
+	sortable = true,
+}: CommandViewerProps): h.JSX.Element {
 	return (
 		<Fragment>
 			<ManagerContext.Provider value={manager}>
 				<div className="cmdr-sep-con">
 					{manager.pairs.map((cmd, idx) => {
-						if (cmd.mode.match(/desktop|mobile|any/) || cmd.mode === app.appId) {
+						if (
+							cmd.mode.match(/desktop|mobile|any/) ||
+							cmd.mode === app.appId
+						) {
 							return (
 								<CommandComponent
+									sortable={sortable}
 									key={cmd.id}
 									pair={cmd}
 									handleRemove={async (): Promise<void> => {
@@ -114,13 +124,19 @@ export default function CommandViewer({ manager, plugin, children }: CommandView
 						}
 					})}
 				</div>
-				{!manager.pairs.some((pre) => isModeActive(pre.mode) || pre.mode.match(/mobile|desktop/)) && <div class="cmdr-commands-empty">
-					{/* This isn't really dangerous,
+				{!manager.pairs.some(
+					(pre) =>
+						isModeActive(pre.mode) ||
+						pre.mode.match(/mobile|desktop/)
+				) && (
+					<div class="cmdr-commands-empty">
+						{/* This isn't really dangerous,
 					as the svg is inserted at build time and no other data can be passed to it */}
-					<Logo />
-					<h3>{t("No commands here!")}</h3>
-					<span>{t("Would you like to add one now?")}</span>
-				</div>}
+						<Logo />
+						<h3>{t("No commands here!")}</h3>
+						<span>{t("Would you like to add one now?")}</span>
+					</div>
+				)}
 
 				{Platform.isMobile && <hr />}
 
@@ -140,6 +156,6 @@ export default function CommandViewer({ manager, plugin, children }: CommandView
 			</ManagerContext.Provider>
 
 			{children}
-		</Fragment >
+		</Fragment>
 	);
 }

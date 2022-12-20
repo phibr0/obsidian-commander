@@ -15,11 +15,14 @@ interface MacroBuilderProps {
 	plugin: CommanderPlugin;
 	macros: Macro[];
 }
-export default function MacroViewer({ plugin, macros }: MacroBuilderProps): h.JSX.Element {
+export default function MacroViewer({
+	plugin,
+	macros,
+}: MacroBuilderProps): h.JSX.Element {
 	const handleBuilder = (macro: Macro, idx?: number) => {
 		const onClose = (updatedMacro: Macro) => {
 			macros.splice(
-				idx !== undefined ? idx : (macros.length),
+				idx !== undefined ? idx : macros.length,
 				idx !== undefined ? 1 : 0,
 				updatedMacro
 			);
@@ -28,7 +31,7 @@ export default function MacroViewer({ plugin, macros }: MacroBuilderProps): h.JS
 			this.forceUpdate();
 			updateMacroCommands(plugin);
 			modal.close();
-		}
+		};
 		const modal = new MacroBuilderModal(plugin, macro, onClose);
 		modal.open();
 	};
@@ -38,7 +41,7 @@ export default function MacroViewer({ plugin, macros }: MacroBuilderProps): h.JS
 		plugin.saveSettings();
 		this.forceUpdate();
 		updateMacroCommands(plugin);
-	}
+	};
 
 	return (
 		<Fragment>
@@ -46,9 +49,7 @@ export default function MacroViewer({ plugin, macros }: MacroBuilderProps): h.JS
 				{macros.map((item, idx) => (
 					<div class="setting-item mod-toggle">
 						<div className="setting-item-info">
-							<div className="setting-item-name">
-								{item.name}
-							</div>
+							<div className="setting-item-name">{item.name}</div>
 							<div className="setting-item-description">
 								{item.macro.length} Actions
 							</div>
@@ -64,7 +65,12 @@ export default function MacroViewer({ plugin, macros }: MacroBuilderProps): h.JS
 								aria-label="Delete"
 								class="mod-warning"
 								onClick={async (): Promise<void> => {
-									if (!plugin.settings.confirmDeletion || await new ConfirmDeleteModal(plugin).didChooseRemove()) {
+									if (
+										!plugin.settings.confirmDeletion ||
+										(await new ConfirmDeleteModal(
+											plugin
+										).didChooseRemove())
+									) {
 										handleDelete(idx);
 									}
 								}}
@@ -75,21 +81,28 @@ export default function MacroViewer({ plugin, macros }: MacroBuilderProps): h.JS
 					</div>
 				))}
 			</div>
-			{!macros.length && <div class="cmdr-commands-empty">
-				{/* This isn't really dangerous,
+			{!macros.length && (
+				<div class="cmdr-commands-empty">
+					{/* This isn't really dangerous,
 					as the svg is inserted at build time and no other data can be passed to it */}
-				<Logo />
-				<h3>No Macros yet!</h3>
-				<span>{t("Would you like to add one now?")}</span>
-			</div>}
+					<Logo />
+					<h3>No Macros yet!</h3>
+					<span>{t("Would you like to add one now?")}</span>
+				</div>
+			)}
 
 			{Platform.isMobile && <hr />}
 
 			<div className="cmdr-add-new-wrapper">
-				<button class="mod-cta" onClick={() => handleBuilder({ name: "", macro: [], icon: "star" })}>
+				<button
+					class="mod-cta"
+					onClick={() =>
+						handleBuilder({ name: "", macro: [], icon: "star" })
+					}
+				>
 					Add Macro
 				</button>
 			</div>
 		</Fragment>
 	);
-};
+}

@@ -1,4 +1,13 @@
-import { Command, Editor, MarkdownView, Menu, MenuItem, setIcon, TAbstractFile, WorkspaceLeaf } from "obsidian";
+import {
+	Command,
+	Editor,
+	MarkdownView,
+	Menu,
+	MenuItem,
+	setIcon,
+	TAbstractFile,
+	WorkspaceLeaf,
+} from "obsidian";
 import CommandManagerBase from "./commandManager";
 import CommanderPlugin from "src/main";
 import { CommandIconPair } from "src/types";
@@ -21,10 +30,17 @@ abstract class Base extends CommandManagerBase {
 
 	// There is no state to update
 	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	public reorder(): void { }
+	public reorder(): void {}
 
 	// eslint-disable-next-line no-unused-vars
-	protected addRemovableCommand(this: (item: MenuItem) => void, command: Command, cmdPair: CommandIconPair, plugin: CommanderPlugin, menu: Menu, commandList: CommandIconPair[]): (item: MenuItem) => void {
+	protected addRemovableCommand(
+		this: (item: MenuItem) => void,
+		command: Command,
+		cmdPair: CommandIconPair,
+		plugin: CommanderPlugin,
+		menu: Menu,
+		commandList: CommandIconPair[]
+	): (item: MenuItem) => void {
 		return (item: MenuItem) => {
 			item.dom.addClass("cmdr");
 			item.dom.style.color =
@@ -35,7 +51,7 @@ abstract class Base extends CommandManagerBase {
 
 			item.dom.style.display = "flex";
 			const optionEl = createDiv({
-				cls: "cmdr-menu-more-options"
+				cls: "cmdr-menu-more-options",
 			});
 			let optionMenu: Menu | null = null;
 			optionEl.addEventListener("click", (event) => {
@@ -94,8 +110,7 @@ abstract class Base extends CommandManagerBase {
 			setIcon(optionEl, "more-vertical");
 			item.dom.append(optionEl);
 
-			item
-				.setTitle(cmdPair.name ?? command.name)
+			item.setTitle(cmdPair.name ?? command.name)
 				.setIcon(cmdPair.icon)
 				.onClick(() => app.commands.executeCommandById(cmdPair.id));
 
@@ -130,11 +145,14 @@ abstract class Base extends CommandManagerBase {
 		};
 	}
 
-	protected addCommandAddButton(plugin: CommanderPlugin, menu: Menu, commandList: CommandIconPair[]): void {
+	protected addCommandAddButton(
+		plugin: CommanderPlugin,
+		menu: Menu,
+		commandList: CommandIconPair[]
+	): void {
 		if (plugin.settings.showAddCommand) {
 			menu.addItem((item: MenuItem) => {
-				item
-					.setTitle(t("Add command"))
+				item.setTitle(t("Add command"))
 					.setIcon("plus-circle")
 					.setSection("cmdr")
 					.onClick(async () => {
@@ -150,13 +168,15 @@ abstract class Base extends CommandManagerBase {
 			});
 		}
 	}
-
 }
 
 export class EditorMenuCommandManager extends Base {
-
 	public applyEditorMenuCommands(plugin: CommanderPlugin) {
-		return async (menu: Menu, editor: Editor, view: MarkdownView): Promise<void> => {
+		return async (
+			menu: Menu,
+			editor: Editor,
+			view: MarkdownView
+		): Promise<void> => {
 			this.addCommandAddButton(plugin, menu, plugin.settings.editorMenu);
 
 			for (const cmdPair of plugin.settings.editorMenu) {
@@ -168,20 +188,36 @@ export class EditorMenuCommandManager extends Base {
 				if (!isModeActive(cmdPair.mode)) continue;
 
 				//Use the check callbacks accordingly
-				if ((command.checkCallback && !command.checkCallback(true))
-					|| (command.editorCheckCallback && !command.editorCheckCallback(true, editor, view))
-				) continue;
+				if (
+					(command.checkCallback && !command.checkCallback(true)) ||
+					(command.editorCheckCallback &&
+						!command.editorCheckCallback(true, editor, view))
+				)
+					continue;
 
-				menu.addItem(this.addRemovableCommand.call(this, command, cmdPair, plugin, menu, plugin.settings.editorMenu));
+				menu.addItem(
+					this.addRemovableCommand.call(
+						this,
+						command,
+						cmdPair,
+						plugin,
+						menu,
+						plugin.settings.editorMenu
+					)
+				);
 			}
 		};
 	}
 }
 
 export class FileMenuCommandManager extends Base {
-
 	public applyFileMenuCommands(plugin: CommanderPlugin) {
-		return async (menu: Menu, _: TAbstractFile, __: string, leaf?: WorkspaceLeaf): Promise<void> => {
+		return async (
+			menu: Menu,
+			_: TAbstractFile,
+			__: string,
+			leaf?: WorkspaceLeaf
+		): Promise<void> => {
 			this.addCommandAddButton(plugin, menu, plugin.settings.fileMenu);
 
 			for (const cmdPair of plugin.settings.fileMenu) {
@@ -201,7 +237,13 @@ export class FileMenuCommandManager extends Base {
 					}
 				} else if (command.editorCheckCallback) {
 					if (leaf?.view instanceof MarkdownView) {
-						if (!command.editorCheckCallback(true, leaf.view.editor, leaf.view)) {
+						if (
+							!command.editorCheckCallback(
+								true,
+								leaf.view.editor,
+								leaf.view
+							)
+						) {
 							continue;
 						}
 					} else {
@@ -209,9 +251,17 @@ export class FileMenuCommandManager extends Base {
 					}
 				}
 
-				menu.addItem(this.addRemovableCommand.call(this, command, cmdPair, plugin, menu, plugin.settings.fileMenu));
+				menu.addItem(
+					this.addRemovableCommand.call(
+						this,
+						command,
+						cmdPair,
+						plugin,
+						menu,
+						plugin.settings.fileMenu
+					)
+				);
 			}
 		};
 	}
-
 }

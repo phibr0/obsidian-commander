@@ -11,12 +11,17 @@ import CommandManagerBase from "./commandManager";
 export default class StatusBarManager extends CommandManagerBase {
 	private container: HTMLElement;
 	private readonly actions = new Map<CommandIconPair, HTMLElement>();
-	private addBtn = createDiv({ cls: "cmdr status-bar-item cmdr-adder", attr: { "aria-label-position": "top", "aria-label": t("Add new") } });
+	private addBtn = createDiv({
+		cls: "cmdr status-bar-item cmdr-adder",
+		attr: { "aria-label-position": "top", "aria-label": t("Add new") },
+	});
 
 	public constructor(plugin: CommanderPlugin, pairs: CommandIconPair[]) {
 		super(plugin, pairs);
 		this.init();
-		this.plugin.register(() => this.actions.forEach((_, key) => this.removeAction(key)));
+		this.plugin.register(() =>
+			this.actions.forEach((_, key) => this.removeAction(key))
+		);
 	}
 
 	private init(): void {
@@ -34,24 +39,28 @@ export default class StatusBarManager extends CommandManagerBase {
 			}
 			this.plugin.saveSettings();
 
-			this.plugin.registerDomEvent(this.container, "contextmenu", (event) => {
-				if (event.target !== this.container) {
-					return;
-				}
+			this.plugin.registerDomEvent(
+				this.container,
+				"contextmenu",
+				(event) => {
+					if (event.target !== this.container) {
+						return;
+					}
 
-				new Menu()
-					.addItem((item) => {
-						item.setTitle(t("Add command"))
-							.setIcon("command")
-							.onClick(async () => {
-								const pair = await chooseNewCommand(
-									this.plugin
-								);
-								this.addCommand(pair);
-							});
-					})
-					.showAtMouseEvent(event);
-			});
+					new Menu()
+						.addItem((item) => {
+							item.setTitle(t("Add command"))
+								.setIcon("command")
+								.onClick(async () => {
+									const pair = await chooseNewCommand(
+										this.plugin
+									);
+									this.addCommand(pair);
+								});
+						})
+						.showAtMouseEvent(event);
+				}
+			);
 
 			this.plugin.register(() => this.addBtn.remove());
 			setIcon(this.addBtn, "plus");
@@ -60,7 +69,8 @@ export default class StatusBarManager extends CommandManagerBase {
 				this.addCommand(pair);
 				this.reorder();
 			};
-			if (this.plugin.settings.showAddCommand) this.container.prepend(this.addBtn);
+			if (this.plugin.settings.showAddCommand)
+				this.container.prepend(this.addBtn);
 		});
 	}
 
@@ -83,7 +93,10 @@ export default class StatusBarManager extends CommandManagerBase {
 	}
 
 	private addAction(pair: CommandIconPair): void {
-		const btn = createDiv({ cls: "cmdr status-bar-item clickable-icon", attr: { "aria-label-position": "top", "aria-label": pair.name } });
+		const btn = createDiv({
+			cls: "cmdr status-bar-item clickable-icon",
+			attr: { "aria-label-position": "top", "aria-label": pair.name },
+		});
 		this.actions.set(pair, btn);
 		btn.style.color =
 			pair.color === "#000000" || pair.color === undefined
@@ -101,7 +114,12 @@ export default class StatusBarManager extends CommandManagerBase {
 			btn.empty();
 			setIcon(btn, "trash");
 			btn.onclick = async (): Promise<void> => {
-				if (!this.plugin.settings.confirmDeletion || (await new ConfirmDeleteModal(this.plugin).didChooseRemove())) {
+				if (
+					!this.plugin.settings.confirmDeletion ||
+					(await new ConfirmDeleteModal(
+						this.plugin
+					).didChooseRemove())
+				) {
 					this.removeCommand(pair);
 				}
 			};
@@ -122,9 +140,8 @@ export default class StatusBarManager extends CommandManagerBase {
 		btn.addEventListener("contextmenu", (event) => {
 			event.stopImmediatePropagation();
 			new Menu()
-				.addItem(item => {
-					item
-						.setTitle(t("Add command"))
+				.addItem((item) => {
+					item.setTitle(t("Add command"))
 						.setIcon("command")
 						.onClick(async () => {
 							const pair = await chooseNewCommand(this.plugin);
@@ -132,12 +149,13 @@ export default class StatusBarManager extends CommandManagerBase {
 						});
 				})
 				.addSeparator()
-				.addItem(item => {
-					item
-						.setTitle(t("Change Icon"))
+				.addItem((item) => {
+					item.setTitle(t("Change Icon"))
 						.setIcon("box")
 						.onClick(async () => {
-							const newIcon = await (new ChooseIconModal(this.plugin)).awaitSelection();
+							const newIcon = await new ChooseIconModal(
+								this.plugin
+							).awaitSelection();
 							if (newIcon && newIcon !== pair.icon) {
 								pair.icon = newIcon;
 								await this.plugin.saveSettings();
@@ -145,12 +163,13 @@ export default class StatusBarManager extends CommandManagerBase {
 							}
 						});
 				})
-				.addItem(item => {
-					item
-						.setTitle(t("Rename"))
+				.addItem((item) => {
+					item.setTitle(t("Rename"))
 						.setIcon("text-cursor-input")
 						.onClick(async () => {
-							const newName = await (new ChooseCustomNameModal(pair.name)).awaitSelection();
+							const newName = await new ChooseCustomNameModal(
+								pair.name
+							).awaitSelection();
 							if (newName && newName !== pair.name) {
 								pair.name = newName;
 								await this.plugin.saveSettings();
@@ -158,13 +177,17 @@ export default class StatusBarManager extends CommandManagerBase {
 							}
 						});
 				})
-				.addItem(item => {
+				.addItem((item) => {
 					item.dom.addClass("is-warning");
-					item
-						.setTitle(t("Delete"))
+					item.setTitle(t("Delete"))
 						.setIcon("lucide-trash")
 						.onClick(async () => {
-							if (!this.plugin.settings.confirmDeletion || (await new ConfirmDeleteModal(this.plugin).didChooseRemove())) {
+							if (
+								!this.plugin.settings.confirmDeletion ||
+								(await new ConfirmDeleteModal(
+									this.plugin
+								).didChooseRemove())
+							) {
 								this.removeCommand(pair);
 							}
 						});
@@ -192,5 +215,4 @@ export default class StatusBarManager extends CommandManagerBase {
 			this.actions.delete(pair);
 		});
 	}
-
 }

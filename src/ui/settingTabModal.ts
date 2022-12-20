@@ -9,12 +9,15 @@ export default class SettingTabModal extends Modal {
 	public constructor(plugin: CommanderPlugin) {
 		super(app);
 		this.plugin = plugin;
-		this.containerEl.addClass('cmdr-setting-modal');
+		this.containerEl.addClass("cmdr-setting-modal");
 	}
 
 	public onOpen(): void {
-		const mobileMode = Platform.isMobile;//this.containerEl.getBoundingClientRect().width <= 1100;
-		render(h(settingTabComponent, { plugin: this.plugin, mobileMode }), this.contentEl);
+		const mobileMode = Platform.isMobile; //this.containerEl.getBoundingClientRect().width <= 1100;
+		render(
+			h(settingTabComponent, { plugin: this.plugin, mobileMode }),
+			this.contentEl
+		);
 	}
 
 	public onClose(): void {

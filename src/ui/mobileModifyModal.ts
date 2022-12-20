@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { CommandIconPair } from 'src/types';
+import { CommandIconPair } from "src/types";
 import { Modal } from "obsidian";
 import { h, render, VNode } from "preact";
 import MobileModifyComponent from "./components/mobileModifyComponent";
@@ -28,5 +28,3 @@ export default class MobileModifyModal extends Modal {
 		render(null, this.contentEl);
 	}
 }
-
-
