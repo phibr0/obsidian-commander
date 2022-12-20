@@ -56,5 +56,8 @@ export default function t(str: string): string {
 		console.error("Error: dictionary locale not found", moment.locale());
 	}
 
-	return (locale && locale[str as keyof typeof locale]) || en[str as keyof typeof en];
+	return (
+		(locale && locale[str as keyof typeof locale]) ||
+		en[str as keyof typeof en]
+	);
 }
