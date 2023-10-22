@@ -29,7 +29,7 @@
 	}
 }
 .AT-multirow.AT-column {
-	.mobile-toolbar-options-container {
+	.mobile-toolbar-options-list {
 		flex-flow: row wrap;
 		overflow-y: auto;
 	}
@@ -44,7 +44,7 @@
 			var(--at-button-height) * var(--at-row-count) + var(--at-spacing)
 		) !important;
 	}
-	.mobile-toolbar-options-container {
+	.mobile-toolbar-options-list {
 		height: calc(
 			var(--at-button-height) * var(--at-row-count) + var(--at-spacing)
 		) !important;
