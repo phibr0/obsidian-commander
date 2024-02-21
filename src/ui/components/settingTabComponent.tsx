@@ -135,7 +135,8 @@ export default function settingTabComponent({
 							</span>
 							<p className="cmdr-warning-description">
 								As of Obsidian 1.1.0 you can reorder the Buttons
-								in the left ribbon by dragging. This will
+								in the left ribbon by dragging, or on mobile by 
+								visiting Appearance > Interface. This will
 								replace the old sorting feature.
 							</p>
 						</div>
