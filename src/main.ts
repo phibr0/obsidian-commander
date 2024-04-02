@@ -16,7 +16,7 @@ import {
 	PageHeaderManager,
 	StatusBarManager,
 } from "./manager/commands";
-import { Action, CommanderSettings } from "./types";
+import { Action, CommanderSettings, Toggle } from "./types";
 import CommanderSettingTab from "./ui/settingTab";
 import SettingTabModal from "./ui/settingTabModal";
 
@@ -144,6 +144,10 @@ export default class CommanderPlugin extends Plugin {
 	public onunload(): void {
 		document.head.querySelector("style#cmdr")?.remove();
 		removeStyles();
+		this.settings.toggles.forEach((toggle: Toggle) : void  => {
+			toggle.nextCommandIndex = 0;
+		});
+		this.saveSettings();
 	}
 
 	private async loadSettings(): Promise<void> {
