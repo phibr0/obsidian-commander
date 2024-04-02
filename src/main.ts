@@ -15,7 +15,7 @@ import {
 	PageHeaderManager,
 	StatusBarManager,
 } from "./manager/commands";
-import { Action, CommanderSettings } from "./types";
+import { Action, CommanderSettings, Macro } from "./types";
 import CommanderSettingTab from "./ui/settingTab";
 import SettingTabModal from "./ui/settingTabModal";
 
@@ -39,11 +39,15 @@ export default class CommanderPlugin extends Plugin {
 	};
 
 	public async executeStartupMacros(): Promise<void> {
-		this.settings.macros.forEach((macro, idx) => {
-			if (macro.startup) {
-				this.executeMacro(idx);
-			}
-		});
+		this.executeMacrosWithCondition((macro) => Boolean(macro.startup));
+	}
+
+	public async executeEnterFullscreenMacros(): Promise<void> {
+		this.executeMacrosWithCondition((macro) => Boolean(macro.enterFullscreen));
+	}
+
+	public async executeExitFullscreenMacros(): Promise<void> {
+		this.executeMacrosWithCondition((macro) => Boolean(macro.exitFullscreen));
 	}
 
 	public async executeMacro(id: number): Promise<void> {
@@ -119,6 +123,15 @@ export default class CommanderPlugin extends Plugin {
 			)
 		);
 
+		this.registerDomEvent(document, "fullscreenchange", () => {
+			if (document.fullscreenElement) {
+				this.executeEnterFullscreenMacros();
+			}
+			else {
+				this.executeExitFullscreenMacros();
+			}
+		});
+
 		app.workspace.onLayoutReady(() => {
 			updateHiderStylesheet(this.settings);
 			updateMacroCommands(this);
@@ -181,5 +194,13 @@ export default class CommanderPlugin extends Plugin {
 			});
 		}
 		return commands;
+	}
+
+	private async executeMacrosWithCondition(condition: (macro: Macro) => boolean): Promise<void> {
+		this.settings.macros.forEach((macro, idx) => {
+			if (condition(macro)) {
+				this.executeMacro(idx);
+			}
+		});
 	}
 }

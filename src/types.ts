@@ -17,6 +17,8 @@ export interface Macro {
 	name: string;
 	icon: string;
 	startup?: boolean;
+	enterFullscreen?: boolean;
+	exitFullscreen?: boolean;
 	macro: MacroItem[];
 }
 

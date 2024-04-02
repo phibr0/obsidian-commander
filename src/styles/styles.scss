@@ -488,6 +488,15 @@
 	}
 }
 
+.cmrd-mm-checkboxes {
+	display: unset;
+	margin-bottom: 16px;
+
+	div {
+		margin-bottom: 8px;
+	}
+}
+
 .cmdr-mm-item {
 	display: flex;
 	flex-direction: row !important;
