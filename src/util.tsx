@@ -156,6 +156,27 @@ export function updateMacroCommands(plugin: CommanderPlugin): void {
 	}
 }
 
+export function updateToggleCommands(plugin: CommanderPlugin): void {
+	const oldCommands = Object.keys(app.commands.commands).filter((p) =>
+		p.startsWith("cmdr:toggle-")
+	);
+	for (const command of oldCommands) {
+		//@ts-ignore
+		app.commands.removeCommand(command);
+	}
+
+	const toggles = plugin.settings.toggles;
+	for (const [idx, toggle] of Object.entries(toggles)) {
+		plugin.addCommand({
+			id: `toggle-${idx}`,
+			name: toggle.name,
+			callback: () => {
+				plugin.executeToggle(parseInt(idx));
+			},
+		});
+	}
+}
+
 export function updateStyles(settings: AdvancedToolbarSettings) {
 	const { classList: c, style: s } = document.body;
 	s.setProperty("--at-button-height", (settings.rowHeight ?? 48) + "px");

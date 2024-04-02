@@ -295,7 +295,7 @@
 	}
 
 	.cmdr-tab {
-		padding: 6px 8px;
+		padding: 6px 6px;
 		font-size: 14px;
 		font-weight: 600;
 		cursor: pointer;
@@ -304,7 +304,7 @@
 		border-right: 2px solid transparent;
 
 		&:first-child {
-			margin-left: 6px;
+			margin-left: 4px;
 		}
 
 		&.cmdr-tab-active {

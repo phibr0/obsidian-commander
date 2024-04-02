@@ -10,6 +10,7 @@ import AdvancedToolbarSettings from "./AdvancedToolbarSettings";
 import CommandViewer from "./commandViewerComponent";
 import { LeftRibbonHider, StatusbarHider } from "./hidingViewer";
 import MacroViewer from "./MacroViewer";
+import ToggleViewer from "./ToggleViewer";
 import { SliderComponent, ToggleComponent } from "./settingComponent";
 
 export default function settingTabComponent({
@@ -264,6 +265,15 @@ export default function settingTabComponent({
 					<MacroViewer
 						plugin={plugin}
 						macros={plugin.settings.macros}
+					/>
+				),
+			},
+			{
+				name: "Toggles",
+				tab: (
+					<ToggleViewer
+						plugin={plugin}
+						toggles={plugin.settings.toggles}
 					/>
 				),
 			},

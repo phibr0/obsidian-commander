@@ -12,6 +12,7 @@ export const DEFAULT_SETTINGS: CommanderSettings = {
 	statusBar: [],
 	pageHeader: [],
 	macros: [],
+	toggles: [],
 	explorer: [],
 	hide: {
 		statusbar: [],

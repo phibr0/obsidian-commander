@@ -2,6 +2,7 @@ import {
 	injectIcons,
 	removeStyles,
 	updateMacroCommands,
+	updateToggleCommands,
 	updateStyles,
 } from "src/util";
 import { updateSpacing } from "src/util";
@@ -77,6 +78,15 @@ export default class CommanderPlugin extends Plugin {
 		}
 	}
 
+	public async executeToggle(id: number): Promise<void> {
+		const toggle = this.settings.toggles[id];
+		if (!toggle) throw new Error("Toggle not found");
+		toggle.nextCommandIndex = (toggle.nextCommandIndex + 1) % toggle.commands.length;
+		await this.saveSettings();
+		const commandId = toggle.commands[toggle.nextCommandIndex];
+		await app.commands.executeCommandById(commandId);
+	}
+
 	public async onload(): Promise<void> {
 		await this.loadSettings();
 		this.settings.hide.leftRibbon ??= []; // TODO: remove this in a future version
@@ -122,6 +132,7 @@ export default class CommanderPlugin extends Plugin {
 		app.workspace.onLayoutReady(() => {
 			updateHiderStylesheet(this.settings);
 			updateMacroCommands(this);
+			updateToggleCommands(this);
 			updateSpacing(this.settings.spacing);
 			updateStyles(this.settings.advancedToolbar);
 			injectIcons(this.settings.advancedToolbar);

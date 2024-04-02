@@ -20,6 +20,13 @@ export interface Macro {
 	macro: MacroItem[];
 }
 
+export interface Toggle {
+	name: string;
+	icon: string;
+	commands: string[];
+	nextCommandIndex: number;
+}
+
 export interface CommanderSettings {
 	confirmDeletion: boolean;
 	showAddCommand: boolean;
@@ -33,6 +40,7 @@ export interface CommanderSettings {
 	pageHeader: CommandIconPair[];
 	explorer: CommandIconPair[];
 	macros: Macro[];
+	toggles: Toggle[];
 	hide: {
 		statusbar: string[];
 		leftRibbon: string[];
