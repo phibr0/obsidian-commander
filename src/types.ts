@@ -19,6 +19,8 @@ export interface Macro {
 	startup?: boolean;
 	enterFullscreen?: boolean;
 	exitFullscreen?: boolean;
+	stepByStep?: boolean;
+	nextCommandIndex?: number;
 	macro: MacroItem[];
 }
 

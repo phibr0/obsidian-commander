@@ -15,7 +15,7 @@ import {
 	PageHeaderManager,
 	StatusBarManager,
 } from "./manager/commands";
-import { Action, CommanderSettings, Macro } from "./types";
+import { Action, CommanderSettings, Macro, MacroItem } from "./types";
 import CommanderSettingTab from "./ui/settingTab";
 import SettingTabModal from "./ui/settingTabModal";
 
@@ -54,29 +54,37 @@ export default class CommanderPlugin extends Plugin {
 		const macro = this.settings.macros[id];
 		if (!macro) throw new Error("Macro not found");
 
-		for (const command of macro.macro) {
-			switch (command.action) {
-				case Action.COMMAND: {
-					await app.commands.executeCommandById(command.commandId);
-					continue;
+		if (macro.stepByStep){
+			const nextCommandIndex = macro.nextCommandIndex || 0;
+			const command = macro.macro[nextCommandIndex];
+			macro.nextCommandIndex = (nextCommandIndex + 1) % macro.macro.length;
+			await this.executeMacroCommand(command);
+		}
+		else {
+			for (const command of macro.macro) {
+				await this.executeMacroCommand(command);
+			}
+		}
+	}
+
+	private async executeMacroCommand(command: MacroItem): Promise<void> {
+		switch (command.action) {
+			case Action.COMMAND: {
+				app.commands.executeCommandById(command.commandId);
+				break;
+			}
+			case Action.DELAY: {
+				await new Promise((resolve) => setTimeout(resolve, command.delay));
+				break;
+			}
+			case Action.EDITOR: {
+				break;
+			}
+			case Action.LOOP: {
+				for (let i = 0; i < command.times; i++) {
+					app.commands.executeCommandById(command.commandId);
 				}
-				case Action.DELAY: {
-					await new Promise((resolve) =>
-						setTimeout(resolve, command.delay)
-					);
-					continue;
-				}
-				case Action.EDITOR: {
-					continue;
-				}
-				case Action.LOOP: {
-					for (let i = 0; i < command.times; i++) {
-						await app.commands.executeCommandById(
-							command.commandId
-						);
-					}
-					continue;
-				}
+				break;
 			}
 		}
 	}

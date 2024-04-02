@@ -24,6 +24,7 @@ export default function ({
 	const [startup, setStartup] = useState(macro.startup || false);
 	const [enterFullscreen, setEnterFullscreen] = useState(macro.enterFullscreen || false);
 	const [exitFullscreen, setExitFullscreen] = useState(macro.exitFullscreen || false);
+	const [stepByStep, setStepByStep] = useState(macro.stepByStep || false);
 	const [macroCommands, setMacroCommands] = useState<MacroItem[]>(
 		JSON.parse(JSON.stringify(macro.macro)) || []
 	);
@@ -80,6 +81,18 @@ export default function ({
 				<div>
 					<input
 						type="checkbox"
+						id="checkbox-step-by-step"
+						checked={stepByStep}
+						onChange={({ target }) => {
+							//@ts-expect-error
+							setStepByStep(target?.checked ?? false);
+						}}
+					/>
+					<label htmlFor="checkbox-step-by-step">Execute just one step sequentially for each run</label>
+				</div>
+				<div>
+					<input
+						type="checkbox"
 						id="checkbox-startup"
 						checked={startup}
 						onChange={({ target }) => {
@@ -87,7 +100,7 @@ export default function ({
 							setStartup(target?.checked ?? false);
 						}}
 					/>
-					<label htmlFor="checkbox-startup">Auto-Run on Startup</label>
+					<label htmlFor="checkbox-startup">Auto-run on startup</label>
 				</div>
 				<div>
 					<input
@@ -99,7 +112,7 @@ export default function ({
 							setEnterFullscreen(target?.checked ?? false);
 						}}
 					/>
-					<label htmlFor="checkbox-enter-fullscreen">Auto-Run on Entering Fullscreen</label>
+					<label htmlFor="checkbox-enter-fullscreen">Auto-run on entering fullscreen</label>
 				</div>
 				<div>
 					<input
@@ -111,7 +124,7 @@ export default function ({
 							setExitFullscreen(target?.checked ?? false);
 						}}
 					/>
-					<label htmlFor="checkbox-exit-fullscreen">Auto-Run on Exiting Fullscreen</label>
+					<label htmlFor="checkbox-exit-fullscreen">Auto-run on exiting fullscreen</label>
 				</div>
 			</div>
 
@@ -284,7 +297,7 @@ export default function ({
 					disabled={macroCommands.length === 0}
 					onClick={() =>
 						macroCommands.length &&
-						onSave({ macro: macroCommands, name, icon, startup, enterFullscreen, exitFullscreen })
+						onSave({ macro: macroCommands, name, icon, startup, enterFullscreen, exitFullscreen, stepByStep })
 					}
 				>
 					Save

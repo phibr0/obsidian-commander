@@ -497,6 +497,15 @@
 	}
 }
 
+.cmdr-macro-label {
+	display: inline-block;
+	margin-left: 1em;
+	padding: 1px 5px;
+	border:1px solid #00000030;
+	border-radius: 4px;
+	font-size: 90%;
+}
+
 .cmdr-mm-item {
 	display: flex;
 	flex-direction: row !important;
