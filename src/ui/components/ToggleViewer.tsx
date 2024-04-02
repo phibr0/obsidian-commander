@@ -91,7 +91,7 @@ export default function ToggleViewer({
 				<button
 					class="mod-cta"
 					onClick={() : void  =>
-						handleBuilder({ name: "", commands: [], nextCommandIndex: 0, icon: "star" })
+						handleBuilder({ name: "", icon: "star", commands: [], nextCommandIndex: 0, triggerWhenEnteringFullscreen: false, triggerWhenExitingFullscreen: false })
 					}
 				>
 					Add Toggle

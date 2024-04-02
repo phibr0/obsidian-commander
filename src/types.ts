@@ -25,6 +25,8 @@ export interface Toggle {
 	icon: string;
 	commands: string[];
 	nextCommandIndex: number;
+	triggerWhenEnteringFullscreen: boolean;
+	triggerWhenExitingFullscreen: boolean;
 }
 
 export interface CommanderSettings {

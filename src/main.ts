@@ -129,6 +129,23 @@ export default class CommanderPlugin extends Plugin {
 			)
 		);
 
+		this.registerDomEvent(document, 'fullscreenchange', () => {
+			if (document.fullscreenElement) {
+				this.settings.toggles.forEach((toggle, index) => {
+					if (toggle.triggerWhenEnteringFullscreen) {
+						this.executeToggle(index);
+					}
+				});
+			}
+			else {
+				this.settings.toggles.forEach((toggle, index) => {
+					if (toggle.triggerWhenExitingFullscreen) {
+						this.executeToggle(index);
+					}
+				});
+			}
+		});
+
 		app.workspace.onLayoutReady(() => {
 			updateHiderStylesheet(this.settings);
 			updateMacroCommands(this);

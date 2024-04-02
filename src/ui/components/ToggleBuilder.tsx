@@ -21,6 +21,8 @@ export default function ({
 	const [name, setName] = useState(toggle.name || "Toggle Name");
 	const [icon, setIcon] = useState(toggle.icon || "star");
 	const [nextCommandIndex] = useState(toggle.nextCommandIndex || 0);
+	const [triggerWhenExitingFullscreen, setTriggerWhenExitingFullscreen] = useState(toggle.triggerWhenExitingFullscreen || false);
+	const [triggerWhenEnteringFullscreen, setTriggerWhenEnteringFullscreen] = useState(toggle.triggerWhenEnteringFullscreen || false);
 	const [commands, setCommands] = useState<string[]>(
 		JSON.parse(JSON.stringify(toggle.commands)) || []
 	);
@@ -54,6 +56,22 @@ export default function ({
 					>
 						<ObsidianIcon icon={icon} />
 					</button>
+				</div>
+			</div>
+			<div class="setting-item">
+				<div>
+					<label><input 
+						type="checkbox" 
+						checked={triggerWhenEnteringFullscreen}
+						onChange={(e) : void => setTriggerWhenEnteringFullscreen(e.currentTarget.checked)}
+					/> Trigger when entering full screen</label>
+				</div>
+				<div>
+					<label><input 
+						type="checkbox" 
+						checked={triggerWhenExitingFullscreen}
+						onChange={(e) : void => setTriggerWhenExitingFullscreen(e.currentTarget.checked)}
+					/> Trigger when exiting full screen</label>
 				</div>
 			</div>
 
@@ -125,7 +143,7 @@ export default function ({
 					disabled={commands.length === 0}
 					onClick={() : void  => {
 						if (commands.length)
-							onSave({ commands: commands, name, icon, nextCommandIndex });
+							onSave({ commands: commands, name, icon, nextCommandIndex, triggerWhenEnteringFullscreen, triggerWhenExitingFullscreen });
 					}}
 				>
 					Save
