@@ -52,6 +52,10 @@ export default function MacroViewer({
 							<div className="setting-item-name">{item.name}</div>
 							<div className="setting-item-description">
 								{item.macro.length} Actions
+								{item.startup && (<span class="cmdr-macro-label">Startup</span>)}
+								{item.enterFullscreen && (<span class="cmdr-macro-label">Enter fullscreen</span>)}
+								{item.exitFullscreen && (<span class="cmdr-macro-label">Exit fullscreen</span>)}
+								{item.stepByStep && (<span class="cmdr-macro-label">Step by step</span>)}
 							</div>
 						</div>
 						<div className="setting-item-control">

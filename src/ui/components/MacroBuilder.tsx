@@ -22,6 +22,9 @@ export default function ({
 	const [name, setName] = useState(macro.name || "Macro Name");
 	const [icon, setIcon] = useState(macro.icon || "star");
 	const [startup, setStartup] = useState(macro.startup || false);
+	const [enterFullscreen, setEnterFullscreen] = useState(macro.enterFullscreen || false);
+	const [exitFullscreen, setExitFullscreen] = useState(macro.exitFullscreen || false);
+	const [stepByStep, setStepByStep] = useState(macro.stepByStep || false);
 	const [macroCommands, setMacroCommands] = useState<MacroItem[]>(
 		JSON.parse(JSON.stringify(macro.macro)) || []
 	);
@@ -71,6 +74,57 @@ export default function ({
 					>
 						<ObsidianIcon icon={icon} />
 					</button>
+				</div>
+			</div>
+
+			<div className="setting-item cmrd-mm-checkboxes">
+				<div>
+					<input
+						type="checkbox"
+						id="checkbox-step-by-step"
+						checked={stepByStep}
+						onChange={({ target }) => {
+							//@ts-expect-error
+							setStepByStep(target?.checked ?? false);
+						}}
+					/>
+					<label htmlFor="checkbox-step-by-step">Execute just one step sequentially for each run</label>
+				</div>
+				<div>
+					<input
+						type="checkbox"
+						id="checkbox-startup"
+						checked={startup}
+						onChange={({ target }) => {
+							//@ts-expect-error
+							setStartup(target?.checked ?? false);
+						}}
+					/>
+					<label htmlFor="checkbox-startup">Auto-run on startup</label>
+				</div>
+				<div>
+					<input
+						type="checkbox"
+						id="checkbox-enter-fullscreen"
+						checked={enterFullscreen}
+						onChange={({ target }) => {
+							//@ts-expect-error
+							setEnterFullscreen(target?.checked ?? false);
+						}}
+					/>
+					<label htmlFor="checkbox-enter-fullscreen">Auto-run on entering fullscreen</label>
+				</div>
+				<div>
+					<input
+						type="checkbox"
+						id="checkbox-exit-fullscreen"
+						checked={exitFullscreen}
+						onChange={({ target }) => {
+							//@ts-expect-error
+							setExitFullscreen(target?.checked ?? false);
+						}}
+					/>
+					<label htmlFor="checkbox-exit-fullscreen">Auto-run on exiting fullscreen</label>
 				</div>
 			</div>
 
@@ -229,18 +283,6 @@ export default function ({
 			})}
 
 			<div className="setting-item cmdr-mm-actions cmdr-justify-between">
-				<div className="cmdr-flex cmdr-items-center cmdr-justify-self-start">
-					<input
-						type="checkbox"
-						id="checkbox"
-						checked={startup}
-						onChange={({ target }) => {
-							//@ts-expect-error
-							setStartup(target?.checked ?? false);
-						}}
-					/>
-					<label htmlFor="checkbox">Auto-Run on Startup</label>
-				</div>
 				<div>
 					<button onClick={handleAddCommand}>Add Command</button>
 					<button onClick={handleAddDelay}>Add Delay</button>
@@ -255,7 +297,7 @@ export default function ({
 					disabled={macroCommands.length === 0}
 					onClick={() =>
 						macroCommands.length &&
-						onSave({ macro: macroCommands, name, icon, startup })
+						onSave({ macro: macroCommands, name, icon, startup, enterFullscreen, exitFullscreen, stepByStep })
 					}
 				>
 					Save
