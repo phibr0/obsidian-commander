@@ -32,21 +32,21 @@ export default class LeftRibbonManager extends CommandManagerBase {
 			this.plugin.settings.leftRibbon.push(pair);
 			await this.plugin.saveSettings();
 		}
-		if (isModeActive(pair.mode)) {
-			this.plugin.addRibbonIcon(pair.icon, pair.name, () =>
-				app.commands.executeCommandById(pair.id)
-			);
+		this.plugin.addRibbonIcon(pair.icon, pair.name, () =>
+			app.commands.executeCommandById(pair.id)
+		);
+		// @ts-expect-error
+		const nativeAction = app.workspace.leftRibbon.items.find((i, index) => {
+		    const pairId = `${this.plugin.manifest.id}:${pair.name}`;
+		    return i.id === pairId;
+		});
+		if (nativeAction) {
+			nativeAction.hidden = !isModeActive(pair.mode);
 			// @ts-expect-error
-			const nativeAction = app.workspace.leftRibbon.items.find(
-				// @ts-expect-error
-				(i) => i.icon === pair.icon && i.name === i.name
-			);
-			if (nativeAction) {
-				nativeAction.buttonEl.style.color =
-					pair.color === "#000000" || pair.color === undefined
-						? "inherit"
-						: pair.color;
-			}
+			nativeAction.buttonEl.style.color =
+				pair.color === "#000000" || pair.color === undefined
+					? "inherit"
+					: pair.color;
 			this.plugin.register(() => this.removeCommand(pair, false));
 		}
 	}
@@ -60,10 +60,10 @@ export default class LeftRibbonManager extends CommandManagerBase {
 			await this.plugin.saveSettings();
 		}
 		// @ts-expect-error
-		const nativeAction = app.workspace.leftRibbon.items.find(
-			// @ts-expect-error
-			(i) => i.icon === pair.icon && i.name === i.name
-		);
+		const nativeAction = app.workspace.leftRibbon.items.find((i, index) => {
+		    const pairId = `${this.plugin.manifest.id}:${pair.name}`;
+		    return i.id === pairId;
+		});
 		if (nativeAction) {
 			nativeAction.buttonEl.remove();
 		}
@@ -78,4 +78,11 @@ export default class LeftRibbonManager extends CommandManagerBase {
 			this.addCommand(pair, false);
 		});
 	}
+
+	public update(): void {
+		this.plugin.settings.leftRibbon.forEach((pair) => {
+			this.addCommand(pair, false);
+		});
+	}
+
 }
