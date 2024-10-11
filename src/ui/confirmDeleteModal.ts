@@ -10,7 +10,7 @@ export default class ConfirmDeleteModal extends Modal {
 
 	// eslint-disable-next-line no-unused-vars
 	public constructor(public plugin: CommanderPlugin) {
-		super(app);
+		super(plugin.app);
 	}
 
 	public async onOpen(): Promise<void> {

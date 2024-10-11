@@ -25,15 +25,15 @@ export default class StatusBarManager extends CommandManagerBase {
 	}
 
 	private init(): void {
-		app.workspace.onLayoutReady(() => {
-			this.container = app.statusBar.containerEl;
+		this.plugin.app.workspace.onLayoutReady(() => {
+			this.container = this.plugin.app.statusBar.containerEl;
 			for (const cmd of this.pairs) {
 				//Command has been removed
-				if (!getCommandFromId(cmd.id)) {
+				if (!getCommandFromId(cmd.id, this.plugin)) {
 					this.pairs.remove(cmd);
 				}
 
-				if (isModeActive(cmd.mode)) {
+				if (isModeActive(cmd.mode, this.plugin)) {
 					this.addAction(cmd);
 				}
 			}
@@ -108,7 +108,8 @@ export default class StatusBarManager extends CommandManagerBase {
 		const setNormal = (): void => {
 			btn.empty();
 			setIcon(btn, pair.icon);
-			btn.onclick = (): void => app.commands.executeCommandById(pair.id);
+			btn.onclick = (): void =>
+				this.plugin.app.commands.executeCommandById(pair.id);
 		};
 		const setRemovable = (): void => {
 			btn.empty();
@@ -168,7 +169,8 @@ export default class StatusBarManager extends CommandManagerBase {
 						.setIcon("text-cursor-input")
 						.onClick(async () => {
 							const newName = await new ChooseCustomNameModal(
-								pair.name
+								pair.name,
+								this.plugin
 							).awaitSelection();
 							if (newName && newName !== pair.name) {
 								pair.name = newName;

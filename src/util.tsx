@@ -28,7 +28,10 @@ export async function chooseNewCommand(
 		icon = await new ChooseIconModal(plugin).awaitSelection();
 	}
 
-	const name = await new ChooseCustomNameModal(command.name).awaitSelection();
+	const name = await new ChooseCustomNameModal(
+		command.name, 
+		plugin
+	).awaitSelection();
 
 	return {
 		id: command.id,
@@ -40,8 +43,8 @@ export async function chooseNewCommand(
 	};
 }
 
-export function getCommandFromId(id: string): Command | null {
-	return app.commands.commands[id] ?? null;
+export function getCommandFromId(id: string, plugin: CommanderPlugin): Command | null {
+	return plugin.app.commands.commands[id] ?? null;
 }
 
 interface ObsidianIconProps extends ComponentProps<"div"> {
@@ -63,8 +66,8 @@ export function ObsidianIcon({
 	return <div ref={iconEl} {...props} />;
 }
 
-export function isModeActive(mode: string): boolean {
-	const { isMobile, appId } = app;
+export function isModeActive(mode: string, plugin: CommanderPlugin): boolean {
+	const { isMobile, appId } = plugin.app;
 	return (
 		mode === "any" ||
 		mode === appId ||
@@ -136,7 +139,7 @@ export function updateSpacing(spacing: number): void {
 }
 
 export function updateMacroCommands(plugin: CommanderPlugin): void {
-	const oldCommands = Object.keys(app.commands.commands).filter((p) =>
+	const oldCommands = Object.keys(plugin.app.commands.commands).filter((p) =>
 		p.startsWith("cmdr:macro-")
 	);
 	for (const command of oldCommands) {
@@ -183,9 +186,12 @@ export function removeStyles() {
 	c.remove("advanced-toolbar");
 }
 
-export function injectIcons(settings: AdvancedToolbarSettings) {
+export function injectIcons(
+	settings: AdvancedToolbarSettings,
+	plugin: CommanderPlugin
+) {
 	settings.mappedIcons.forEach((mapped) => {
-		const command = app.commands.commands[mapped.commandID];
+		const command = plugin.app.commands.commands[mapped.commandID];
 		if (command) {
 			command.icon = mapped.iconID;
 		} else {

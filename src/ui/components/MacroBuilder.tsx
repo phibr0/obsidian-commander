@@ -77,7 +77,10 @@ export default function ({
 			{macroCommands.map((item, idx) => {
 				switch (item.action) {
 					case Action.COMMAND:
-						const command = getCommandFromId(item.commandId);
+						const command = getCommandFromId(
+							item.commandId,
+							plugin
+						);
 						return (
 							<div class="setting-item cmdr-mm-item">
 								<div>

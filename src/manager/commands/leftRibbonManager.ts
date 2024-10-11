@@ -15,7 +15,7 @@ export default class LeftRibbonManager extends CommandManagerBase {
 			this.addCommand(pair, false)
 		);
 
-		app.workspace.onLayoutReady(() => {
+		this.plugin.app.workspace.onLayoutReady(() => {
 			// if (this.plugin.settings.showAddCommand) {
 			// 	this.plugin.addRibbonIcon("plus", t("Add new"), async () =>
 			// 		this.addCommand(await chooseNewCommand(plugin))
@@ -32,12 +32,12 @@ export default class LeftRibbonManager extends CommandManagerBase {
 			this.plugin.settings.leftRibbon.push(pair);
 			await this.plugin.saveSettings();
 		}
-		if (isModeActive(pair.mode)) {
+		if (isModeActive(pair.mode, this.plugin)) {
 			this.plugin.addRibbonIcon(pair.icon, pair.name, () =>
-				app.commands.executeCommandById(pair.id)
+				this.plugin.app.commands.executeCommandById(pair.id)
 			);
 			// @ts-expect-error
-			const nativeAction = app.workspace.leftRibbon.items.find(
+			const nativeAction = this.plugin.app.workspace.leftRibbon.items.find(
 				// @ts-expect-error
 				(i) => i.icon === pair.icon && i.name === i.name
 			);
@@ -60,7 +60,7 @@ export default class LeftRibbonManager extends CommandManagerBase {
 			await this.plugin.saveSettings();
 		}
 		// @ts-expect-error
-		const nativeAction = app.workspace.leftRibbon.items.find(
+		const nativeAction = this.plugin.app.workspace.leftRibbon.items.find(
 			// @ts-expect-error
 			(i) => i.icon === pair.icon && i.name === i.name
 		);

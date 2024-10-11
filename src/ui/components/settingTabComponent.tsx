@@ -66,7 +66,7 @@ export default function settingTabComponent({
 		} else {
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			el.parentElement!.lastChild!.textContent = "Commander";
-			el.onclick = (): void => app.setting.closeActiveTab();
+			el.onclick = (): void => plugin.app.setting.closeActiveTab();
 		}
 	}, [open]);
 
@@ -169,16 +169,16 @@ export default function settingTabComponent({
 							</p>
 							<button
 								onClick={(): void => {
-									app.setting.openTabById("appearance");
+									plugin.app.setting.openTabById("appearance");
 									setTimeout(() => {
-										app.setting.activeTab.containerEl.scroll(
+										plugin.app.setting.activeTab.containerEl.scroll(
 											{
 												behavior: "smooth",
 												top: 250,
 											}
 										);
 
-										app.setting.activeTab.containerEl
+										plugin.app.setting.activeTab.containerEl
 											.querySelectorAll(
 												".setting-item-heading"
 											)[1]

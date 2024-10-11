@@ -53,7 +53,7 @@ export default class CommanderPlugin extends Plugin {
 		for (const command of macro.macro) {
 			switch (command.action) {
 				case Action.COMMAND: {
-					await app.commands.executeCommandById(command.commandId);
+					await this.app.commands.executeCommandById(command.commandId);
 					continue;
 				}
 				case Action.DELAY: {
@@ -67,7 +67,7 @@ export default class CommanderPlugin extends Plugin {
 				}
 				case Action.LOOP: {
 					for (let i = 0; i < command.times; i++) {
-						await app.commands.executeCommandById(
+						await this.app.commands.executeCommandById(
 							command.commandId
 						);
 					}
@@ -82,8 +82,6 @@ export default class CommanderPlugin extends Plugin {
 		this.settings.hide.leftRibbon ??= []; // TODO: remove this in a future version
 
 		registerCustomIcons();
-
-		console.log(getIconIds());
 
 		this.manager = {
 			editorMenu: new EditorMenuCommandManager(
@@ -108,25 +106,25 @@ export default class CommanderPlugin extends Plugin {
 		});
 
 		this.registerEvent(
-			app.workspace.on(
+			this.app.workspace.on(
 				"editor-menu",
 				this.manager.editorMenu.applyEditorMenuCommands(this)
 			)
 		);
 
 		this.registerEvent(
-			app.workspace.on(
+			this.app.workspace.on(
 				"file-menu",
 				this.manager.fileMenu.applyFileMenuCommands(this)
 			)
 		);
 
-		app.workspace.onLayoutReady(() => {
+		this.app.workspace.onLayoutReady(() => {
 			updateHiderStylesheet(this.settings);
 			updateMacroCommands(this);
 			updateSpacing(this.settings.spacing);
 			updateStyles(this.settings.advancedToolbar);
-			injectIcons(this.settings.advancedToolbar);
+			injectIcons(this.settings.advancedToolbar, this);
 
 			this.executeStartupMacros();
 		});

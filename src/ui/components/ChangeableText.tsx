@@ -1,4 +1,5 @@
 import { h } from "preact";
+// @ts-ignore
 import { Ref, useEffect, useRef, useState } from "preact/hooks";
 
 interface Props {

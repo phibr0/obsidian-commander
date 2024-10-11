@@ -78,7 +78,8 @@ abstract class Base extends CommandManagerBase {
 								.onClick(async () => {
 									const newName =
 										await new ChooseCustomNameModal(
-											cmdPair.name
+											cmdPair.name,
+											plugin
 										).awaitSelection();
 									if (newName && newName !== cmdPair.name) {
 										cmdPair.name = newName;
@@ -112,7 +113,9 @@ abstract class Base extends CommandManagerBase {
 
 			item.setTitle(cmdPair.name ?? command.name)
 				.setIcon(cmdPair.icon)
-				.onClick(() => app.commands.executeCommandById(cmdPair.id));
+				.onClick(() =>
+					plugin.app.commands.executeCommandById(cmdPair.id)
+				);
 
 			let isRemovable = false;
 			const setNormal = (): void => {
@@ -180,12 +183,12 @@ export class EditorMenuCommandManager extends Base {
 			this.addCommandAddButton(plugin, menu, plugin.settings.editorMenu);
 
 			for (const cmdPair of plugin.settings.editorMenu) {
-				const command = getCommandFromId(cmdPair.id);
+				const command = getCommandFromId(cmdPair.id, plugin);
 
 				//Command has been removed
 				if (!command) continue;
 
-				if (!isModeActive(cmdPair.mode)) continue;
+				if (!isModeActive(cmdPair.mode, plugin)) continue;
 
 				//Use the check callbacks accordingly
 				if (
@@ -221,7 +224,7 @@ export class FileMenuCommandManager extends Base {
 			this.addCommandAddButton(plugin, menu, plugin.settings.fileMenu);
 
 			for (const cmdPair of plugin.settings.fileMenu) {
-				const command = getCommandFromId(cmdPair.id);
+				const command = getCommandFromId(cmdPair.id, plugin);
 
 				//Command has been removed
 				if (!command) {

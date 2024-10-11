@@ -109,7 +109,7 @@ function render(containerEl: HTMLElement, plugin: CommanderPlugin) {
 							});
 						}
 						await plugin.saveSettings();
-						injectIcons(plugin.settings.advancedToolbar);
+						injectIcons(plugin.settings.advancedToolbar, plugin);
 						render(containerEl, plugin);
 					});
 				})
@@ -122,7 +122,7 @@ function render(containerEl: HTMLElement, plugin: CommanderPlugin) {
 									(p) => p.commandID !== command.id
 								);
 							delete command.icon;
-							delete app.commands.commands[command.id].icon;
+							delete plugin.app.commands.commands[command.id].icon;
 							await plugin.saveSettings();
 							render(containerEl, plugin);
 							new Notice(
@@ -243,7 +243,7 @@ export default function AdvancedToolbarSettings({
 				{Platform.isMobile && (
 					<button
 						onClick={(): void => {
-							app.setting.openTabById("mobile");
+							plugin.app.setting.openTabById("mobile");
 						}}
 						className="mod-cta"
 					>

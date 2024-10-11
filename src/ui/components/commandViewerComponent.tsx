@@ -32,10 +32,11 @@ export default function CommandViewer({
 					{manager.pairs.map((cmd, idx) => {
 						if (
 							cmd.mode.match(/desktop|mobile|any/) ||
-							cmd.mode === app.appId
+							cmd.mode === plugin.app.appId
 						) {
 							return (
 								<CommandComponent
+									plugin={plugin}
 									sortable={sortable}
 									key={cmd.id}
 									pair={cmd}
@@ -99,7 +100,7 @@ export default function CommandViewer({
 											"any",
 											"desktop",
 											"mobile",
-											app.appId,
+											plugin.app.appId,
 										];
 										let currentIdx = modes.indexOf(
 											cmd.mode
@@ -126,7 +127,7 @@ export default function CommandViewer({
 				</div>
 				{!manager.pairs.some(
 					(pre) =>
-						isModeActive(pre.mode) ||
+						isModeActive(pre.mode, plugin) ||
 						pre.mode.match(/mobile|desktop/)
 				) && (
 					<div class="cmdr-commands-empty">

@@ -7,7 +7,7 @@ export default class SettingTabModal extends Modal {
 	private plugin: CommanderPlugin;
 
 	public constructor(plugin: CommanderPlugin) {
-		super(app);
+		super(plugin.app);
 		this.plugin = plugin;
 		this.containerEl.addClass("cmdr-setting-modal");
 	}
