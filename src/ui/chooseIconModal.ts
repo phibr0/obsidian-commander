@@ -40,15 +40,14 @@ export default class ChooseIconModal extends FuzzySuggestModal<string> {
 	public renderSuggestion(item: FuzzyMatch<string>, el: HTMLElement): void {
 		el.addClass("mod-complex");
 		const content = el.createDiv({ cls: "suggestion-content" });
-		content
-			.createDiv({ cls: "suggestion-title" })
-			.setText(
-				item.item
-					.replace(/-/g, " ")
-					.replace(/(^\w{1})|(\s+\w{1})/g, (letter) =>
-						letter.toUpperCase()
-					)
-			);
+		content.createDiv({ cls: "suggestion-title" }).setText(
+			item.item
+				.replace("lucide-", "")
+				.replace(/-/g, " ")
+				.replace(/(^\w{1})|(\s+\w{1})/g, (letter) =>
+					letter.toUpperCase()
+				)
+		);
 
 		const aux = el.createDiv({ cls: "suggestion-aux" });
 		setIcon(aux.createSpan({ cls: "suggestion-flair" }), item.item);

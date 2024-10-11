@@ -5,7 +5,7 @@ import {
 	updateStyles,
 } from "src/util";
 import { updateSpacing } from "src/util";
-import { Command, Plugin } from "obsidian";
+import { Command, getIconIds, Plugin } from "obsidian";
 import { DEFAULT_SETTINGS } from "./constants";
 import t from "./l10n";
 import {
@@ -82,6 +82,8 @@ export default class CommanderPlugin extends Plugin {
 		this.settings.hide.leftRibbon ??= []; // TODO: remove this in a future version
 
 		registerCustomIcons();
+
+		console.log(getIconIds());
 
 		this.manager = {
 			editorMenu: new EditorMenuCommandManager(
