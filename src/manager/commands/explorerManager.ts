@@ -21,14 +21,14 @@ export default class ExplorerManager extends CommandManagerBase {
 	}
 
 	private getFileExplorers(): WorkspaceLeaf[] {
-		return app.workspace.getLeavesOfType("file-explorer");
+		return this.plugin.app.workspace.getLeavesOfType("file-explorer");
 	}
 
 	private init(): void {
-		app.workspace.onLayoutReady(() => {
+		this.plugin.app.workspace.onLayoutReady(() => {
 			for (const cmd of this.pairs) {
-				if (isModeActive(cmd.mode)) {
-					app.workspace.onLayoutReady(() => {
+				if (isModeActive(cmd.mode, this.plugin)) {
+					this.plugin.app.workspace.onLayoutReady(() => {
 						const explorers = this.getFileExplorers();
 						explorers.forEach((exp) => {
 							this.addAction(cmd, exp);
@@ -37,7 +37,7 @@ export default class ExplorerManager extends CommandManagerBase {
 
 					// File explorers that get opened later on
 					this.plugin.registerEvent(
-						app.workspace.on("layout-change", () => {
+						this.plugin.app.workspace.on("layout-change", () => {
 							const explorers = this.getFileExplorers();
 							explorers.forEach((exp) => {
 								this.addAction(cmd, exp);
@@ -56,7 +56,7 @@ export default class ExplorerManager extends CommandManagerBase {
 
 	public async addCommand(pair: CommandIconPair): Promise<void> {
 		this.pairs.push(pair);
-		app.workspace.onLayoutReady(() => {
+		this.plugin.app.workspace.onLayoutReady(() => {
 			const explorers = this.getFileExplorers();
 			explorers.forEach((exp) => {
 				this.addAction(pair, exp);
@@ -65,7 +65,7 @@ export default class ExplorerManager extends CommandManagerBase {
 
 		// File explorers that get opened later on
 		this.plugin.registerEvent(
-			app.workspace.on("layout-change", () => {
+			this.plugin.app.workspace.on("layout-change", () => {
 				const explorers = this.getFileExplorers();
 				explorers.forEach((exp) => {
 					this.addAction(pair, exp);
@@ -116,7 +116,8 @@ export default class ExplorerManager extends CommandManagerBase {
 		const setNormal = (): void => {
 			btn.empty();
 			setIcon(btn, pair.icon);
-			btn.onclick = (): void => app.commands.executeCommandById(pair.id);
+			btn.onclick = (): void =>
+				this.plugin.app.commands.executeCommandById(pair.id);
 		};
 		const setRemovable = (): void => {
 			btn.empty();
@@ -176,7 +177,8 @@ export default class ExplorerManager extends CommandManagerBase {
 						.setIcon("text-cursor-input")
 						.onClick(async () => {
 							const newName = await new ChooseCustomNameModal(
-								pair.name
+								pair.name,
+								this.plugin
 							).awaitSelection();
 							if (newName && newName !== pair.name) {
 								pair.name = newName;

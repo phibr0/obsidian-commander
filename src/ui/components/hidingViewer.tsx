@@ -65,7 +65,7 @@ export function StatusbarHider({
 	>([]);
 	useEffect(() => {
 		const statusBarItems = [
-			...app.statusBar.containerEl.getElementsByClassName(
+			...plugin.app.statusBar.containerEl.getElementsByClassName(
 				"status-bar-item"
 			),
 		];
@@ -79,7 +79,7 @@ export function StatusbarHider({
 		setPluginsWithRibbonItems(
 			ids.map(
 				(id) =>
-					app.plugins.manifests[id] || {
+					plugin.app.plugins.manifests[id] || {
 						id,
 						name: id
 							.replace(/-/g, " ")

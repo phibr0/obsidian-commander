@@ -7,7 +7,7 @@ export default class CommanderSettingTab extends PluginSettingTab {
 	private plugin: CommanderPlugin;
 
 	public constructor(plugin: CommanderPlugin) {
-		super(app, plugin);
+		super(plugin.app, plugin);
 		this.plugin = plugin;
 	}
 

@@ -27,8 +27,8 @@ export default class PageHeaderManager extends CommandManagerBase {
 		if (!buttons || buttons.has(id)) return;
 
 		const buttonIcon = (view as ItemView).addAction(icon, name, () => {
-			app.workspace.setActiveLeaf(leaf, { focus: true });
-			app.commands.executeCommandById(id);
+			this.plugin.app.workspace.setActiveLeaf(leaf, { focus: true });
+			this.plugin.app.commands.executeCommandById(id);
 		});
 		buttons.set(id, buttonIcon);
 
@@ -68,7 +68,8 @@ export default class PageHeaderManager extends CommandManagerBase {
 						.setIcon("text-cursor-input")
 						.onClick(async () => {
 							const newName = await new ChooseCustomNameModal(
-								pair.name
+								pair.name,
+								this.plugin
 							).awaitSelection();
 							if (newName && newName !== pair.name) {
 								pair.name = newName;
@@ -102,11 +103,11 @@ export default class PageHeaderManager extends CommandManagerBase {
 			this.removeButtonsFromAllLeaves();
 		});
 		this.plugin.registerEvent(
-			app.workspace.on("layout-change", () => {
+			this.plugin.app.workspace.on("layout-change", () => {
 				this.addButtonsToAllLeaves();
 			})
 		);
-		app.workspace.onLayoutReady(() =>
+		this.plugin.app.workspace.onLayoutReady(() =>
 			setTimeout(() => this.addButtonsToAllLeaves(), 100)
 		);
 	}
@@ -126,7 +127,7 @@ export default class PageHeaderManager extends CommandManagerBase {
 
 	private addButtonsToAllLeaves(refresh = false): void {
 		activeWindow.requestAnimationFrame(() =>
-			app.workspace.iterateAllLeaves((leaf) =>
+			this.plugin.app.workspace.iterateAllLeaves((leaf) =>
 				this.addButtonsToLeaf(leaf, refresh)
 			)
 		);
@@ -134,7 +135,7 @@ export default class PageHeaderManager extends CommandManagerBase {
 
 	private removeButtonsFromAllLeaves(): void {
 		activeWindow.requestAnimationFrame(() =>
-			app.workspace.iterateAllLeaves((leaf) =>
+			this.plugin.app.workspace.iterateAllLeaves((leaf) =>
 				this.removeButtonsFromLeaf(leaf)
 			)
 		);
@@ -157,7 +158,8 @@ export default class PageHeaderManager extends CommandManagerBase {
 		}
 		for (let i = this.pairs.length - 1; i >= 0; i--) {
 			const pair = this.pairs[i];
-			if (isModeActive(pair.mode)) this.addPageHeaderButton(leaf, pair);
+			if (isModeActive(pair.mode, this.plugin))
+				this.addPageHeaderButton(leaf, pair);
 		}
 		if (this.plugin.settings.showAddCommand) this.addAdderButton(leaf);
 	}

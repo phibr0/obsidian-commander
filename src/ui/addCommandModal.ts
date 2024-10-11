@@ -7,9 +7,9 @@ export default class AddCommandModal extends FuzzySuggestModal<Command> {
 	private commands: Command[];
 
 	public constructor(plugin: CommanderPlugin) {
-		super(app);
+		super(plugin.app);
 		this.plugin = plugin;
-		this.commands = Object.values(app.commands.commands);
+		this.commands = Object.values(plugin.app.commands.commands);
 		this.setPlaceholder(t("Choose a Command to add"));
 
 		this.setInstructions([

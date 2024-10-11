@@ -14,7 +14,7 @@ export default class MacroBuilderModal extends Modal {
 		macro: Macro,
 		onSave: (macro: Macro) => void
 	) {
-		super(app);
+		super(plugin.app);
 		this.macro = macro;
 		this.plugin = plugin;
 		this.onSave = onSave;

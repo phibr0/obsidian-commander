@@ -4,10 +4,13 @@ import t from "src/l10n";
 import { ObsidianIcon } from "src/util";
 import MobileModifyModal from "../mobileModifyModal";
 import { ColorPicker } from "./ColorPicker";
+import CommanderPlugin from "src/main";
 
 export default function MobileModifyComponent({
+	plugin,	
 	modal: controller,
 }: {
+	plugin: CommanderPlugin;
 	modal: MobileModifyModal;
 }): h.JSX.Element {
 	useEffect(() => {
@@ -66,7 +69,7 @@ export default function MobileModifyComponent({
 					<option value="desktop">
 						{t("Add command only to desktop devices")}
 					</option>
-					<option value={app.appId}>
+					<option value={plugin.app.appId}>
 						{t("Add command only to this device")}
 					</option>
 				</select>
