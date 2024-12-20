@@ -1,4 +1,75 @@
-import { h } from "preact";
+import { App, Command, Plugin, PluginManifest } from "obsidian";
+import { JSX } from "preact";
+
+/* eslint-disable no-unused-vars */
+declare module "obsidian" {
+	interface MenuItem {
+		dom: HTMLElement;
+	}
+
+	interface App {
+		commands: {
+			commands: {
+				[id: string]: Command;
+			};
+			executeCommandById: (id: string) => void;
+		};
+		plugins: {
+			manifests: {
+				[id: string]: PluginManifest;
+			};
+		};
+		statusBar: {
+			containerEl: HTMLElement;
+		};
+		appId: string;
+		isMobile: boolean;
+		setting: {
+			closeActiveTab: () => void;
+			openTabById: (id: string) => void;
+			activeTab: {
+				containerEl: HTMLElement;
+			};
+		};
+	}
+
+	interface WorkspaceRibbon {
+		orderedRibbonActions: {
+			icon: string;
+			title: string;
+			callback: () => void;
+		}[];
+		collapseButtonEl: HTMLElement;
+		ribbonItemsEl: HTMLElement;
+		addRibbonItemButton: (
+			icon: string,
+			name: string,
+			callback: (event: MouseEvent) => void
+		) => void;
+		makeRibbonItemButton: (
+			icon: string,
+			name: string,
+			callback: (event: MouseEvent) => void
+		) => HTMLElement;
+	}
+
+	interface WorkspaceLeaf {
+		containerEl: HTMLElement;
+	}
+}
+
+export interface CommanderPlugin extends Plugin {
+	app: App;
+	settings: CommanderSettings;
+	addCommand: (command: {
+		id: string;
+		name: string;
+		callback: () => void;
+		icon?: string;
+	}) => Command;
+	saveSettings: () => Promise<void>;
+	executeMacro: (id: number) => void;
+}
 
 export enum Action {
 	COMMAND,
@@ -57,7 +128,7 @@ export interface AdvancedToolbarSettings {
 
 export interface Tab {
 	name: string;
-	tab: h.JSX.Element;
+	tab: JSX.Element;
 }
 
 export type Mode = "desktop" | "any" | "mobile" | string;
@@ -68,61 +139,4 @@ export interface CommandIconPair {
 	name: string;
 	mode: Mode;
 	color?: string;
-}
-
-/* eslint-disable no-unused-vars */
-declare module "obsidian" {
-	interface MenuItem {
-		dom: HTMLElement;
-	}
-
-	interface App {
-		commands: {
-			commands: {
-				[id: string]: Command;
-			};
-			executeCommandById: (id: string) => void;
-		};
-		plugins: {
-			manifests: {
-				[id: string]: PluginManifest;
-			};
-		};
-		statusBar: {
-			containerEl: HTMLElement;
-		};
-		appId: string;
-		isMobile: boolean;
-		setting: {
-			closeActiveTab: () => void;
-			openTabById: (id: string) => void;
-			activeTab: {
-				containerEl: HTMLElement;
-			};
-		};
-	}
-
-	interface WorkspaceRibbon {
-		orderedRibbonActions: {
-			icon: string;
-			title: string;
-			callback: () => void;
-		}[];
-		collapseButtonEl: HTMLElement;
-		ribbonItemsEl: HTMLElement;
-		addRibbonItemButton: (
-			icon: string,
-			name: string,
-			callback: (event: MouseEvent) => void
-		) => void;
-		makeRibbonItemButton: (
-			icon: string,
-			name: string,
-			callback: (event: MouseEvent) => void
-		) => HTMLElement;
-	}
-
-	interface WorkspaceLeaf {
-		containerEl: HTMLElement;
-	}
 }

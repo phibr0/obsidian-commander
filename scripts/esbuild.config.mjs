@@ -4,7 +4,7 @@ import builtins from "builtin-modules";
 import alias from "esbuild-plugin-alias";
 import { sassPlugin } from "esbuild-sass-plugin";
 import { createRequire } from "module";
-import { renameSync, copyFileSync, appendFileSync } from "fs";
+import { appendFileSync } from "fs";
 const require = createRequire(import.meta.url);
 
 const banner = `/*
@@ -85,35 +85,7 @@ esbuild
 						}
 					});
 				},
-			},
-			{
-				name: "Move output",
-				setup(build) {
-					build.onEnd(() => {
-						setTimeout(
-							() => {
-								try {
-									copyFileSync(
-										"styles.css",
-										"../../vault/.obsidian/plugins/cmdr/styles.css"
-									);
-									copyFileSync(
-										"main.js",
-										"../../vault/.obsidian/plugins/cmdr/main.js"
-									);
-									copyFileSync(
-										"manifest.json",
-										"../../vault/.obsidian/plugins/cmdr/manifest.json"
-									);
-								} catch (error) {
-									console.error(error);
-								}
-							},
-							prod ? 5000 : 500
-						);
-					});
-				},
-			},
+			}
 		],
 	})
 	.catch(() => process.exit(1));

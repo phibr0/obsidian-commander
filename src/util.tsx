@@ -8,7 +8,9 @@ import AddCommandModal from "./ui/addCommandModal";
 import ChooseIconModal from "./ui/chooseIconModal";
 import { Command, Platform, setIcon } from "obsidian";
 import ChooseCustomNameModal from "./ui/chooseCustomNameModal";
-import { ComponentProps, h } from "preact";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { ComponentProps, h, JSX } from "preact";
+/** @jsx h */
 import { useRef, useLayoutEffect } from "preact/hooks";
 import confetti from "canvas-confetti";
 
@@ -55,7 +57,7 @@ export function ObsidianIcon({
 	icon,
 	size,
 	...props
-}: ObsidianIconProps): h.JSX.Element {
+}: ObsidianIconProps): JSX.Element {
 	const iconEl = useRef<HTMLDivElement>(null);
 
 	useLayoutEffect(() => {
@@ -88,19 +90,17 @@ export function updateHiderStylesheet(settings: CommanderSettings): void {
 	document.head.querySelector("style#cmdr")?.remove();
 
 	if (style) {
-		document.head.appendChild(
-			createEl("style", {
-				attr: { id: "cmdr" },
-				text: style,
-				type: "text/css",
-			})
-		);
+		const styleEl = document.createElement("style");
+		styleEl.id = "cmdr";
+		styleEl.type = "text/css";
+		styleEl.textContent = style;
+		document.head.appendChild(styleEl);
 	}
 }
 
 export async function showConfetti({ target }: MouseEvent): Promise<void> {
-	const myCanvas = activeDocument.createElement("canvas");
-	activeDocument.body.appendChild(myCanvas);
+	const myCanvas = document.createElement("canvas");
+	document.body.appendChild(myCanvas);
 	myCanvas.style.position = "fixed";
 	myCanvas.style.width = "100vw";
 	myCanvas.style.height = "100vh";
@@ -126,8 +126,8 @@ export async function showConfetti({ target }: MouseEvent): Promise<void> {
 		ticks: 250,
 		origin: {
 			//Center of the target component using values from 0 to 1
-			x: (pos.x + pos.width / 2) / activeWindow.innerWidth,
-			y: (pos.y + pos.height / 2) / activeWindow.innerHeight,
+			x: (pos.x + pos.width / 2) / window.innerWidth,
+			y: (pos.y + pos.height / 2) / window.innerHeight,
 		},
 	});
 
@@ -135,7 +135,7 @@ export async function showConfetti({ target }: MouseEvent): Promise<void> {
 }
 
 export function updateSpacing(spacing: number): void {
-	activeDocument.body.style.setProperty("--cmdr-spacing", `${spacing}px`);
+	document.body.style.setProperty("--cmdr-spacing", `${spacing}px`);
 }
 
 export function updateMacroCommands(plugin: CommanderPlugin): void {
@@ -144,22 +144,44 @@ export function updateMacroCommands(plugin: CommanderPlugin): void {
 	);
 	for (const command of oldCommands) {
 		//@ts-ignore
-		app.commands.removeCommand(command);
+		plugin.app.commands.removeCommand(command);
 	}
 
 	const macros = plugin.settings.macros;
-	for (const [idx, macro] of Object.entries(macros)) {
+	for (const [idx, macro] of macros.entries()) {
+		const commandId = `macro-${idx}`;
+		
+		// Create the command with direct icon assignment
 		plugin.addCommand({
-			id: `macro-${idx}`,
+			id: commandId,
 			name: macro.name,
+			icon: macro.icon, // Set icon directly on the command
 			callback: () => {
-				plugin.executeMacro(parseInt(idx));
+				plugin.executeMacro(Number(idx));
 			},
 		});
+
+		// Also maintain icon mapping for mobile toolbar compatibility
+		if (macro.icon) {
+			const existingMapping = plugin.settings.advancedToolbar.mappedIcons.find(
+				m => m.commandID === `cmdr:${commandId}`
+			);
+			if (existingMapping) {
+				existingMapping.iconID = macro.icon;
+			} else {
+				plugin.settings.advancedToolbar.mappedIcons.push({
+					commandID: `cmdr:${commandId}`,
+					iconID: macro.icon
+				});
+			}
+		}
 	}
+
+	// Save the updated settings
+	void plugin.saveSettings();
 }
 
-export function updateStyles(settings: AdvancedToolbarSettings) {
+export function updateStyles(settings: AdvancedToolbarSettings): void {
 	const { classList: c, style: s } = document.body;
 	s.setProperty("--at-button-height", (settings.rowHeight ?? 48) + "px");
 	s.setProperty("--at-button-width", (settings.buttonWidth ?? 48) + "px");
@@ -172,7 +194,7 @@ export function updateStyles(settings: AdvancedToolbarSettings) {
 	c.toggle("AT-no-toolbar", settings.rowCount === 0);
 }
 
-export function removeStyles() {
+export function removeStyles(): void {
 	const { classList: c, style: s } = document.body;
 	s.removeProperty("--at-button-height");
 	s.removeProperty("--at-button-width");
@@ -189,13 +211,14 @@ export function removeStyles() {
 export function injectIcons(
 	settings: AdvancedToolbarSettings,
 	plugin: CommanderPlugin
-) {
+): void {
 	settings.mappedIcons.forEach((mapped) => {
-		const command = plugin.app.commands.commands[mapped.commandID];
+		const commandId = mapped.commandID.replace('cmdr:', '');
+		const command = plugin.app.commands.commands[commandId];
 		if (command) {
 			command.icon = mapped.iconID;
 		} else {
-			settings.mappedIcons.remove(mapped);
+			settings.mappedIcons = settings.mappedIcons.filter(m => m !== mapped);
 		}
 	});
 }
