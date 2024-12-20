@@ -11,7 +11,12 @@
 		"importHelpers": true,
 		"isolatedModules": true,
 		"strictNullChecks": true,
-		"lib": ["DOM", "ES5", "ES6", "ES7", "DOM.Iterable"],
+		"lib": ["DOM", "ES5", "ES6", "ES7", "DOM.Iterable", "ESNext"],
+		"types": ["node"],
+		"paths": {
+			"obsidian": ["node_modules/obsidian/obsidian.d.ts"],
+			"preact": ["node_modules/preact/dist/preact.d.ts"]
+		},
 		"jsx": "react",
 		"jsxFactory": "h",
 		"jsxFragmentFactory": "Fragment",
