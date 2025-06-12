@@ -173,7 +173,7 @@ export default class CommanderPlugin extends Plugin {
 			this.getCommands().forEach((c) => {
 				if (
 					this.settings.advancedToolbar.mappedIcons.find(
-						(m) => m.commandID === c.id
+						(m) => m.commandID === `cmdr:${c.id}`
 					)
 				) {
 					commands.push(c);
