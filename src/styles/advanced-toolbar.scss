@@ -17,6 +17,10 @@
 		z-index: 5;
 		margin-bottom: var(--at-offset);
 	}
+
+	.mobile-toolbar-spacer {
+		height: 0px;
+	}
 }
 .AT-always-shown {
 	.is-pinned {
