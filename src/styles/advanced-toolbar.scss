@@ -55,11 +55,6 @@
 		) !important;
 	}
 }
-body:not(.AT-multirow) {
-	.mobile-toolbar {
-		position: absolute !important;
-	}
-}
 .AT-no-toolbar {
 	.mobile-toolbar {
 		display: none;
