@@ -47,11 +47,17 @@
 		height: calc(
 			var(--at-button-height) * var(--at-row-count) + var(--at-spacing)
 		) !important;
+		padding-bottom: 0;
 	}
 	.mobile-toolbar-options-list {
 		height: calc(
 			var(--at-button-height) * var(--at-row-count) + var(--at-spacing)
 		) !important;
+	}
+}
+body:not(.AT-multirow) {
+	.mobile-toolbar {
+		position: absolute !important;
 	}
 }
 .AT-no-toolbar {
